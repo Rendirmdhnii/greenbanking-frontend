@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <!-- Background transparent -->
+  <rect width="500" height="500" fill="transparent"/>
+  
+  <!-- Outer glowing circle -->
+  <circle cx="250" cy="230" r="140" fill="none" stroke="#d1fae5" stroke-width="20"/>
+
+  <!-- Stylized leaf 1 -->
+  <path d="M250,90 C340,90 390,140 390,230 C390,230 310,230 250,170 C190,110 250,90 250,90 Z" fill="#10b981"/>
+
+  <!-- Stylized leaf 2 (overlapping) -->
+  <path d="M250,370 C160,370 110,320 110,230 C110,230 190,230 250,290 C310,350 250,370 250,370 Z" fill="#059669"/>
+
+  <!-- Center accent -->
+  <circle cx="250" cy="230" r="40" fill="#064e3b"/>
+
+  <!-- Typography: GreenBanking -->
+  <text x="250" y="440" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#064e3b" text-anchor="middle" letter-spacing="2">
+    GreenBanking
+  </text>
+  <text x="250" y="475" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#10b981" text-anchor="middle" letter-spacing="6">
+    NUSANTARA
+  </text>
+</svg>
