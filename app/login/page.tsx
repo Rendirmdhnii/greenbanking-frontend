@@ -19,7 +19,7 @@ export default function LoginPage() {
   const [manualLoading, setManualLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ─── GUARD: Jika sudah login, langsung ke Dashboard ───
+  // ─── GUARD: jagani nek wes login, langsung uncalno ae nang Dashboard ───
   useEffect(() => {
     let isMounted = true;
 
@@ -51,13 +51,13 @@ export default function LoginPage() {
   }, []);
 
   // ═══════════════════════════════════════════════════
-  //  LOGIN GOOGLE — Supabase OAuth → sync ke MySQL
+  //  LOGIN GOOGLE — ben gak ribet gae email google ae
   // ═══════════════════════════════════════════════════
   const handleGoogleLogin = async () => {
     setIsLoggingIn(true);
     setErrorMsg("");
 
-    // Menentukan URL redirect secara dinamis (Environment-Aware)
+    // jarno sek, iki gae ngecek mlayu nang localhost opo server online ben gk error callback e wkkw
     const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
     const redirectUrl = isLocal 
       ? "http://localhost:3000/auth/callback" 
@@ -78,7 +78,7 @@ export default function LoginPage() {
   };
 
   // ═══════════════════════════════════════════════════
-  //  LOGIN MANUAL — Email + Password → MySQL → Sanctum
+  //  LOGIN MANUAL — gawe email pasword biasa nek gk duwe google
   // ═══════════════════════════════════════════════════
   const handleManualLogin = async (e: React.FormEvent) => {
     e.preventDefault();

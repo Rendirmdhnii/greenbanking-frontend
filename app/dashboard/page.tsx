@@ -68,22 +68,22 @@ export default function DashboardPage() {
   const displayTopUpAmount = topUpAmount ? parseInt(topUpAmount, 10).toLocaleString('id-ID') : '';
 
   // ═══════════════════════════════════════════════
-  //  handleTopUp — METHOD: POST ke /api/checkout
-  //  1. Validasi min 10.000
-  //  2. POST /api/checkout → snap_token
-  //  3. window.snap.pay(snap_token)
-  //  4. onSuccess → POST /api/checkout/confirm → update balance
+  //  handleTopUp — nyeluk POST nang /api/checkout
+  //  1. Cek duite minimal 10rb
+  //  2. njaluk snap_token tekan backend
+  //  3. ngetokno popup midtrans
+  //  4. nek sukses, tembak api confirm ben saldo nambah
   // ═══════════════════════════════════════════════
   const handleTopUp = async () => {
     const amount = parseInt(topUpAmount);
     
-    // ── Validasi minimum Rp 10.000 ──
+    // ── ojo lali minimal 10ewu bossku ──
     if (!amount || amount < 10000) {
       Swal.fire({ icon: 'warning', title: 'Nominal Terlalu Kecil', text: 'Minimal Top Up adalah Rp 10.000', ...SwalGreenBanking.warning });
       return;
     }
 
-    // ── Cek apakah Snap.js sudah dimuat ──
+    // ── cek disek midtrans e wes loading ta urung ──
     if (!window.snap) {
       Swal.fire({ icon: 'info', title: 'Memuat Sistem Pembayaran', text: 'Tunggu beberapa detik lalu coba lagi.', ...SwalGreenBanking.info });
       return;
@@ -95,8 +95,8 @@ export default function DashboardPage() {
       const token = localStorage.getItem('token');
 
       // ════════════════════════════════════════════
-      //  PENTING: METHOD = POST (bukan GET!)
-      //  Ini yang menyebabkan Error 405 jika salah
+      //  PENTING COY: METHOD e kudu POST (ojo GET!)
+      //  lek GET dadi error 405 ngkok mumet ndase
       // ════════════════════════════════════════════
       const res = await fetch(`${API_URL}/checkout`, {
         method: 'POST',                          // ← WAJIB POST
@@ -122,11 +122,11 @@ export default function DashboardPage() {
 
       if (data.snap_token) {
         // ════════════════════════════════════════════
-        //  Panggil Snap Pop-up: window.snap.pay(token)
+        //  Ngetokno popup e Midtrans wkwk
         // ════════════════════════════════════════════
         window.snap.pay(data.snap_token, {
           onSuccess: async (result: any) => { 
-            // ── Konfirmasi ke Laravel: POST /api/checkout/confirm ──
+            // ── Lapor nang backend nek bar mbayar, cek saldo e dilebokno ──
             try {
               await fetch(`${API_URL}/checkout/confirm`, {
                 method: 'POST',
