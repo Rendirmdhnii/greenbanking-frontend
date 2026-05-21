@@ -57,10 +57,16 @@ export default function LoginPage() {
     setIsLoggingIn(true);
     setErrorMsg("");
 
+    // Menentukan URL redirect secara dinamis (Environment-Aware)
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const redirectUrl = isLocal 
+      ? "http://localhost:3000/auth/callback" 
+      : "https://projectuas.my.id/auth/callback";
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: redirectUrl,
       },
     });
 
