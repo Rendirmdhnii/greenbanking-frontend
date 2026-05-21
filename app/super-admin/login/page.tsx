@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { ShieldAlert, Loader2, ArrowRight, Home } from "lucide-react";
@@ -35,8 +35,8 @@ export default function SuperAdminLogin() {
         
         Swal.fire({
           icon: 'success',
-          title: 'Override Initialized',
-          text: 'Welcome to God Mode, Super Admin.',
+          title: 'Login Berhasil',
+          text: 'Selamat datang di Panel Super Admin.',
           background: '#111827',
           color: '#10b981',
           confirmButtonColor: '#059669'
@@ -89,7 +89,7 @@ export default function SuperAdminLogin() {
       >
         <div className="bg-white py-10 px-6 sm:px-10 rounded-[2rem] shadow-xl border border-gray-100">
           <div className="mb-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-900">Admin Login</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Login Admin</h2>
             <p className="text-sm text-gray-500 mt-2">Sistem autentikasi manajemen internal.</p>
           </div>
 

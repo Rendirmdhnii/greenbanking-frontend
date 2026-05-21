@@ -54,7 +54,7 @@ export default function DonasiPage() {
       const res = await fetch(`${API_URL}/donate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ name: product.title, type: product.id, amount: amt }),
+        body: JSON.stringify({ name: product.title, type: product.product_id || String(product.id), amount: amt }),
       });
       const data = await res.json();
       if (!res.ok) { Swal.fire({ icon: 'error', title: 'Gagal', text: data.message || 'Gagal donasi', ...SwalGreenBanking.error }); return; }

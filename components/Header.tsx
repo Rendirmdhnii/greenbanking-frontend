@@ -32,7 +32,7 @@ export default function Header({ userHook }: { userHook: any }) {
     { name: "Riwayat", href: "/dashboard/riwayat" },
     { name: "Pengaturan", href: "/dashboard/pengaturan" },
     { name: "Profil Akun", href: "/dashboard/akun" },
-    { name: "Pembayaran", href: "/dashboard/pembayaran" },
+    { name: "Pembayaran", href: "/dashboard/tagihan" },
     { name: "QRIS", href: "/dashboard/qris" },
   ];
 

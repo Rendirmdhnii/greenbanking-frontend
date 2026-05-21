@@ -157,7 +157,7 @@ export default function AkunPage() {
                     <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-1">Jejak Karbon Dihapus</p>
                     <div className="flex items-end gap-2">
                       <span className="text-4xl font-bold font-serif">{(userEcoPoints * 0.1).toFixed(1)}</span>
-                      <span className="text-emerald-300 pb-1 font-medium">kg CO₂e</span>
+                      <span className="text-emerald-300 pb-1 font-medium">kg CO2e</span>
                     </div>
                   </div>
 

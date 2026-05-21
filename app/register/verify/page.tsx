@@ -1,50 +1,72 @@
+"use client";
+
 import Link from "next/link";
-import { LockKeyhole, Leaf } from "lucide-react";
+import { Lock, Leaf, ArrowLeft } from "lucide-react";
 
-export default function VerifyPage() {
+export default function VerifyOTPPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans selection:bg-green-200 selection:text-green-900">
-      <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-12 text-center border border-gray-100">
-        <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-green-100/50 shadow-inner">
-          <LockKeyhole className="w-10 h-10 text-green-700" />
-        </div>
-        
-        <h2 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">Verifikasi Keamanan</h2>
-        <p className="text-gray-500 mb-10 text-[15px] leading-relaxed">
-          Kami telah mengirimkan kode OTP ke nomor WhatsApp Anda <br/>
-          <span className="font-semibold text-gray-800">+62 812 •••• ••••</span>
-        </p>
+    <main className="min-h-screen bg-[#f4f7f6] flex flex-col items-center justify-center p-4 font-sans relative overflow-hidden">
 
-        <form className="space-y-8">
-          <div className="flex justify-between gap-2 sm:gap-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+      {/* Background Glow Effect */}
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-emerald-100 rounded-full blur-[100px] opacity-60"></div>
+
+      <div className="relative z-10 w-full flex flex-col items-center">
+        <h1 className="text-3xl font-bold text-[#064e3b] mb-10 text-center">
+          Verifikasi Keamanan
+        </h1>
+
+        {/* Main Card Container */}
+        <div className="bg-white/90 backdrop-blur-xl w-full max-w-[420px] rounded-[32px] shadow-2xl shadow-emerald-900/5 border border-white p-8 md:p-10 flex flex-col items-center text-center">
+
+          {/* Lock Icon */}
+          <div className="w-14 h-14 bg-[#dcfce7] text-[#16a34a] rounded-full flex items-center justify-center mb-6">
+            <Lock size={22} strokeWidth={2.5} />
+          </div>
+
+          <h2 className="text-2xl font-semibold text-gray-800 mb-3 font-serif">Verifikasi OTP</h2>
+          <p className="text-[13px] text-gray-500 mb-8 px-2 leading-relaxed">
+            Kami telah mengirimkan 6 digit kode ke WhatsApp Anda di <span className="font-semibold text-gray-800">+62812-9872-xxxx</span>.
+          </p>
+
+          {/* OTP Input Fields */}
+          <div className="flex gap-2 sm:gap-3 mb-8 justify-center w-full">
+            {[1, 2, 3, 4, 5, 6].map((index) => (
               <input
-                key={i}
+                key={index}
                 type="text"
                 maxLength={1}
-                className="w-12 h-14 sm:w-14 sm:h-16 text-center text-2xl font-bold border border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all text-gray-900 bg-gray-50 focus:bg-white"
-                placeholder="-"
+                className="w-11 h-14 bg-gray-50 border border-gray-200 rounded-xl text-center text-xl font-bold text-gray-800 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 transition-all outline-none"
               />
             ))}
           </div>
 
-          <div className="text-sm text-gray-500">
-            Belum menerima kode? <button type="button" className="text-green-700 font-bold hover:text-green-800 transition-colors">Kirim ulang (00:59)</button>
-          </div>
-
-          <Link href="/register/success" className="w-full flex justify-center py-4 px-4 border border-transparent rounded-2xl shadow-sm text-base font-bold text-white bg-green-800 hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700 transition-all transform hover:scale-[1.02]">
-            Verifikasi
+          {/* Verify Button */}
+          <Link href="/register/success" className="w-full">
+            <button className="w-full bg-[#0d5c46] hover:bg-[#0a4736] text-white rounded-xl py-3.5 text-[15px] font-semibold transition-all shadow-lg shadow-emerald-900/10 mb-6 active:scale-[0.98]">
+              Verifikasi
+            </button>
           </Link>
-        </form>
 
-        <div className="mt-10 p-5 bg-green-50/50 rounded-2xl flex items-start text-left border border-green-100/50">
-          <Leaf className="w-5 h-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
-          <p className="text-sm text-gray-600 leading-relaxed">
-            <span className="font-bold text-green-900 block mb-1">Kenapa WhatsApp?</span>
-            Kami menggunakan WhatsApp untuk mengurangi jejak karbon dari SMS tradisional.
-          </p>
+          {/* Resend Link */}
+          <button className="text-[13px] font-semibold text-[#0d5c46] hover:text-[#064e3b] mb-8 transition-colors">
+            Kirim ulang kode (00:59)
+          </button>
+
+          {/* Eco-Friendly Info Badge */}
+          <div className="flex gap-3 items-start text-left bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
+            <Leaf className="w-4 h-4 text-[#16a34a] mt-0.5 flex-shrink-0" />
+            <p className="text-[10px] text-[#064e3b] leading-relaxed font-medium">
+              Kenapa WhatsApp? Verifikasi digital kami memangkas penggunaan SMS tradisional, berkontribusi pada pengurangan jejak karbon infrastruktur telko.
+            </p>
+          </div>
         </div>
+
+        {/* Back Link */}
+        <Link href="/register" className="mt-8 flex items-center gap-2 text-[13px] font-medium text-gray-400 hover:text-emerald-900 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Kembali ke pendaftaran
+        </Link>
       </div>
-    </div>
+
+    </main>
   );
 }

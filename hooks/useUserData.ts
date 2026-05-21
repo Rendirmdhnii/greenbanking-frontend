@@ -164,9 +164,25 @@ export function useUserData() {
     userData, supabaseUser, isLoading, syncStatus,
     isAdmin, userName, userEmail, userBalance, userEcoPoints, avatarUrl, initials,
     tier, impactScore, phoneNumber, address, accountNumber, totalDonation, isOwner,
-    refreshUserData: () => {
-      hasSynced.current = false;
-      init();
+    refreshUserData: (newUserData?: { balance?: number; eco_points?: number; tier?: string }) => {
+      if (newUserData) {
+        setUserData((prev: any) => {
+          if (!prev) return prev;
+          const updated = { ...prev };
+          if (updated.user) {
+            updated.user = { ...updated.user, ...newUserData };
+          }
+          for (const key of Object.keys(newUserData)) {
+            if (key in updated || !updated.user) {
+              updated[key] = (newUserData as any)[key];
+            }
+          }
+          return updated;
+        });
+      } else {
+        hasSynced.current = false;
+        init();
+      }
     }
   };
 }

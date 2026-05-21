@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { 
-  ShieldCheck, Users, TrendingUp, ArrowLeft, Wallet, 
+  ShieldCheck, Users, TrendingUp, ArrowLeft, Wallet,
   Loader2, RefreshCw, Crown, Mail, LogOut
 } from "lucide-react";
 import Swal from "sweetalert2";
+import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
@@ -40,12 +41,30 @@ interface AdminStats {
   products: GreenProduct[];
 }
 
+interface AdminTransaction {
+  id?: number | string;
+  amount?: number | string;
+  status?: string;
+  reference?: string;
+  created_at?: string;
+  user?: {
+    id?: number | string;
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
+  user_name?: string;
+  user_email?: string;
+}
+
 export default function SuperAdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [adminUser, setAdminUser] = useState<any>(null);
+  const [transactions, setTransactions] = useState<AdminTransaction[]>([]);
+  const [transactionsLoading, setTransactionsLoading] = useState(false);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -75,11 +94,12 @@ export default function SuperAdminDashboard() {
           setIsAdmin(true);
           setAdminUser(userData);
           fetchStats(token);
+          fetchTransactions(token);
         } else {
           setIsAdmin(false);
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Kesalahan:", error);
       } finally {
         setIsLoading(false);
       }
@@ -119,15 +139,81 @@ export default function SuperAdminDashboard() {
     }
   };
 
+  const fetchTransactions = async (tokenOverride?: string) => {
+    setTransactionsLoading(true);
+    try {
+      const token = tokenOverride || localStorage.getItem("admin_token");
+      const res = await fetch(`${API_URL}/admin/transactions?limit=50`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : data?.data || data?.transactions || [];
+        setTransactions(Array.isArray(list) ? list : []);
+      }
+    } catch (error) {
+      console.error("Gagal memuat transaksi:", error);
+    } finally {
+      setTransactionsLoading(false);
+    }
+  };
+
+  const getBadgeStatus = (status?: string) => {
+    const normalized = (status || "").toLowerCase();
+    if (normalized.includes("success") || normalized.includes("paid") || normalized.includes("settlement") || normalized === "berhasil") {
+      return "bg-emerald-100 text-emerald-700 border-emerald-200";
+    }
+    if (normalized.includes("pending") || normalized.includes("process") || normalized === "menunggu pembayaran") {
+      return "bg-amber-100 text-amber-700 border-amber-200";
+    }
+    if (normalized.includes("fail") || normalized.includes("deny") || normalized.includes("expire") || normalized.includes("cancel") || normalized === "gagal") {
+      return "bg-rose-100 text-rose-700 border-rose-200";
+    }
+    return "bg-gray-100 text-gray-700 border-gray-200";
+  };
+
+  const getIndonesianStatus = (status?: string): string => {
+    const normalized = (status || "").toLowerCase();
+    if (normalized.includes("success") || normalized.includes("paid") || normalized.includes("settlement") || normalized === "berhasil") {
+      return "Berhasil";
+    }
+    if (normalized.includes("pending") || normalized.includes("process") || normalized === "menunggu pembayaran") {
+      return "Menunggu Pembayaran";
+    }
+    if (normalized.includes("fail") || normalized.includes("deny") || normalized.includes("expire") || normalized.includes("cancel") || normalized === "gagal") {
+      return "Gagal";
+    }
+    return status || "Tidak Diketahui";
+  };
+
+  const formatTanggal = (value?: string) => {
+    if (!value) return "—";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(date);
+  };
+
+  const formatRupiah = (value?: number | string) => {
+    const n = typeof value === "string" ? Number(value) : value;
+    const safe = Number.isFinite(Number(n)) ? Number(n) : 0;
+    return `Rp ${safe.toLocaleString("id-ID")}`;
+  };
+
   const handleAdjustBalance = async (user: UserItem) => {
     const { value: newBalance } = await Swal.fire({
-      title: `Adjust Balance: ${user.name}`,
+      title: `Ubah Saldo: ${user.name}`,
       input: 'number',
       inputLabel: 'Masukkan Saldo Baru (Rp)',
       inputValue: user.balance,
       showCancelButton: true,
       background: '#ffffff',
       color: '#111827',
+      confirmButtonText: 'Simpan',
+      cancelButtonText: 'Batal',
       confirmButtonColor: '#059669',
       cancelButtonColor: '#dc2626',
     });
@@ -153,20 +239,161 @@ export default function SuperAdminDashboard() {
             color: '#111827',
             confirmButtonColor: '#059669'
           });
-          fetchStats(); // Refresh data
+          fetchStats(); // Muat ulang data
         } else {
-          Swal.fire('Error', 'Gagal mengubah saldo', 'error');
+          Swal.fire('Kesalahan', 'Gagal mengubah saldo', 'error');
         }
       } catch (error) {
         console.error(error);
-        Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+        Swal.fire('Kesalahan', 'Terjadi kesalahan sistem', 'error');
       }
+    }
+  };
+
+  const handleTambahProduk = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Tambah Produk Investasi/Donasi",
+      width: "700px",
+      html: `
+        <div class="grid grid-cols-2 gap-4">
+          <div class="col-span-2">
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Judul Produk</div>
+            <input id="swal-title" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" placeholder="Contoh: Rehabilitasi Mangrove">
+          </div>
+          <div class="col-span-2 hidden">
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">URL Gambar (Terunci Otomatis)</div>
+            <input id="swal-image" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" disabled>
+          </div>
+          <div class="col-span-2">
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Deskripsi (opsional)</div>
+            <textarea id="swal-desc" class="swal2-textarea !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" style="min-height: 90px;" placeholder="Tuliskan ringkasan proyek..."></textarea>
+          </div>
+          <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori</div>
+            <input id="swal-category" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" placeholder="Contoh: Restorasi">
+          </div>
+          <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Minimal Invest/Donasi (Rp)</div>
+            <input id="swal-min" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="10000">
+          </div>
+          <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Target Dana (Rp)</div>
+            <input id="swal-target" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+          </div>
+          <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Bunga / ROI (%) (opsional)</div>
+            <input id="swal-roi" type="number" step="0.1" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+          </div>
+          <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Hari Tersisa (opsional)</div>
+            <input id="swal-days" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+          </div>
+        </div>
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Simpan",
+      cancelButtonText: "Batal",
+      background: "#ffffff",
+      color: "#111827",
+      confirmButtonColor: "#059669",
+      cancelButtonColor: "#dc2626",
+      preConfirm: () => {
+        const title = (document.getElementById("swal-title") as HTMLInputElement).value;
+        const category = (document.getElementById("swal-category") as HTMLInputElement).value;
+        if (!title.trim() || !category.trim()) {
+          Swal.showValidationMessage("Judul dan kategori wajib diisi.");
+          return null;
+        }
+        return {
+          title,
+          category,
+          image: globalProjectImages[title] || fallbackImage,
+          description: (document.getElementById("swal-desc") as HTMLTextAreaElement).value,
+          target_funding: Number((document.getElementById("swal-target") as HTMLInputElement).value),
+          min_amount: Number((document.getElementById("swal-min") as HTMLInputElement).value),
+          interest_rate: Number((document.getElementById("swal-roi") as HTMLInputElement).value),
+          days_left: Number((document.getElementById("swal-days") as HTMLInputElement).value),
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const token = localStorage.getItem("admin_token");
+        const res = await fetch(`${API_URL}/admin/products`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(formValues),
+        });
+
+        if (res.ok) {
+          await Swal.fire({
+            icon: "success",
+            title: "Produk berhasil ditambahkan",
+            background: "#ffffff",
+            color: "#111827",
+            confirmButtonColor: "#059669",
+          });
+          fetchStats();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          Swal.fire("Kesalahan", data?.message || data?.error || "Gagal menambahkan produk", "error");
+        }
+      } catch {
+        Swal.fire("Kesalahan", "Terjadi kesalahan sistem", "error");
+      }
+    }
+  };
+
+  const handleHapusProduk = async (product: GreenProduct) => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Hapus produk ini?",
+      text: `Produk: ${product.title}`,
+      showCancelButton: true,
+      confirmButtonText: "Hapus",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#64748b",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const token = localStorage.getItem("admin_token");
+      const res = await fetch(`${API_URL}/admin/products/${product.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (res.ok) {
+        await Swal.fire({
+          icon: "success",
+          title: "Produk berhasil dihapus",
+          background: "#ffffff",
+          color: "#111827",
+          confirmButtonColor: "#059669",
+        });
+        fetchStats();
+      } else {
+        Swal.fire("Kesalahan", "Gagal menghapus produk", "error");
+      }
+    } catch {
+      Swal.fire("Kesalahan", "Terjadi kesalahan sistem", "error");
     }
   };
 
   const handleEditProduct = async (product: GreenProduct) => {
     const { value: formValues } = await Swal.fire({
-      title: `Edit: ${product.title}`,
+      title: `Ubah Produk: ${product.title}`,
       width: '600px',
       html: `
         <div class="grid grid-cols-2 gap-4">
@@ -174,16 +401,16 @@ export default function SuperAdminDashboard() {
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Judul Produk</div>
             <input id="swal-title" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.title}">
           </div>
-          <div class="col-span-2">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Image URL</div>
-            <input id="swal-image" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.image || ''}">
+          <div class="col-span-2 hidden">
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">URL Gambar (Terunci Otomatis)</div>
+            <input id="swal-image" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" disabled value="${product.image || ''}">
           </div>
           <div class="col-span-2">
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Deskripsi</div>
             <textarea id="swal-desc" class="swal2-textarea !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" style="min-height: 80px;">${product.description || ''}</textarea>
           </div>
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Target Funding (Rp)</div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Target Dana (Rp)</div>
             <input id="swal-target" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.target_funding || 0}">
           </div>
           <div>
@@ -204,18 +431,21 @@ export default function SuperAdminDashboard() {
       showCancelButton: true,
       background: '#ffffff',
       color: '#111827',
+      confirmButtonText: 'Simpan',
+      cancelButtonText: 'Batal',
       confirmButtonColor: '#059669',
       cancelButtonColor: '#dc2626',
       preConfirm: () => {
+        const title = (document.getElementById('swal-title') as HTMLInputElement).value;
         return {
-          title: (document.getElementById('swal-title') as HTMLInputElement).value,
-          image: (document.getElementById('swal-image') as HTMLInputElement).value,
+          title,
+          image: globalProjectImages[title] || product.image || fallbackImage,
           description: (document.getElementById('swal-desc') as HTMLTextAreaElement).value,
           target_funding: Number((document.getElementById('swal-target') as HTMLInputElement).value),
           min_amount: Number((document.getElementById('swal-min') as HTMLInputElement).value),
           interest_rate: Number((document.getElementById('swal-roi') as HTMLInputElement).value),
           days_left: Number((document.getElementById('swal-days') as HTMLInputElement).value),
-        }
+        };
       }
     });
 
@@ -241,10 +471,10 @@ export default function SuperAdminDashboard() {
           });
           fetchStats();
         } else {
-          Swal.fire('Error', 'Gagal update product', 'error');
+          Swal.fire('Kesalahan', 'Gagal memperbarui produk', 'error');
         }
       } catch (error) {
-        Swal.fire('Error', 'Sistem error', 'error');
+        Swal.fire('Kesalahan', 'Terjadi kesalahan sistem', 'error');
       }
     }
   };
@@ -290,7 +520,7 @@ export default function SuperAdminDashboard() {
           <div className="flex items-center gap-4">
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                <h1 className="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
                 <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200 tracking-wider">SUPER ADMIN</span>
               </div>
               <p className="text-sm text-gray-500">Pusat Kendali GreenBanking Nusantara</p>
@@ -298,11 +528,11 @@ export default function SuperAdminDashboard() {
           </div>
           <div className="flex gap-3">
             <button 
-              onClick={() => fetchStats()} 
+              onClick={() => { fetchStats(); fetchTransactions(); }}
               disabled={statsLoading}
               className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
-              <RefreshCw size={16} className={statsLoading ? 'animate-spin text-emerald-600' : 'text-emerald-600'} /> Sync Data
+              <RefreshCw size={16} className={statsLoading ? 'animate-spin text-emerald-600' : 'text-emerald-600'} /> Sinkronkan Data
             </button>
             <button 
               onClick={handleLogout}
@@ -436,9 +666,17 @@ export default function SuperAdminDashboard() {
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
           <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
             <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Katalog Produk Hijau</h2>
-            <span className="text-xs font-bold text-blue-700 bg-blue-100 border border-blue-200 px-3 py-1 rounded-full">
-              {stats?.products?.length || 0} PRODUK
-            </span>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleTambahProduk}
+                className="text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl border border-emerald-700 shadow-sm transition-all"
+              >
+                TAMBAH PRODUK
+              </button>
+              <span className="text-xs font-bold text-blue-700 bg-blue-100 border border-blue-200 px-3 py-1 rounded-full">
+                {stats?.products?.length || 0} PRODUK
+              </span>
+            </div>
           </div>
           {stats?.products && stats.products.length > 0 ? (
             <div className="divide-y divide-gray-100">
@@ -446,11 +684,7 @@ export default function SuperAdminDashboard() {
                 <div key={p.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                      {p.image ? (
-                        <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs font-bold">NO IMG</div>
-                      )}
+                      <img src={globalProjectImages[p.title] || fallbackImage} alt={p.title} className="w-full h-full object-cover" />
                     </div>
                     <div>
                       <p className="font-bold text-gray-900 text-md tracking-tight">{p.title}</p>
@@ -467,6 +701,12 @@ export default function SuperAdminDashboard() {
                       >
                         EDIT PRODUK
                       </button>
+                      <button
+                        onClick={() => handleHapusProduk(p)}
+                        className="text-xs font-bold bg-white hover:bg-red-50 text-red-600 px-4 py-2 rounded-lg border border-gray-200 shadow-sm transition-all hover:shadow hover:border-red-200"
+                      >
+                        HAPUS
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -477,6 +717,64 @@ export default function SuperAdminDashboard() {
               <span className="font-bold uppercase tracking-widest">Tidak Ada Produk</span>
             </div>
           )}
+        </div>
+
+        {/* Riwayat Transaksi */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
+          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
+            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Riwayat Transaksi</h2>
+            <button
+              onClick={() => fetchTransactions()}
+              disabled={transactionsLoading}
+              className="text-xs font-bold bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl border border-gray-200 shadow-sm transition-all disabled:opacity-50"
+            >
+              {transactionsLoading ? "MEMUAT..." : "MUAT ULANG"}
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-100">
+              <thead className="bg-white">
+                <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-4">Waktu</th>
+                  <th className="px-6 py-4">Pengguna</th>
+                  <th className="px-6 py-4">Nominal</th>
+                  <th className="px-6 py-4">Status Pembayaran</th>
+                  <th className="px-6 py-4">Referensi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 bg-white">
+                {transactions.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-10 text-center text-sm text-gray-500">
+                      {transactionsLoading ? "Memuat transaksi..." : "Belum ada transaksi."}
+                    </td>
+                  </tr>
+                ) : null}
+
+                {transactions.map((t, idx) => {
+                  const nama = t.user?.name || t.user_name || "User tidak dikenal";
+                  const email = t.user?.email || t.user_email || "";
+                  return (
+                    <tr key={String(t.id ?? idx)} className="text-sm">
+                      <td className="px-6 py-4 text-gray-600 whitespace-nowrap">{formatTanggal(t.created_at)}</td>
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-gray-900">{nama}</div>
+                        <div className="text-xs text-gray-500">{email || "—"}</div>
+                      </td>
+                      <td className="px-6 py-4 font-black text-gray-900 whitespace-nowrap">{formatRupiah(t.amount)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black border ${getBadgeStatus(t.status)}`}>
+                          {getIndonesianStatus(t.status).toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-gray-700 whitespace-nowrap font-mono text-xs">{t.reference || "—"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

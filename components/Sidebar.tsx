@@ -1,16 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, TrendingUp, Leaf, User, Settings, ShieldCheck, LogOut } from "lucide-react";
+import { Home, TrendingUp, Leaf, User, Settings, ShieldCheck, LogOut, Receipt } from "lucide-react";
 import { supabase } from "@/utils/supabase";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
 export default function Sidebar({ userHook }: { userHook: any }) {
-  const { isAdmin } = userHook;
   const pathname = usePathname();
+  const isSuperAdmin =
+    userHook?.role === "super_admin" ||
+    userHook?.userData?.role === "super_admin";
+  const isAdmin =
+    !!userHook?.isAdmin ||
+    isSuperAdmin ||
+    userHook?.userData?.is_admin;
+  const adminHref = isSuperAdmin ? "/super-admin/dashboard" : "/dashboard/admin";
+
 
   const handleLogout = async () => {
     try {
@@ -27,7 +34,9 @@ export default function Sidebar({ userHook }: { userHook: any }) {
     } finally {
       // 2. Hapus token di client
       localStorage.removeItem('token');
+      localStorage.removeItem('admin_token');
       // 3. Logout Supabase (Google)
+
       await supabase.auth.signOut();
       // 4. Redirect ke login
       window.location.href = "/login";
@@ -37,6 +46,7 @@ export default function Sidebar({ userHook }: { userHook: any }) {
   const navItems = [
     { name: "Beranda", icon: Home, href: "/dashboard" },
     { name: "Investasi", icon: TrendingUp, href: "/dashboard/investasi" },
+    { name: "Tagihan", icon: Receipt, href: "/dashboard/tagihan" },
     { name: "Dampak", icon: Leaf, href: "/dashboard/peringkat" },
     { name: "Akun", icon: User, href: "/dashboard/akun" },
   ];
@@ -68,8 +78,8 @@ export default function Sidebar({ userHook }: { userHook: any }) {
             )
           })}
           {isAdmin && (
-            <Link href="/dashboard/admin" className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors border border-amber-100 ${
-              pathname === '/dashboard/admin' ? "bg-amber-100 text-amber-700" : "text-amber-600 bg-amber-50 hover:bg-amber-100"
+            <Link href={adminHref} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors border border-amber-100 ${
+              pathname === adminHref ? "bg-amber-100 text-amber-700" : "text-amber-600 bg-amber-50 hover:bg-amber-100"
             }`}>
               <ShieldCheck size={20} /> Admin Panel
             </Link>

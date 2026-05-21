@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  TrendingUp, Loader2, CheckCircle, Zap, Leaf, MapPin, Clock,
+  TrendingUp, Loader2, CheckCircle, Zap, MapPin, Clock,
   CloudRain, ShieldCheck, Crown, ChevronDown, ChevronUp
 } from "lucide-react";
 import StrukModal from "@/components/StrukModal";
@@ -13,24 +13,13 @@ import Swal from "sweetalert2";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
-// ─── LOGIKA GAMBAR ANTI-GAGAL (DIPERBARUI) ───
-const fallbackImages: Record<string, string> = {
-  // Prioritas 1: Berdasarkan Judul Spesifik
-  "Restorasi Mangrove Probolinggo": "https://images.unsplash.com/photo-1621450259223-233e7022d274?auto=format&fit=crop&w=800&q=80",
+// --- LOGIKA GAMBAR ANTI-GAGAL (DIPERBARUI & DISTERILKAN) ---
+import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
 
-  // Prioritas 2: Berdasarkan Tag/Kategori
-  "Energi Surya": "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80",
-  "Energi": "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80",
-  "Reboisasi Mangrove": "https://images.unsplash.com/photo-1584301287561-5770751?auto=format&fit=crop&w=800&q=80",
-  "Kehutanan": "https://images.unsplash.com/photo-1584301287561-5770751?auto=format&fit=crop&w=800&q=80",
-  "Pengolahan Limbah": "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80",
-  "Limbah": "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80",
-  "Energi Angin": "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=800&q=80",
-  "Konservasi Laut": "https://images.unsplash.com/photo-1582967788606-a171c1080cb0?auto=format&fit=crop&w=800&q=80",
-  "Bio-Gas": "https://images.unsplash.com/photo-1604187351574-c75ca79f5807?auto=format&fit=crop&w=800&q=80",
-};
+// --- VISUAL DIVERSITY: VARIASI AGAR TIDAK KEMBAR ---
 
-const defaultFallback = "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80";
+
+
 
 const tagColors: Record<string, string> = {
   "Energi Surya": "bg-amber-100 text-amber-700",
@@ -43,11 +32,36 @@ const tagColors: Record<string, string> = {
 
 export default function InvestasiPage() {
   const { userBalance, refreshUserData } = useUserContext();
-  const [products, setProducts] = useState<any[]>([]);
+  type GreenProduct = {
+    id: string;
+    product_id?: string;
+    title: string;
+    tag: string;
+    image?: string | null;
+    location?: string;
+    description?: string;
+    min_amount: number;
+    interest_rate?: number | null;
+    current_funding: number;
+    target_funding: number;
+    days_left?: number | null;
+    status_badge?: string | null;
+    impact_co2e?: number | null;
+  };
+
+  type StrukData = {
+    id: string;
+    title: string;
+    service: string;
+    amount: number;
+    time: string;
+  };
+
+  const [products, setProducts] = useState<GreenProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [investLoading, setInvestLoading] = useState<string | null>(null);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
-  const [strukData, setStrukData] = useState<any>(null);
+  const [strukData, setStrukData] = useState<StrukData | null>(null);
   const [activeFilter, setActiveFilter] = useState("Semua");
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
@@ -59,7 +73,7 @@ export default function InvestasiPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleInvest = async (p: any) => {
+  const handleInvest = async (p: GreenProduct) => {
     const amt = parseInt(amounts[p.id] || "") || p.min_amount;
     if (amt < p.min_amount) { Swal.fire({ icon: 'warning', title: 'Nominal Kurang', text: `Minimal investasi ${formatIDR(p.min_amount)}`, ...SwalGreenBanking.warning }); return; }
     if (amt > userBalance) { Swal.fire({ icon: 'warning', title: 'Saldo Tidak Mencukupi', text: 'Silakan Top Up terlebih dahulu.', ...SwalGreenBanking.warning }); return; }
@@ -94,6 +108,15 @@ export default function InvestasiPage() {
         service: `Investasi: ${p.title}`, amount: amt,
         time: new Date().toLocaleString("id-ID", { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }) + " WIB",
       });
+      
+      setProducts(prevProducts => 
+        prevProducts.map(prod => 
+          prod.id === p.id 
+            ? { ...prod, current_funding: Number(prod.current_funding) + Number(amt) } 
+            : prod
+        )
+      );
+
       setAmounts(prev => ({ ...prev, [p.id]: "" }));
       setExpandedCard(null);
       refreshUserData();
@@ -114,7 +137,7 @@ export default function InvestasiPage() {
     <>
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="p-6 md:p-8 max-w-7xl mx-auto w-full">
 
-        {/* ═══ HERO ═══ */}
+        {/* === HERO === */}
         <div className="bg-gradient-to-br from-[#064e3b] via-[#065f46] to-[#0f766e] rounded-[2rem] p-8 md:p-10 mb-8 text-white relative overflow-hidden shadow-xl">
           <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -mr-24 -mt-24" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-300/10 rounded-full blur-2xl -ml-12 -mb-12" />
@@ -138,7 +161,7 @@ export default function InvestasiPage() {
           </div>
         </div>
 
-        {/* ═══ FILTER TAGS ═══ */}
+        {/* === FILTER TAGS === */}
         <div className="flex flex-wrap gap-2 mb-8">
           {tags.map(tag => (
             <button key={tag} onClick={() => setActiveFilter(tag)}
@@ -150,24 +173,20 @@ export default function InvestasiPage() {
           ))}
         </div>
 
-        {/* ═══ GRID 9 PRODUK ═══ */}
+        {/* === GRID 9 PRODUK === */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((p, i) => {
             const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
             const isExpanded = expandedCard === p.id;
+            const currentImg = globalProjectImages[p.title] || fallbackImage;
             return (
               <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
                 className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
               >
-                {/* ─── IMAGE HEADER ─── */}
+                {/* --- IMAGE HEADER --- */}
                 <div className="relative h-44 overflow-hidden">
                   <img
-                    // LOGIKA DEWA: 1. Judul -> 2. Tag -> 3. Image DB -> 4. Default Fallback
-                    src={fallbackImages[p.title] || fallbackImages[p.tag] || p.image || defaultFallback}
-                    onError={(e) => {
-                      e.currentTarget.onerror = null; // Cegah error looping
-                      e.currentTarget.src = defaultFallback;
-                    }}
+                    src={currentImg}
                     alt={p.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     loading="lazy"
@@ -199,7 +218,7 @@ export default function InvestasiPage() {
                   </div>
                 </div>
 
-                {/* ─── BODY ─── */}
+                {/* --- BODY --- */}
                 <div className="p-5">
                   <h3 className="font-bold text-gray-900 text-base mb-1 leading-snug">{p.title}</h3>
                   {p.location && (
@@ -207,11 +226,11 @@ export default function InvestasiPage() {
                   )}
                   <p className="text-gray-500 text-sm leading-relaxed mb-4">{p.description}</p>
 
-                  {/* ─── PROGRESS BAR ─── */}
+                  {/* --- PROGRESS BAR --- */}
                   <div className="mb-4">
                     <div className="flex justify-between text-[11px] font-bold mb-1.5">
-                      <span className="text-gray-500">{formatIDR(p.current_funding)}</span>
-                      <span className="text-gray-400">Target {formatIDR(p.target_funding)}</span>
+                      <span className="text-gray-500">Terkumpul: {formatIDR(p.current_funding)}</span>
+                      <span className="text-gray-400">Target Dana: {formatIDR(p.target_funding)}</span>
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                       <motion.div
@@ -223,13 +242,13 @@ export default function InvestasiPage() {
                     <p className="text-[10px] text-emerald-600 font-bold mt-1">{progress.toFixed(1)}% Terdanai</p>
                   </div>
 
-                  {/* ─── FOOTER STATS ─── */}
+                  {/* --- FOOTER STATS --- */}
                   <div className="flex items-center justify-between text-xs text-gray-400 mb-4 pb-4 border-b border-gray-50">
                     <span className="flex items-center gap-1"><Clock size={12} />{p.days_left} Hari Lagi</span>
-                    <span className="flex items-center gap-1"><CloudRain size={12} />{p.impact_co2e}t CO₂e</span>
+                    <span className="flex items-center gap-1"><CloudRain size={12} />{p.impact_co2e} Ton CO2e</span>
                   </div>
 
-                  {/* ─── EXPAND / INVEST ─── */}
+                  {/* --- EXPAND / INVEST --- */}
                   <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
                     className="w-full bg-[#064e3b] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#065f46] transition-all flex items-center justify-center gap-2"
                   >
@@ -258,8 +277,26 @@ export default function InvestasiPage() {
                           {investLoading === p.id ? "..." : "Bayar"}
                         </button>
                       </div>
-                      <p className="text-[10px] text-gray-400">Min. {formatIDR(p.min_amount)} • Potong langsung dari saldo utama</p>
-                    </motion.div>
+                      <p className="text-[10px] text-gray-400">Min. {formatIDR(p.min_amount)} | Potong langsung dari saldo utama</p>
+
+                      {(() => {
+                        const investmentAmount = parseInt(amounts[p.id] || "0", 10) || 0;
+                        const carbonImpact = (p.carbon_impact ?? p.impact_co2e ?? 25) || 25;
+                        const estimatedImpact = (investmentAmount / 1000000) * carbonImpact;
+                        const estimatedTrees = Math.round(estimatedImpact / 12);
+                        if (investmentAmount <= 0) return null;
+
+                        return (
+                          <div className="mt-3 p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1.5">
+                            <p className="text-xs font-bold text-[#064e3b]">Kalkulator Dampak Karbon</p>
+                            <p className="text-xs text-emerald-700">
+                              Estimasi Dampak:{" "}
+                              <span className="font-bold">{estimatedImpact.toFixed(2)} kg CO2e</span> / setara{" "}
+                              <span className="font-bold">{estimatedTrees}</span> pohon
+                            </p>
+                          </div>
+                        );
+                      })()}</motion.div>
                   )}
                 </div>
               </motion.div>

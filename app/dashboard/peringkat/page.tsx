@@ -80,7 +80,7 @@ export default function PeringkatPage() {
             <div>
               <p className="text-emerald-100 text-sm mb-1">Dampak Kolektif Nasabah</p>
               <h2 className="text-4xl font-serif font-extrabold tracking-tight">
-                {loading ? '...' : `${(totalCollective * 0.5).toFixed(0)} kg CO₂e`}
+                {loading ? '...' : `${(totalCollective * 0.5).toFixed(0)} kg CO2e`}
               </h2>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default function PeringkatPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-emerald-100">{user.eco_points}</span>
+                          <span className="font-bold text-emerald-100">{user.impact_score}</span>
                           <Leaf size={16} className="text-emerald-300" />
                         </div>
                       </div>
@@ -136,7 +136,7 @@ export default function PeringkatPage() {
                         <span className="font-bold text-gray-900">{user.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-[#115e59]">{user.eco_points}</span>
+                        <span className="font-bold text-[#115e59]">{user.impact_score}</span>
                         <Leaf size={14} className="text-[#115e59]" />
                       </div>
                     </div>

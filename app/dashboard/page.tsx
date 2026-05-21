@@ -280,7 +280,7 @@ export default function DashboardPage() {
                 <Leaf size={20} />
               </div>
               <p className="text-gray-400 text-sm font-medium mb-1">Pengurangan Karbon</p>
-              <h2 className="text-2xl font-bold font-serif text-emerald-400 tracking-tight">{(impactScore * 0.5).toFixed(1)} kg CO₂e</h2>
+              <h2 className="text-2xl font-bold font-serif text-emerald-400 tracking-tight">{(impactScore * 0.5).toFixed(1)} kg CO2e</h2>
             </div>
             <Link href="/dashboard/investasi" className="mt-3 text-xs text-emerald-400 font-bold hover:underline">
               Tingkatkan Impact ➔
@@ -399,7 +399,7 @@ export default function DashboardPage() {
               <span className="text-xs font-semibold text-gray-700 text-center">Transfer</span>
             </button>
             {[
-              { label: "Tagihan", icon: <CreditCard size={20}/>, color: "bg-orange-50 text-orange-600", href: "/dashboard/pembayaran" },
+              { label: "Tagihan", icon: <CreditCard size={20}/>, color: "bg-orange-50 text-orange-600", href: "/dashboard/tagihan" },
               { label: "Investasi", icon: <PieChart size={20}/>, color: "bg-blue-50 text-blue-600", href: "/dashboard/investasi" },
               { label: "QRIS", icon: <QrCode size={20}/>, color: "bg-emerald-50 text-emerald-600", href: "/dashboard/qris" },
               { label: "Donasi", icon: <Heart size={20}/>, color: "bg-rose-50 text-rose-600", href: "/dashboard/donasi" },
