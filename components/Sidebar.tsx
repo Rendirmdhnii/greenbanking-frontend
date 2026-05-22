@@ -57,11 +57,9 @@ export default function Sidebar({ userHook }: { userHook: any }) {
       <div>
         <div className="h-20 flex items-center px-6 border-b border-emerald-800/10">
           <Link href="/dashboard" className="flex items-center gap-3 group">
-            {/* Pertahankan komponen ikon daun bulat hijau yang sudah sukses */}
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 shadow-md text-white font-bold text-xl transition-transform group-hover:scale-105">
-              🍃
+            <div className="w-10 h-10 flex items-center justify-center transition-transform group-hover:scale-105">
+              <img src="/logo.svg" alt="GreenBanking Logo" className="w-full h-full object-contain drop-shadow-md" />
             </div>
-            {/* Kembalikan Nama Asli Proyek: GreenBanking */}
             <span className="font-extrabold text-2xl tracking-tight text-emerald-900">
               Green<span className="text-emerald-600">Banking</span>
             </span>
@@ -97,9 +95,6 @@ export default function Sidebar({ userHook }: { userHook: any }) {
         }`}>
           <Settings size={20} /> Pengaturan
         </Link>
-        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl font-medium transition-colors">
-          <LogOut size={20} /> Keluar
-        </button>
       </div>
     </aside>
   );

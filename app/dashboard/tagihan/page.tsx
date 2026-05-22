@@ -13,22 +13,6 @@ import StrukModal from "@/components/StrukModal";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
-// ─── MOCK DATA MASTER ───
-const PULSA_NOMINALS = [
-  { nominal: 10000, label: "Rp10k", price: 11000 },
-  { nominal: 20000, label: "Rp20k", price: 21000 },
-  { nominal: 50000, label: "Rp50k", price: 51000 },
-  { nominal: 100000, label: "Rp100k", price: 99000 },
-];
-
-const PLN_TOKENS = [
-  { nominal: 20000, price: 21500 },
-  { nominal: 50000, price: 51500 },
-  { nominal: 100000, price: 101500 },
-  { nominal: 200000, price: 201500 },
-  { nominal: 500000, price: 501500 },
-];
-
 const PDAM_REGIONS = [
   "PDAM Kota Malang",
   "PDAM Kabupaten Sidoarjo",
@@ -45,6 +29,8 @@ function detectOperator(phone: string): string | null {
   if (["0817", "0818", "0819", "0877", "0878"].includes(prefix)) return "XL";
   return "Operator";
 }
+
+const mockNames = ["Krisna Aji", "Sufyan MH", "Rayhan K", "Budi Santoso", "Siti Aminah", "Ahmad Fauzi", "Rina Marlina"];
 
 export default function TagihanPage() {
   const { userBalance, refreshUserData } = useUserContext();
@@ -64,16 +50,21 @@ export default function TagihanPage() {
   // State Pulsa
   const [phoneNumber, setPhoneNumber] = useState("");
   const [detectedOperator, setDetectedOperator] = useState<string | null>(null);
-  const [selectedPulsa, setSelectedPulsa] = useState<typeof PULSA_NOMINALS[0] | null>(null);
+  const [pulsaManualAmount, setPulsaManualAmount] = useState("");
 
   // State PLN
   const [plnServiceType, setPlnServiceType] = useState<"token" | "tagihan">("token");
   const [plnCustomerId, setPlnCustomerId] = useState("");
-  const [selectedPlnToken, setSelectedPlnToken] = useState<typeof PLN_TOKENS[0] | null>(null);
+  const [plnManualAmount, setPlnManualAmount] = useState("");
+  const [plnMockName, setPlnMockName] = useState("");
+  const [isSimulatingPln, setIsSimulatingPln] = useState(false);
 
   // State PDAM
   const [pdamRegion, setPdamRegion] = useState("");
   const [pdamCustomerId, setPdamCustomerId] = useState("");
+  const [pdamManualAmount, setPdamManualAmount] = useState("");
+  const [pdamMockName, setPdamMockName] = useState("");
+  const [isSimulatingPdam, setIsSimulatingPdam] = useState(false);
 
   // Effect Pulsa: Deteksi prefix nomor handphone
   useEffect(() => {
@@ -81,43 +72,65 @@ export default function TagihanPage() {
       setDetectedOperator(detectOperator(phoneNumber));
     } else {
       setDetectedOperator(null);
-      setSelectedPulsa(null);
     }
   }, [phoneNumber]);
+
+  // Effect PLN: Mock API
+  useEffect(() => {
+    if (plnCustomerId.length >= 11 && !plnMockName && !isSimulatingPln) {
+      setIsSimulatingPln(true);
+      setTimeout(() => {
+        setPlnMockName(mockNames[Math.floor(Math.random() * mockNames.length)]);
+        setIsSimulatingPln(false);
+      }, 1000);
+    } else if (plnCustomerId.length < 11) {
+      setPlnMockName("");
+    }
+  }, [plnCustomerId]);
+
+  // Effect PDAM: Mock API
+  useEffect(() => {
+    if (pdamCustomerId.length >= 6 && !pdamMockName && !isSimulatingPdam) {
+      setIsSimulatingPdam(true);
+      setTimeout(() => {
+        setPdamMockName(mockNames[Math.floor(Math.random() * mockNames.length)]);
+        setIsSimulatingPdam(false);
+      }, 1000);
+    } else if (pdamCustomerId.length < 6) {
+      setPdamMockName("");
+    }
+  }, [pdamCustomerId]);
+
 
   // Reset states when changing tab
   const handleTabChange = (tab: "pulsa" | "pln" | "pdam") => {
     setActiveTab(tab);
-    setSelectedPulsa(null);
-    setSelectedPlnToken(null);
   };
 
   // Get current active form total & description
   const getCheckoutDetails = () => {
     if (activeTab === "pulsa") {
-      if (!phoneNumber || !selectedPulsa || !detectedOperator) return null;
+      if (!phoneNumber || !pulsaManualAmount || !detectedOperator) return null;
       return {
-        amount: selectedPulsa.price,
+        amount: Number(pulsaManualAmount) + 1000,
         bill_type: "pulsa",
         customer_id: phoneNumber,
-        product_name: `${detectedOperator} ${selectedPulsa.label}`,
-        admin_fee: 0,
+        product_name: `${detectedOperator} Rp${Number(pulsaManualAmount)/1000}k`,
+        admin_fee: 1000,
       };
     } else if (activeTab === "pln") {
-      if (plnCustomerId.length < 11) return null;
+      if (plnCustomerId.length < 11 || !plnMockName || !plnManualAmount) return null;
       if (plnServiceType === "token") {
-        if (!selectedPlnToken) return null;
         return {
-          amount: selectedPlnToken.price,
+          amount: Number(plnManualAmount) + 1500,
           bill_type: "pln",
           customer_id: plnCustomerId,
-          product_name: `Token Listrik Rp${selectedPlnToken.nominal / 1000}k`,
+          product_name: `Token Listrik Rp${Number(plnManualAmount)/1000}k`,
           admin_fee: 1500,
         };
       } else {
-        // Tagihan Listrik Dummy
         return {
-          amount: 127000,
+          amount: Number(plnManualAmount) + 2500,
           bill_type: "pln",
           customer_id: plnCustomerId,
           product_name: "Tagihan Listrik PLN",
@@ -125,9 +138,9 @@ export default function TagihanPage() {
         };
       }
     } else if (activeTab === "pdam") {
-      if (!pdamRegion || pdamCustomerId.length < 6) return null;
+      if (!pdamRegion || pdamCustomerId.length < 6 || !pdamMockName || !pdamManualAmount) return null;
       return {
-        amount: 47500,
+        amount: Number(pdamManualAmount) + 2500,
         bill_type: "pdam",
         customer_id: pdamCustomerId,
         product_name: `Tagihan ${pdamRegion}`,
@@ -245,8 +258,9 @@ export default function TagihanPage() {
         setPhoneNumber("");
         setPlnCustomerId("");
         setPdamCustomerId("");
-        setSelectedPulsa(null);
-        setSelectedPlnToken(null);
+        setPulsaManualAmount("");
+        setPlnManualAmount("");
+        setPdamManualAmount("");
       }
     } catch (err) {
       console.error(err);
@@ -278,7 +292,7 @@ export default function TagihanPage() {
           </p>
         </div>
 
-        {/* Categories Tab Layout (Tokopedia Style) */}
+        {/* Categories Tab Layout */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 flex gap-1 mb-6">
           <button
             onClick={() => handleTabChange("pulsa")}
@@ -330,6 +344,7 @@ export default function TagihanPage() {
                     <div className="relative">
                       <input
                         type="tel"
+                        maxLength={12}
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ""))}
                         placeholder="Contoh: 08123456789"
@@ -346,31 +361,21 @@ export default function TagihanPage() {
                   {detectedOperator ? (
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-3">
-                        Pilih Nominal Pulsa
+                        Nominal Pulsa / Paket Data (Rp)
                       </label>
-                      <div className="grid grid-cols-2 gap-4">
-                        {PULSA_NOMINALS.map((item) => (
-                          <button
-                            key={item.nominal}
-                            onClick={() => setSelectedPulsa(item)}
-                            className={`p-4 rounded-2xl border text-left transition-all ${
-                              selectedPulsa?.nominal === item.nominal
-                                ? "bg-emerald-50/50 border-emerald-500 ring-2 ring-emerald-100"
-                                : "bg-white border-gray-200 hover:border-emerald-200 hover:bg-emerald-50/10"
-                            }`}
-                          >
-                            <p className="text-lg font-black text-gray-900">{item.label}</p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              Harga: <span className="font-semibold text-emerald-600">{formatIDR(item.price)}</span>
-                            </p>
-                          </button>
-                        ))}
-                      </div>
+                      <input
+                        type="number"
+                        min={10000}
+                        value={pulsaManualAmount}
+                        onChange={(e) => setPulsaManualAmount(e.target.value)}
+                        placeholder="Masukkan nominal, contoh: 50000"
+                        className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                      />
                     </div>
                   ) : (
                     <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
                       <Smartphone className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />
-                      <p className="text-xs font-medium">Masukkan nomor HP di atas untuk menampilkan pilihan pulsa</p>
+                      <p className="text-xs font-medium">Masukkan nomor HP di atas (maks 12 angka) untuk menampilkan form</p>
                     </div>
                   )}
                 </div>
@@ -385,7 +390,7 @@ export default function TagihanPage() {
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       <button
-                        onClick={() => { setPlnServiceType("token"); setSelectedPlnToken(null); }}
+                        onClick={() => { setPlnServiceType("token"); setPlnManualAmount(""); }}
                         className={`py-3 px-4 rounded-xl font-bold text-xs transition-all border ${
                           plnServiceType === "token"
                             ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
@@ -395,7 +400,7 @@ export default function TagihanPage() {
                         Token Listrik
                       </button>
                       <button
-                        onClick={() => { setPlnServiceType("tagihan"); setSelectedPlnToken(null); }}
+                        onClick={() => { setPlnServiceType("tagihan"); setPlnManualAmount(""); }}
                         className={`py-3 px-4 rounded-xl font-bold text-xs transition-all border ${
                           plnServiceType === "tagihan"
                             ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
@@ -422,52 +427,40 @@ export default function TagihanPage() {
                   </div>
 
                   {plnCustomerId.length >= 11 ? (
-                    <div className="space-y-6">
-                      {/* Customer Details Box */}
-                      <div className="bg-gray-50 border border-gray-150 rounded-2xl p-4 text-sm space-y-2">
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Informasi Pelanggan</p>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Nama</span>
-                          <span className="font-bold text-gray-900">Customer EcoBank</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Tarif / Daya</span>
-                          <span className="font-bold text-gray-900">R1 / 900 VA</span>
-                        </div>
-                        {plnServiceType === "tagihan" && (
-                          <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
-                            <span className="text-gray-500">Jumlah Tagihan</span>
-                            <span className="font-black text-emerald-600">Rp 124.500</span>
-                          </div>
-                        )}
+                    isSimulatingPln ? (
+                      <div className="flex justify-center py-6">
+                        <Loader2 className="animate-spin text-emerald-500" size={24} />
                       </div>
+                    ) : (
+                      <div className="space-y-6">
+                        {/* Customer Details Box */}
+                        <div className="bg-gray-50 border border-gray-150 rounded-2xl p-4 text-sm space-y-2">
+                          <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Informasi Pelanggan</p>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Nama</span>
+                            <span className="font-bold text-gray-900">{plnMockName}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Tarif / Daya</span>
+                            <span className="font-bold text-gray-900">R1 / 900 VA</span>
+                          </div>
+                        </div>
 
-                      {plnServiceType === "token" && (
                         <div>
                           <label className="block text-sm font-bold text-gray-700 mb-3">
-                            Pilih Nominal Token
+                            Nominal {plnServiceType === 'token' ? 'Token' : 'Tagihan'} (Rp)
                           </label>
-                          <div className="grid grid-cols-2 gap-4">
-                            {PLN_TOKENS.map((item) => (
-                              <button
-                                key={item.nominal}
-                                onClick={() => setSelectedPlnToken(item)}
-                                className={`p-4 rounded-2xl border text-left transition-all ${
-                                  selectedPlnToken?.nominal === item.nominal
-                                    ? "bg-emerald-50/50 border-emerald-500 ring-2 ring-emerald-100"
-                                    : "bg-white border-gray-200 hover:border-emerald-200 hover:bg-emerald-50/10"
-                                }`}
-                              >
-                                <p className="text-lg font-black text-gray-900">Rp {item.nominal.toLocaleString("id-ID")}</p>
-                                <p className="text-xs text-gray-500 mt-1">
-                                  Harga: <span className="font-semibold text-emerald-600">{formatIDR(item.price)}</span>
-                                </p>
-                              </button>
-                            ))}
-                          </div>
+                          <input
+                            type="number"
+                            min={20000}
+                            value={plnManualAmount}
+                            onChange={(e) => setPlnManualAmount(e.target.value)}
+                            placeholder="Masukkan nominal, contoh: 100000"
+                            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                          />
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )
                   ) : (
                     <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
                       <Zap className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />
@@ -514,28 +507,44 @@ export default function TagihanPage() {
                   </div>
 
                   {pdamRegion && pdamCustomerId.length >= 6 ? (
-                    <div className="space-y-4">
-                      {/* Customer Details Box */}
-                      <div className="bg-gray-50 border border-gray-150 rounded-2xl p-4 text-sm space-y-2">
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Detail Tagihan Air</p>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Nama Pelanggan</span>
-                          <span className="font-bold text-gray-900">Customer EcoBank</span>
+                    isSimulatingPdam ? (
+                      <div className="flex justify-center py-6">
+                        <Loader2 className="animate-spin text-emerald-500" size={24} />
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {/* Customer Details Box */}
+                        <div className="bg-gray-50 border border-gray-150 rounded-2xl p-4 text-sm space-y-2">
+                          <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Detail Pelanggan PDAM</p>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Nama Pelanggan</span>
+                            <span className="font-bold text-gray-900">{pdamMockName}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Wilayah</span>
+                            <span className="font-bold text-gray-900">{pdamRegion}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Periode Tagihan</span>
+                            <span className="font-bold text-gray-900">Bulan Ini</span>
+                          </div>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Wilayah</span>
-                          <span className="font-bold text-gray-900">{pdamRegion}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Periode Tagihan</span>
-                          <span className="font-bold text-gray-900">Mei 2026</span>
-                        </div>
-                        <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
-                          <span className="text-gray-500">Jumlah Tagihan</span>
-                          <span className="font-black text-emerald-600">Rp 45.000</span>
+
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-3">
+                            Nominal Pembayaran (Rp)
+                          </label>
+                          <input
+                            type="number"
+                            min={10000}
+                            value={pdamManualAmount}
+                            onChange={(e) => setPdamManualAmount(e.target.value)}
+                            placeholder="Masukkan nominal, contoh: 45000"
+                            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                          />
                         </div>
                       </div>
-                    </div>
+                    )
                   ) : (
                     <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
                       <Droplets className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />

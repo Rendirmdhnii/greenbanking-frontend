@@ -72,9 +72,6 @@ export default function AkunPage() {
                           <span className="text-white font-bold text-4xl tracking-widest">{initials}</span>
                         )}
                       </div>
-                      <button className="absolute bottom-2 right-2 bg-[#a3e635] text-[#064e3b] p-2 rounded-full shadow-md hover:scale-110 transition-transform">
-                        <Camera size={16} />
-                      </button>
                     </div>
                   </div>
 

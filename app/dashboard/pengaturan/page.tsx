@@ -15,7 +15,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
 export default function PengaturanPage() {
   const userHook = useUserContext();
-  const { userName, userEmail, refreshUserData, avatarUrl } = userHook as any;
+  const { userName, userEmail, refreshUserData, avatarUrl, phoneNumber, address } = userHook as any;
 
   const [activeTab, setActiveTab] = useState("profile");
   const [staticData, setStaticData] = useState<any>(null);
@@ -23,6 +23,8 @@ export default function PengaturanPage() {
 
   // Profile Form States
   const [editName, setEditName] = useState(userName || "");
+  const [editPhone, setEditPhone] = useState(phoneNumber || "");
+  const [editAddress, setEditAddress] = useState(address || "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,8 +60,10 @@ export default function PengaturanPage() {
   // Update local state when user data changes
   useEffect(() => {
     setEditName(userName || "");
+    setEditPhone(phoneNumber || "");
+    setEditAddress(address || "");
     setPreviewImage(avatarUrl ? (avatarUrl.startsWith('http') ? avatarUrl : `http://127.0.0.1:8000${avatarUrl}`) : null);
-  }, [userName, avatarUrl]);
+  }, [userName, avatarUrl, phoneNumber, address]);
 
   const handleLogout = async () => {
     localStorage.removeItem('token');
@@ -87,6 +91,8 @@ export default function PengaturanPage() {
       
       const formData = new FormData();
       formData.append('name', editName);
+      formData.append('phone_number', editPhone);
+      formData.append('address', editAddress);
       if (selectedFile) {
         formData.append('image', selectedFile);
       }
@@ -224,6 +230,26 @@ export default function PengaturanPage() {
                         type="text" 
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#115e59]/20 focus:border-[#115e59] outline-none transition-all font-medium text-gray-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Nomor HP/WhatsApp</label>
+                      <input 
+                        type="tel" 
+                        value={editPhone}
+                        onChange={(e) => setEditPhone(e.target.value)}
+                        placeholder="Contoh: 08123456789"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#115e59]/20 focus:border-[#115e59] outline-none transition-all font-medium text-gray-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Alamat Domisili</label>
+                      <textarea 
+                        value={editAddress}
+                        onChange={(e) => setEditAddress(e.target.value)}
+                        placeholder="Masukkan alamat lengkap"
+                        rows={3}
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#115e59]/20 focus:border-[#115e59] outline-none transition-all font-medium text-gray-900"
                       />
                     </div>

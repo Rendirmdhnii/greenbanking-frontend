@@ -215,6 +215,12 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            
+            <div className="flex justify-end">
+              <Link href="/forgot-password" className="text-sm font-semibold text-emerald-700 hover:text-emerald-800 transition-colors">
+                Lupa Kata Sandi?
+              </Link>
+            </div>
             <button
               type="submit"
               disabled={manualLoading}

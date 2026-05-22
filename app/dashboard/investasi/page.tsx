@@ -147,7 +147,7 @@ export default function InvestasiPage() {
               <span className="text-emerald-200 font-bold text-xs tracking-[0.2em] uppercase">Pasar Investasi Hijau</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-serif font-bold mb-2">Investasi Berdampak, Hasil Nyata.</h1>
-            <p className="text-emerald-100/70 max-w-xl text-sm">9 produk investasi terverifikasi. Setiap rupiah Anda mendanai proyek hijau dan menghasilkan return kompetitif.</p>
+            <p className="text-emerald-100/70 max-w-xl text-sm">{products.length} produk investasi terverifikasi. Setiap rupiah Anda mendanai proyek hijau dan menghasilkan return kompetitif.</p>
             <div className="mt-5 flex items-center gap-3 flex-wrap">
               <div className="bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-white/10">
                 <p className="text-emerald-200 text-[10px] font-semibold uppercase tracking-wider">Saldo</p>
@@ -173,7 +173,7 @@ export default function InvestasiPage() {
           ))}
         </div>
 
-        {/* === GRID 9 PRODUK === */}
+        {/* === GRID PRODUK DINAMIS === */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((p, i) => {
             const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
