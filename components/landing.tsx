@@ -14,15 +14,14 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link href="/" className="flex items-center gap-3 group">
-            {/* Ikon Logo Kustom Green Banking */}
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-emerald-500/20 text-white font-bold text-xl transition-transform group-hover:scale-105">
-              🌿
+            {/* Pertahankan komponen ikon daun bulat hijau yang sudah sukses */}
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 shadow-md text-white font-bold text-xl transition-transform group-hover:scale-105">
+              🍃
             </div>
-            {/* Teks Branding Nama Bank */}
-            <div className="flex flex-col">
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">EcoBank</span>
-              <span className="text-[10px] text-emerald-600 font-bold tracking-widest uppercase -mt-1">Nusantara</span>
-            </div>
+            {/* Kembalikan Nama Asli Proyek: GreenBanking */}
+            <span className="font-extrabold text-2xl tracking-tight text-emerald-900">
+              Green<span className="text-emerald-600">Banking</span>
+            </span>
           </Link>
           
           <div className="hidden md:flex space-x-8">

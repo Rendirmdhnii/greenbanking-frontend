@@ -55,17 +55,16 @@ export default function Sidebar({ userHook }: { userHook: any }) {
   return (
     <aside className="w-64 bg-white border-r border-gray-100 flex flex-col justify-between hidden md:flex">
       <div>
-        <div className="h-20 flex items-center px-6 border-b border-gray-50">
+        <div className="h-20 flex items-center px-6 border-b border-emerald-800/10">
           <Link href="/dashboard" className="flex items-center gap-3 group">
-            {/* Ikon Logo Kustom Green Banking */}
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-emerald-500/20 text-white font-bold text-xl transition-transform group-hover:scale-105">
-              🌿
+            {/* Pertahankan komponen ikon daun bulat hijau yang sudah sukses */}
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 shadow-md text-white font-bold text-xl transition-transform group-hover:scale-105">
+              🍃
             </div>
-            {/* Teks Branding Nama Bank */}
-            <div className="flex flex-col">
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-emerald-500 to-green-400 bg-clip-text text-transparent">EcoBank</span>
-              <span className="text-[10px] text-emerald-500 font-bold tracking-widest uppercase -mt-1">Nusantara</span>
-            </div>
+            {/* Kembalikan Nama Asli Proyek: GreenBanking */}
+            <span className="font-extrabold text-2xl tracking-tight text-emerald-900">
+              Green<span className="text-emerald-600">Banking</span>
+            </span>
           </Link>
         </div>
         <nav className="p-4 space-y-2">
