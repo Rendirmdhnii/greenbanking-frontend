@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "GreenBanking - Masa Depan Keuangan Hijau",
-  description: "Platform perbankan hijau pertama di Indonesia. Investasi berkelanjutan, donasi lingkungan, dan kelola keuangan Anda secara ramah lingkungan.",
+  title: "EcoBank Nusantara - Green Banking Platform",
+  description: "Masa depan perbankan hijau Indonesia untuk dampak sosial",
+  icons: {
+    icon: "/logo-greenbanking.png", // Memaksa tab browser memanggil logo kustom
+    apple: "/logo-greenbanking.png",
+  },
   keywords: ["green banking", "eco bank", "investasi hijau", "perbankan berkelanjutan", "Indonesia"],
 };
 

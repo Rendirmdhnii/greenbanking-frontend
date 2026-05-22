@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Home, TrendingUp, Leaf, User, Settings, ShieldCheck, LogOut, Receipt } from "lucide-react";
 import { supabase } from "@/utils/supabase";
@@ -56,10 +57,10 @@ export default function Sidebar({ userHook }: { userHook: any }) {
       <div>
         <div className="h-20 flex items-center px-6 border-b border-gray-50">
           <Link href="/dashboard" className="flex items-center gap-3 text-[#064e3b] font-bold text-xl group">
-            <div className="w-10 h-10 flex items-center justify-center transition-transform group-hover:scale-105">
-              <img src="/logo.svg" alt="GreenBanking Logo" className="w-full h-full object-contain" />
+            <div className="w-10 h-10 flex items-center justify-center transition-transform group-hover:scale-105 relative">
+              <Image src="/logo-greenbanking.png" alt="EcoBank Nusantara Logo" fill sizes="40px" className="object-contain" />
             </div>
-            <span className="tracking-tight">GreenBanking</span>
+            <span className="tracking-tight">EcoBank Nusantara</span>
           </Link>
         </div>
         <nav className="p-4 space-y-2">
