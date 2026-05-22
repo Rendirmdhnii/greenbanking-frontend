@@ -204,49 +204,106 @@ export default function SuperAdminDashboard() {
   };
 
   const handleAdjustBalance = async (user: UserItem) => {
-    const { value: newBalance } = await Swal.fire({
-      title: `Ubah Saldo: ${user.name}`,
+    const { value: amountInput } = await Swal.fire({
+      title: `Penyesuaian Saldo: ${user.name}`,
       input: 'number',
-      inputLabel: 'Masukkan Saldo Baru (Rp)',
-      inputValue: user.balance,
+      inputLabel: 'Masukkan Nominal (contoh: 50000 atau -10000)',
+      inputPlaceholder: 'Ketik nominal di sini...',
       showCancelButton: true,
       background: '#ffffff',
       color: '#111827',
-      confirmButtonText: 'Simpan',
+      confirmButtonText: 'Eksekusi God Mode',
       cancelButtonText: 'Batal',
       confirmButtonColor: '#059669',
       cancelButtonColor: '#dc2626',
+      showLoaderOnConfirm: true,
+      preConfirm: async (amountValue) => {
+        try {
+          const token = localStorage.getItem('admin_token');
+          // KONVERSI NOMINAL KE NUMBER MUTLAK!
+          const payload = { amount: Number(amountValue) };
+          
+          const res = await fetch(`${API_URL}/admin/users/${user.id}/adjust-balance`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Gagal mengubah saldo');
+          }
+          return await res.json();
+        } catch (error: any) {
+          Swal.showValidationMessage(`Akses Ditolak: ${error.message}`);
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading()
     });
 
-    if (newBalance) {
-      try {
-        const token = localStorage.getItem('admin_token');
-        const res = await fetch(`${API_URL}/admin/users/${user.id}/balance`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ balance: newBalance })
-        });
+    if (amountInput) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Sukses Mutlak!',
+        text: `Saldo nasabah berhasil di-update secara realtime.`,
+        background: '#ffffff',
+        color: '#111827',
+        confirmButtonColor: '#059669',
+        timer: 3000,
+        timerProgressBar: true
+      }).then(() => {
+        fetchStats(); // Refresh data realtime
+      });
+    }
+  };
 
-        if (res.ok) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: `Saldo ${user.name} berhasil diubah.`,
-            background: '#ffffff',
-            color: '#111827',
-            confirmButtonColor: '#059669'
+  const handleToggleBan = async (user: UserItem) => {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Otoritas Blokir Nasabah',
+      text: `Anda akan mengeksekusi penangguhan akun: ${user.name}. Lanjutkan?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Suspend!',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        try {
+          const token = localStorage.getItem('admin_token');
+          const res = await fetch(`${API_URL}/admin/users/${user.id}/toggle-ban`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
           });
-          fetchStats(); // Muat ulang data
-        } else {
-          Swal.fire('Kesalahan', 'Gagal mengubah saldo', 'error');
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Gagal mengeksekusi aksi ban');
+          }
+          return await res.json();
+        } catch (error: any) {
+          Swal.showValidationMessage(`Sistem menolak: ${error.message}`);
         }
-      } catch (error) {
-        console.error(error);
-        Swal.fire('Kesalahan', 'Terjadi kesalahan sistem', 'error');
       }
+    });
+
+    if (isConfirmed) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Dieksekusi!',
+        text: 'Status pengguna berhasil diperbarui.',
+        background: '#ffffff',
+        color: '#111827',
+        confirmButtonColor: '#059669',
+        timer: 3000
+      }).then(() => fetchStats());
     }
   };
 
@@ -321,7 +378,7 @@ export default function SuperAdminDashboard() {
     if (formValues) {
       try {
         const token = localStorage.getItem("admin_token");
-        const res = await fetch(`${API_URL}/admin/products`, {
+        const res = await fetch(`${API_URL}/admin/products/store`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -366,8 +423,8 @@ export default function SuperAdminDashboard() {
 
     try {
       const token = localStorage.getItem("admin_token");
-      const res = await fetch(`${API_URL}/admin/products/${product.id}`, {
-        method: "DELETE",
+      const res = await fetch(`${API_URL}/admin/products/${product.id}/delete`, {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -639,9 +696,15 @@ export default function SuperAdminDashboard() {
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
                       <button 
                         onClick={() => handleAdjustBalance(u)}
-                        className="text-xs font-bold bg-white hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-lg border border-gray-200 shadow-sm transition-all hover:shadow hover:border-emerald-200"
+                        className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200 shadow-sm transition-all hover:shadow"
                       >
                         UBAH SALDO
+                      </button>
+                      <button 
+                        onClick={() => handleToggleBan(u)}
+                        className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg border border-red-200 shadow-sm transition-all hover:shadow"
+                      >
+                        SUSPEND
                       </button>
                     </div>
                   </div>
