@@ -119,24 +119,37 @@ export default function PeringkatPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-emerald-100">{user.impact_score}</span>
+                          <span className="font-bold text-emerald-100">{user.impact_score.toLocaleString('id-ID')}</span>
                           <Leaf size={16} className="text-emerald-300" />
                         </div>
                       </div>
                     );
                   }
 
+                  let rankColor = "text-gray-400";
+                  let rankBadge = "";
+                  if (user.rank === 1) {
+                    rankColor = "text-yellow-500 text-xl drop-shadow-md";
+                    rankBadge = " 🥇";
+                  } else if (user.rank === 2) {
+                    rankColor = "text-gray-400 text-lg drop-shadow-md";
+                    rankBadge = " 🥈";
+                  } else if (user.rank === 3) {
+                    rankColor = "text-amber-600 text-lg drop-shadow-md";
+                    rankBadge = " 🥉";
+                  }
+
                   return (
-                    <div key={user.id} className="flex items-center justify-between p-4 px-6 hover:bg-gray-50 transition-colors">
+                    <div key={user.id} className={`flex items-center justify-between p-4 px-6 hover:bg-gray-50 transition-colors ${user.rank <= 3 ? 'bg-gradient-to-r from-yellow-50/50 to-transparent' : ''}`}>
                       <div className="flex items-center gap-4">
-                        <span className="w-8 font-bold text-gray-400 text-center">#{user.rank}</span>
-                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">
+                        <span className={`w-8 font-bold text-center ${rankColor}`}>#{user.rank}</span>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${user.rank === 1 ? 'bg-yellow-100 text-yellow-700 border border-yellow-300 shadow-sm' : 'bg-gray-100 text-gray-600'}`}>
                           {getInitialsFromName(user.name)}
                         </div>
-                        <span className="font-bold text-gray-900">{user.name}</span>
+                        <span className="font-bold text-gray-900">{user.name}{rankBadge}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-[#115e59]">{user.impact_score}</span>
+                        <span className="font-bold text-[#115e59]">{user.impact_score.toLocaleString('id-ID')}</span>
                         <Leaf size={14} className="text-[#115e59]" />
                       </div>
                     </div>

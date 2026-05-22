@@ -239,7 +239,7 @@ export default function InvestasiPage() {
                         className={`h-2 rounded-full ${progress >= 80 ? "bg-emerald-500" : progress >= 50 ? "bg-emerald-400" : "bg-emerald-300"}`}
                       />
                     </div>
-                    <p className="text-[10px] text-emerald-600 font-bold mt-1">{progress.toFixed(1)}% Terdanai</p>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-1">{Math.min(progress, 100).toFixed(1)}% Terdanai</p>
                   </div>
 
                   {/* --- FOOTER STATS --- */}
@@ -250,10 +250,15 @@ export default function InvestasiPage() {
 
                   {/* --- EXPAND / INVEST --- */}
                   <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
-                    className="w-full bg-[#064e3b] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#065f46] transition-all flex items-center justify-center gap-2"
+                    disabled={progress >= 100}
+                    className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
                   >
-                    <Zap size={14} /> Investasi Sekarang
-                    {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    {progress >= 100 ? "🔒 Pendanaan Selesai" : (
+                      <>
+                        <Zap size={14} /> Investasi Sekarang
+                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </>
+                    )}
                   </button>
 
                   {isExpanded && (

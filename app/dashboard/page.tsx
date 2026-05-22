@@ -83,6 +83,11 @@ export default function DashboardPage() {
       return;
     }
 
+    if (amount > 50000000) {
+      Swal.fire({ icon: 'warning', title: 'Batas Maksimal', text: 'Maksimal Top Up untuk simulasi adalah Rp 50.000.000', ...SwalGreenBanking.warning });
+      return;
+    }
+
     // ── cek disek midtrans e wes loading ta urung ──
     if (!window.snap) {
       Swal.fire({ icon: 'info', title: 'Memuat Sistem Pembayaran', text: 'Tunggu beberapa detik lalu coba lagi.', ...SwalGreenBanking.info });
@@ -280,7 +285,7 @@ export default function DashboardPage() {
                 <Leaf size={20} />
               </div>
               <p className="text-gray-400 text-sm font-medium mb-1">Pengurangan Karbon</p>
-              <h2 className="text-2xl font-bold font-serif text-emerald-400 tracking-tight">{(impactScore * 0.5).toFixed(1)} kg CO2e</h2>
+              <h2 className="text-2xl font-bold font-serif text-emerald-400 tracking-tight">{(impactScore * 0.5).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg CO2e</h2>
             </div>
             <Link href="/dashboard/investasi" className="mt-3 text-xs text-emerald-400 font-bold hover:underline">
               Tingkatkan Impact ➔

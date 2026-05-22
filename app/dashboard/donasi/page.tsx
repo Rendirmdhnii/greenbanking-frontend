@@ -109,7 +109,9 @@ export default function DonasiPage() {
 
         {/* Grid 3 Produk Donasi */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {products.map((p, i) => (
+          {products.map((p, i) => {
+            const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
+            return (
             <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
               className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
             >
@@ -169,16 +171,20 @@ export default function DonasiPage() {
                   </div>
                   <button
                     onClick={() => handleDonate(p)}
-                    disabled={donateLoading === p.id}
-                    className="bg-rose-500 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-rose-600 hover:scale-105 transition-all disabled:opacity-50 whitespace-nowrap flex items-center gap-1"
+                    disabled={donateLoading === p.id || progress >= 100}
+                    className={`text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1 ${progress >= 100 ? 'bg-gray-400 cursor-not-allowed' : 'bg-rose-500 hover:bg-rose-600 hover:scale-105 disabled:opacity-50'}`}
                   >
-                    {donateLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <Heart size={14} />}
-                    {donateLoading === p.id ? '...' : 'Donasi'}
+                    {progress >= 100 ? "🔒 Pendanaan Selesai" : (
+                      <>
+                        {donateLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <Heart size={14} />}
+                        {donateLoading === p.id ? '...' : 'Donasi Sekarang'}
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
             </motion.div>
-          ))}
+          )})}
         </div>
       </motion.div>
 
