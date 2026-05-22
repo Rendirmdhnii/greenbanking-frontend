@@ -47,6 +47,7 @@ export default function InvestasiPage() {
     days_left?: number | null;
     status_badge?: string | null;
     impact_co2e?: number | null;
+    carbon_impact?: number | null;
   };
 
   type StrukData = {

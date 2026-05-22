@@ -30,8 +30,6 @@ function detectOperator(phone: string): string | null {
   return "Operator";
 }
 
-const mockNames = ["Krisna Aji", "Sufyan MH", "Rayhan K", "Budi Santoso", "Siti Aminah", "Ahmad Fauzi", "Rina Marlina"];
-
 export default function TagihanPage() {
   const { userBalance, refreshUserData } = useUserContext();
   const [activeTab, setActiveTab] = useState<"pulsa" | "pln" | "pdam">("pulsa");
@@ -51,20 +49,19 @@ export default function TagihanPage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [detectedOperator, setDetectedOperator] = useState<string | null>(null);
   const [pulsaManualAmount, setPulsaManualAmount] = useState("");
+  const pulsaOptions = [10000, 25000, 50000, 100000];
 
   // State PLN
   const [plnServiceType, setPlnServiceType] = useState<"token" | "tagihan">("token");
   const [plnCustomerId, setPlnCustomerId] = useState("");
-  const [plnManualAmount, setPlnManualAmount] = useState("");
-  const [plnMockName, setPlnMockName] = useState("");
   const [isSimulatingPln, setIsSimulatingPln] = useState(false);
+  const [plnInquiry, setPlnInquiry] = useState<any>(null);
 
   // State PDAM
   const [pdamRegion, setPdamRegion] = useState("");
   const [pdamCustomerId, setPdamCustomerId] = useState("");
-  const [pdamManualAmount, setPdamManualAmount] = useState("");
-  const [pdamMockName, setPdamMockName] = useState("");
   const [isSimulatingPdam, setIsSimulatingPdam] = useState(false);
+  const [pdamInquiry, setPdamInquiry] = useState<any>(null);
 
   // Effect Pulsa: Deteksi prefix nomor handphone
   useEffect(() => {
@@ -75,31 +72,82 @@ export default function TagihanPage() {
     }
   }, [phoneNumber]);
 
-  // Effect PLN: Mock API
+  // Handle API Inquiry Call
+  const handleInquiry = async (customerNumber: string, category: "pln" | "pdam") => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/checkout/inquiry-tagihan`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          customer_number: customerNumber,
+          category: category,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Tagihan Lunas",
+          text: data.message || "Gagal cek tagihan",
+          ...SwalGreenBanking.error,
+        });
+        return null;
+      }
+      return data.data;
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan Jaringan",
+        text: "Gagal terhubung dengan server EcoBank.",
+        ...SwalGreenBanking.error,
+      });
+      return null;
+    }
+  };
+
+  // Effect PLN: Mock API via Inquiry
   useEffect(() => {
-    if (plnCustomerId.length >= 11 && !plnMockName && !isSimulatingPln) {
-      setIsSimulatingPln(true);
-      setTimeout(() => {
-        setPlnMockName(mockNames[Math.floor(Math.random() * mockNames.length)]);
+    if (plnCustomerId.length >= 11 && !plnInquiry && !isSimulatingPln) {
+      const fetchInquiry = async () => {
+        setIsSimulatingPln(true);
+        const data = await handleInquiry(plnCustomerId, "pln");
+        if (data) {
+          setPlnInquiry(data);
+        } else {
+          setPlnCustomerId(""); // reset if already paid
+        }
         setIsSimulatingPln(false);
-      }, 1000);
+      };
+      fetchInquiry();
     } else if (plnCustomerId.length < 11) {
-      setPlnMockName("");
+      setPlnInquiry(null);
     }
   }, [plnCustomerId]);
 
-  // Effect PDAM: Mock API
+  // Effect PDAM: Mock API via Inquiry
   useEffect(() => {
-    if (pdamCustomerId.length >= 6 && !pdamMockName && !isSimulatingPdam) {
-      setIsSimulatingPdam(true);
-      setTimeout(() => {
-        setPdamMockName(mockNames[Math.floor(Math.random() * mockNames.length)]);
+    if (pdamCustomerId.length >= 6 && !pdamInquiry && !isSimulatingPdam && pdamRegion) {
+      const fetchInquiry = async () => {
+        setIsSimulatingPdam(true);
+        const data = await handleInquiry(pdamCustomerId, "pdam");
+        if (data) {
+          setPdamInquiry(data);
+        } else {
+          setPdamCustomerId(""); // reset if already paid
+        }
         setIsSimulatingPdam(false);
-      }, 1000);
+      };
+      fetchInquiry();
     } else if (pdamCustomerId.length < 6) {
-      setPdamMockName("");
+      setPdamInquiry(null);
     }
-  }, [pdamCustomerId]);
+  }, [pdamCustomerId, pdamRegion]);
 
 
   // Reset states when changing tab
@@ -119,32 +167,22 @@ export default function TagihanPage() {
         admin_fee: 1000,
       };
     } else if (activeTab === "pln") {
-      if (plnCustomerId.length < 11 || !plnMockName || !plnManualAmount) return null;
-      if (plnServiceType === "token") {
-        return {
-          amount: Number(plnManualAmount) + 1500,
-          bill_type: "pln",
-          customer_id: plnCustomerId,
-          product_name: `Token Listrik Rp${Number(plnManualAmount)/1000}k`,
-          admin_fee: 1500,
-        };
-      } else {
-        return {
-          amount: Number(plnManualAmount) + 2500,
-          bill_type: "pln",
-          customer_id: plnCustomerId,
-          product_name: "Tagihan Listrik PLN",
-          admin_fee: 2500,
-        };
-      }
-    } else if (activeTab === "pdam") {
-      if (!pdamRegion || pdamCustomerId.length < 6 || !pdamMockName || !pdamManualAmount) return null;
+      if (!plnInquiry) return null;
       return {
-        amount: Number(pdamManualAmount) + 2500,
+        amount: plnInquiry.total_amount,
+        bill_type: "pln",
+        customer_id: plnCustomerId,
+        product_name: plnServiceType === "token" ? `Token Listrik ${plnInquiry.customer_name}` : `Tagihan Listrik PLN`,
+        admin_fee: plnInquiry.admin_fee,
+      };
+    } else if (activeTab === "pdam") {
+      if (!pdamInquiry) return null;
+      return {
+        amount: pdamInquiry.total_amount,
         bill_type: "pdam",
         customer_id: pdamCustomerId,
         product_name: `Tagihan ${pdamRegion}`,
-        admin_fee: 2500,
+        admin_fee: pdamInquiry.admin_fee,
       };
     }
     return null;
@@ -158,8 +196,8 @@ export default function TagihanPage() {
     if (userBalance < currentCheckout.amount) {
       Swal.fire({
         icon: "warning",
-        title: "Saldo Tidak Mencukupi",
-        text: "Saldo utama Anda tidak mencukupi untuk melakukan pembayaran ini.",
+        title: "Transaksi Gagal!",
+        text: "Saldo Eco-Wallet Anda tidak mencukupi!",
         ...SwalGreenBanking.warning,
       });
       return;
@@ -259,8 +297,8 @@ export default function TagihanPage() {
         setPlnCustomerId("");
         setPdamCustomerId("");
         setPulsaManualAmount("");
-        setPlnManualAmount("");
-        setPdamManualAmount("");
+        setPlnInquiry(null);
+        setPdamInquiry(null);
       }
     } catch (err) {
       console.error(err);
@@ -359,23 +397,44 @@ export default function TagihanPage() {
                   </div>
 
                   {detectedOperator ? (
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-3">
-                        Nominal Pulsa / Paket Data (Rp)
+                    <div className="space-y-4">
+                      <label className="block text-sm font-bold text-gray-700">
+                        Pilih Nominal (Rp)
                       </label>
-                      <input
-                        type="number"
-                        min={10000}
-                        value={pulsaManualAmount}
-                        onChange={(e) => setPulsaManualAmount(e.target.value)}
-                        placeholder="Masukkan nominal, contoh: 50000"
-                        className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
-                      />
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {pulsaOptions.map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => setPulsaManualAmount(opt.toString())}
+                            className={`py-3 px-2 rounded-xl font-bold text-xs border transition-all ${
+                              pulsaManualAmount === opt.toString()
+                                ? "bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm ring-1 ring-emerald-500"
+                                : "bg-white border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50"
+                            }`}
+                          >
+                            {formatIDR(opt)}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="mt-4">
+                        <label className="block text-sm font-bold text-gray-700 mb-2">
+                          Atau Masukkan Nominal Manual
+                        </label>
+                        <input
+                          type="number"
+                          min={5000}
+                          value={pulsaManualAmount}
+                          onChange={(e) => setPulsaManualAmount(e.target.value)}
+                          placeholder="Ketik nominal bebas, cth: 75000"
+                          className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                        />
+                      </div>
                     </div>
                   ) : (
                     <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
                       <Smartphone className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />
-                      <p className="text-xs font-medium">Masukkan nomor HP di atas (maks 12 angka) untuk menampilkan form</p>
+                      <p className="text-xs font-medium">Masukkan nomor HP di atas (maks 12 angka) untuk menampilkan pilihan nominal</p>
                     </div>
                   )}
                 </div>
@@ -390,7 +449,7 @@ export default function TagihanPage() {
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       <button
-                        onClick={() => { setPlnServiceType("token"); setPlnManualAmount(""); }}
+                        onClick={() => { setPlnServiceType("token"); setPlnInquiry(null); setPlnCustomerId(""); }}
                         className={`py-3 px-4 rounded-xl font-bold text-xs transition-all border ${
                           plnServiceType === "token"
                             ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
@@ -400,7 +459,7 @@ export default function TagihanPage() {
                         Token Listrik
                       </button>
                       <button
-                        onClick={() => { setPlnServiceType("tagihan"); setPlnManualAmount(""); }}
+                        onClick={() => { setPlnServiceType("tagihan"); setPlnInquiry(null); setPlnCustomerId(""); }}
                         className={`py-3 px-4 rounded-xl font-bold text-xs transition-all border ${
                           plnServiceType === "tagihan"
                             ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
@@ -431,40 +490,33 @@ export default function TagihanPage() {
                       <div className="flex justify-center py-6">
                         <Loader2 className="animate-spin text-emerald-500" size={24} />
                       </div>
-                    ) : (
-                      <div className="space-y-6">
+                    ) : plnInquiry ? (
+                      <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
                         {/* Customer Details Box */}
-                        <div className="bg-gray-50 border border-gray-150 rounded-2xl p-4 text-sm space-y-2">
-                          <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Informasi Pelanggan</p>
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Nama</span>
-                            <span className="font-bold text-gray-900">{plnMockName}</span>
+                        <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-sm space-y-3">
+                          <div className="flex items-center gap-2 text-emerald-700 font-bold border-b border-emerald-100 pb-2 mb-2">
+                            <CheckCircle2 size={16} />
+                            <span>Data Pelanggan Ditemukan</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Tarif / Daya</span>
-                            <span className="font-bold text-gray-900">R1 / 900 VA</span>
+                            <span className="text-gray-500">Nama Pelanggan</span>
+                            <span className="font-bold text-gray-900">{plnInquiry.customer_name}</span>
                           </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-bold text-gray-700 mb-3">
-                            Nominal {plnServiceType === 'token' ? 'Token' : 'Tagihan'} (Rp)
-                          </label>
-                          <input
-                            type="number"
-                            min={20000}
-                            value={plnManualAmount}
-                            onChange={(e) => setPlnManualAmount(e.target.value)}
-                            placeholder="Masukkan nominal, contoh: 100000"
-                            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
-                          />
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Bulan Tagihan</span>
+                            <span className="font-bold text-gray-900">{plnInquiry.bill_month}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Tagihan Riil</span>
+                            <span className="font-bold text-gray-900">{formatIDR(plnInquiry.amount)}</span>
+                          </div>
                         </div>
                       </div>
-                    )
+                    ) : null
                   ) : (
                     <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
                       <Zap className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />
-                      <p className="text-xs font-medium">Masukkan nomor meteran (min. 11 angka) untuk melacak data tagihan</p>
+                      <p className="text-xs font-medium">Masukkan nomor meteran (min. 11 angka) untuk auto-inquiry data tagihan</p>
                     </div>
                   )}
                 </div>
@@ -480,7 +532,10 @@ export default function TagihanPage() {
                       </label>
                       <select
                         value={pdamRegion}
-                        onChange={(e) => setPdamRegion(e.target.value)}
+                        onChange={(e) => {
+                          setPdamRegion(e.target.value);
+                          setPdamInquiry(null); // reset inquiry
+                        }}
                         className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
                       >
                         <option value="">-- Pilih Wilayah --</option>
@@ -511,40 +566,33 @@ export default function TagihanPage() {
                       <div className="flex justify-center py-6">
                         <Loader2 className="animate-spin text-emerald-500" size={24} />
                       </div>
-                    ) : (
-                      <div className="space-y-4">
+                    ) : pdamInquiry ? (
+                      <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
                         {/* Customer Details Box */}
-                        <div className="bg-gray-50 border border-gray-150 rounded-2xl p-4 text-sm space-y-2">
-                          <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Detail Pelanggan PDAM</p>
+                        <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-sm space-y-3">
+                          <div className="flex items-center gap-2 text-emerald-700 font-bold border-b border-emerald-100 pb-2 mb-2">
+                            <CheckCircle2 size={16} />
+                            <span>Data Pelanggan Ditemukan</span>
+                          </div>
                           <div className="flex justify-between">
                             <span className="text-gray-500">Nama Pelanggan</span>
-                            <span className="font-bold text-gray-900">{pdamMockName}</span>
+                            <span className="font-bold text-gray-900">{pdamInquiry.customer_name}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-500">Wilayah</span>
                             <span className="font-bold text-gray-900">{pdamRegion}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Periode Tagihan</span>
-                            <span className="font-bold text-gray-900">Bulan Ini</span>
+                            <span className="text-gray-500">Bulan Tagihan</span>
+                            <span className="font-bold text-gray-900">{pdamInquiry.bill_month}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Tagihan Riil</span>
+                            <span className="font-bold text-gray-900">{formatIDR(pdamInquiry.amount)}</span>
                           </div>
                         </div>
-
-                        <div>
-                          <label className="block text-sm font-bold text-gray-700 mb-3">
-                            Nominal Pembayaran (Rp)
-                          </label>
-                          <input
-                            type="number"
-                            min={10000}
-                            value={pdamManualAmount}
-                            onChange={(e) => setPdamManualAmount(e.target.value)}
-                            placeholder="Masukkan nominal, contoh: 45000"
-                            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
-                          />
-                        </div>
                       </div>
-                    )
+                    ) : null
                   ) : (
                     <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
                       <Droplets className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />
@@ -600,7 +648,7 @@ export default function TagihanPage() {
                         Memproses...
                       </>
                     ) : (
-                      "Lanjutkan Pembayaran"
+                      "Bayar Sekarang"
                     )}
                   </button>
                 </div>
