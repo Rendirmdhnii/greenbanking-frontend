@@ -109,7 +109,9 @@ export default function PengaturanPage() {
       
       if (res.ok) {
         setSaveSuccess(true);
-        refreshUserData();
+        const data = await res.json();
+        // update state global cek foto ne langsung ganti nang navbar secara real-time
+        refreshUserData(data);
         setTimeout(() => setSaveSuccess(false), 2000);
       } else {
         const data = await res.json();
@@ -191,7 +193,7 @@ export default function PengaturanPage() {
                     <div className="flex items-center gap-6">
                       <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                         <div className="w-28 h-28 rounded-full border-4 border-gray-50 bg-gray-100 overflow-hidden relative shadow-inner">
-                          {previewImage ? (
+                           {previewImage ? (
                             <img src={previewImage} alt="Profile" className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-3xl">

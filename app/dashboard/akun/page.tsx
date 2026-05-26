@@ -35,7 +35,6 @@ export default function AkunPage() {
 
   return (
     <>
-
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -153,7 +152,10 @@ export default function AkunPage() {
                   <div>
                     <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-1">Jejak Karbon Dihapus</p>
                     <div className="flex items-end gap-2">
-                      <span className="text-4xl font-bold font-serif">{(userEcoPoints * 0.1).toFixed(1)}</span>
+                      {/* FORMATTING ANGKA DINAMIS SESUAI SPESIFIKASI */}
+                      <span className="text-4xl font-bold font-serif">
+                        {Number(userEcoPoints * 0.1).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
+                      </span>
                       <span className="text-emerald-300 pb-1 font-medium">kg CO2e</span>
                     </div>
                   </div>

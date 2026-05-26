@@ -56,7 +56,6 @@ export default function PeringkatPage() {
 
   return (
     <>
-
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -80,7 +79,8 @@ export default function PeringkatPage() {
             <div>
               <p className="text-emerald-100 text-sm mb-1">Dampak Kolektif Nasabah</p>
               <h2 className="text-4xl font-serif font-extrabold tracking-tight">
-                {loading ? '...' : `${(totalCollective * 0.5).toFixed(0)} kg CO2e`}
+                {/* FORMATTING ANGKA DINAMIS SESUAI SPESIFIKASI */}
+                {loading ? '...' : `${Number(totalCollective * 0.5).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} kg CO2e`}
               </h2>
             </div>
           </div>

@@ -154,10 +154,12 @@ export function useUserData() {
   };
 
   const initials   = getInitials(userName);
-  const avatarUrl  = supabaseUser?.user_metadata?.avatar_url || userData?.user?.avatar || "";
+  
+  // FIX: prioritaskan foto profil database lokalan tinimbang google/supabase
+  const avatarUrl  = userData?.user?.avatar || userData?.avatar || supabaseUser?.user_metadata?.avatar_url || "";
   const tier       = userData?.user?.tier || userData?.tier || (userBalance >= 10000000 ? 'Premium' : 'Basic');
-  const phoneNumber = userData?.user?.phone || "";
-  const address    = userData?.user?.address || "";
+  const phoneNumber = userData?.user?.phone || userData?.phone || "";
+  const address    = userData?.user?.address || userData?.address || "";
   const isOwner    = userEmail === 'muhammadrendiaf06@gmail.com';
 
   return {
