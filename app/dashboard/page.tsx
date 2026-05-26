@@ -25,6 +25,21 @@ export default function DashboardPage() {
   const userHook = useUserContext();
   const { userData, isLoading, syncStatus, isAdmin, userName, userEmail, userBalance, userEcoPoints, refreshUserData, tier, impactScore, accountNumber } = userHook;
   const [copied, setCopied] = useState(false);
+
+  // Cek Level Tier Poin Dinamis rek
+  let maxPoints = 500;
+  let progressText = "Progress Basic";
+  let displayTierName = "BASIC";
+
+  if (userEcoPoints > 1000) {
+    displayTierName = "PRIORITAS";
+    maxPoints = 3000;
+    progressText = "Progress Prioritas";
+  } else if (userEcoPoints >= 501) {
+    displayTierName = "PLATINUM";
+    maxPoints = 1000;
+    progressText = "Progress Platinum";
+  }
   
   const [topUpAmount, setTopUpAmount] = useState('');
   const [showTopUp, setShowTopUp] = useState(false);
@@ -298,16 +313,16 @@ export default function DashboardPage() {
               <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-3">
                 <Heart size={20} />
               </div>
-              <p className="text-gray-500 text-sm font-medium mb-1">Poin Eco</p>
+              <p className="text-gray-500 text-sm font-medium mb-1">Poin Eco - Tier {displayTierName}</p>
               <h2 className="text-2xl font-bold font-serif text-gray-900 tracking-tight">{userEcoPoints} Poin</h2>
             </div>
             <div className="mt-4">
               <div className="flex justify-between text-[10px] text-gray-500 font-bold mb-1">
-                <span>Progress Premium</span>
-                <span>{userEcoPoints} / 500</span>
+                <span>{progressText}</span>
+                <span>{userEcoPoints} / {maxPoints}</span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-1.5">
-                <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-700" style={{ width: `${Math.min((userEcoPoints / 500) * 100, 100)}%` }}></div>
+                <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-700" style={{ width: `${Math.min((userEcoPoints / maxPoints) * 100, 100)}%` }}></div>
               </div>
             </div>
           </div>

@@ -156,7 +156,13 @@ export function useUserData() {
   const initials   = getInitials(userName);
   
   // FIX: prioritaskan foto profil database lokalan tinimbang google/supabase
-  const avatarUrl  = userData?.user?.avatar || userData?.avatar || supabaseUser?.user_metadata?.avatar_url || "";
+  let avatarUrl  = userData?.user?.avatar || userData?.avatar || supabaseUser?.user_metadata?.avatar_url || "";
+  
+  // Lek path foto profile lokal (misal dimulai karo /uploads), tambahi host url backend e rek ben gak pecah fotone
+  if (avatarUrl && !avatarUrl.startsWith('http')) {
+    avatarUrl = `${API_URL.replace('/api', '')}${avatarUrl}`;
+  }
+
   const tier       = userData?.user?.tier || userData?.tier || (userBalance >= 10000000 ? 'Premium' : 'Basic');
   const phoneNumber = userData?.user?.phone || userData?.phone || "";
   const address    = userData?.user?.address || userData?.address || "";
