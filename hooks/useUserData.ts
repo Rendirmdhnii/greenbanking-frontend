@@ -164,19 +164,21 @@ export function useUserData() {
     userData, supabaseUser, isLoading, syncStatus,
     isAdmin, userName, userEmail, userBalance, userEcoPoints, avatarUrl, initials,
     tier, impactScore, phoneNumber, address, accountNumber, totalDonation, isOwner,
-    refreshUserData: (newUserData?: { balance?: number; eco_points?: number; tier?: string }) => {
+    refreshUserData: (newUserData?: any) => {
       if (newUserData) {
         setUserData((prev: any) => {
           if (!prev) return prev;
+          
+          // Jika backend mengirimkan objek user penuh, langsung override state
           const updated = { ...prev };
-          if (updated.user) {
+          if (updated.user && newUserData.user) {
+            updated.user = { ...updated.user, ...newUserData.user };
+          } else if (newUserData.user) {
+             updated.user = newUserData.user;
+          } else {
             updated.user = { ...updated.user, ...newUserData };
           }
-          for (const key of Object.keys(newUserData)) {
-            if (key in updated || !updated.user) {
-              updated[key] = (newUserData as any)[key];
-            }
-          }
+          
           return updated;
         });
       } else {

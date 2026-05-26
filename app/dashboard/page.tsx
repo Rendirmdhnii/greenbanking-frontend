@@ -285,7 +285,7 @@ export default function DashboardPage() {
                 <Leaf size={20} />
               </div>
               <p className="text-gray-400 text-sm font-medium mb-1">Pengurangan Karbon</p>
-              <h2 className="text-2xl font-bold font-serif text-emerald-400 tracking-tight">{(impactScore * 0.5).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg CO2e</h2>
+              <h2 className="text-2xl font-bold font-serif text-emerald-400 tracking-tight">{Number(impactScore * 0.5).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} kg CO2e</h2>
             </div>
             <Link href="/dashboard/investasi" className="mt-3 text-xs text-emerald-400 font-bold hover:underline">
               Tingkatkan Impact ➔

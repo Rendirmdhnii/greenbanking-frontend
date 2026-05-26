@@ -136,6 +136,34 @@ export default function TransferModal({
 
     if (!confirmResult.isConfirmed) return;
 
+    // Tampilkan SweetAlert2 untuk minta PIN Transaksi
+    const { value: pin, isDismissed } = await Swal.fire({
+        title: 'Masukkan PIN Transaksi',
+        input: 'password',
+        inputLabel: 'Masukkan 6 digit PIN rahasia Anda',
+        inputPlaceholder: '••••••',
+        inputAttributes: {
+            maxlength: '6',
+            autocapitalize: 'off',
+            autocorrect: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Verifikasi',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#d33',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'PIN tidak boleh kosong!';
+            }
+            if (value.length !== 6) {
+                return 'PIN harus 6 digit!';
+            }
+        }
+    });
+
+    if (isDismissed || !pin) return;
+
     setIsLoading(true);
     setError("");
 
@@ -151,12 +179,14 @@ export default function TransferModal({
         },
         body: JSON.stringify({
           to_account: rekening || 'DONASI',
+          destination_account: rekening, // added for backend validation
           account_number: rekening, // Khusus P2P Endpoint baru
           amount: rawAmount,
           note: note,
           service_type: serviceType,
           service_label: serviceLabel,
           recipient_name: recipientName || rekening,
+          pin: pin // Kirim PIN ke backend untuk divaidasi
         }),
       });
 
