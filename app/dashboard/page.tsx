@@ -27,17 +27,17 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState(false);
 
   // Cek Level Tier Poin Dinamis rek
-  let maxPoints = 500;
+  let maxPoints = 2000;
   let progressText = "Progress Basic";
   let displayTierName = "BASIC";
 
-  if (userEcoPoints > 1000) {
+  if (userEcoPoints > 5000) {
     displayTierName = "PRIORITAS";
-    maxPoints = 3000;
+    maxPoints = 10000;
     progressText = "Progress Prioritas";
-  } else if (userEcoPoints >= 501) {
+  } else if (userEcoPoints >= 2001) {
     displayTierName = "PLATINUM";
-    maxPoints = 1000;
+    maxPoints = 5000;
     progressText = "Progress Platinum";
   }
   

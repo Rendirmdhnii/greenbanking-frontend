@@ -78,10 +78,10 @@ export default function AkunPage() {
                     <div className="flex items-center gap-3 mb-1">
                       <h2 className="text-2xl font-bold text-gray-900">{userName}</h2>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 uppercase tracking-wider shadow-sm ${
-                        tier === 'Platinum' 
-                          ? 'bg-gradient-to-r from-gray-200 to-gray-400 text-gray-900' 
-                          : tier === 'Premium' 
-                            ? 'bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900'
+                        tier === 'Prioritas' 
+                          ? 'bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900' 
+                          : tier === 'Platinum' 
+                            ? 'bg-gradient-to-r from-gray-200 to-gray-400 text-gray-900'
                             : 'bg-gray-100 text-gray-600'
                       }`}>
                         <ShieldCheck size={12} /> {tier} Tier

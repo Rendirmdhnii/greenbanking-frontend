@@ -163,7 +163,14 @@ export function useUserData() {
     avatarUrl = `${API_URL.replace('/api', '')}${avatarUrl}`;
   }
 
-  const tier       = userData?.user?.tier || userData?.tier || (userBalance >= 10000000 ? 'Premium' : 'Basic');
+  // FIX: Cek Level Tier Poin Dinamis rek ben sinkron visual global secara real-time
+  let tier = 'Basic';
+  if (userEcoPoints > 5000) {
+    tier = 'Prioritas';
+  } else if (userEcoPoints >= 2001) {
+    tier = 'Platinum';
+  }
+
   const phoneNumber = userData?.user?.phone || userData?.phone || "";
   const address    = userData?.user?.address || userData?.address || "";
   const isOwner    = userEmail === 'muhammadrendiaf06@gmail.com';
