@@ -80,6 +80,38 @@ export default function InvestasiPage() {
     if (amt > userBalance) { Swal.fire({ icon: 'warning', title: 'Saldo Tidak Mencukupi', text: 'Silakan Top Up terlebih dahulu.', ...SwalGreenBanking.warning }); return; }
 
     setInvestLoading(p.id);
+
+    // Tampilkan SweetAlert2 untuk minta PIN Transaksi
+    const { value: pin, isDismissed } = await Swal.fire({
+        title: 'Masukkan PIN Transaksi',
+        input: 'password',
+        inputLabel: 'Masukkan 6-Digit PIN Transaksi GreenBanking Anda',
+        inputPlaceholder: '••••••',
+        inputAttributes: {
+            maxlength: '6',
+            autocapitalize: 'off',
+            autocorrect: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Verifikasi',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#d33',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'PIN tidak boleh kosong!';
+            }
+            if (value.length !== 6) {
+                return 'PIN harus 6 digit!';
+            }
+        }
+    });
+
+    if (isDismissed || !pin) {
+        setInvestLoading(null);
+        return;
+    }
+
     Swal.fire({
       title: 'Memproses Investasi',
       text: 'Mohon tunggu sebentar...',
@@ -93,7 +125,7 @@ export default function InvestasiPage() {
       const res = await fetch(`${API_URL}/invest`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ investment_id: p.id, type: "investment", amount: Number(amt) }),
+        body: JSON.stringify({ investment_id: p.id, type: "investment", amount: Number(amt), pin: pin }),
       });
       const data = await res.json();
 

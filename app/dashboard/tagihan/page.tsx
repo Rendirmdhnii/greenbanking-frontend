@@ -204,6 +204,34 @@ export default function TagihanPage() {
       return;
     }
 
+    // Tampilkan SweetAlert2 untuk minta PIN Transaksi
+    const { value: pin, isDismissed } = await Swal.fire({
+        title: 'Masukkan PIN Transaksi',
+        input: 'password',
+        inputLabel: 'Masukkan 6-Digit PIN Transaksi GreenBanking Anda',
+        inputPlaceholder: '••••••',
+        inputAttributes: {
+            maxlength: '6',
+            autocapitalize: 'off',
+            autocorrect: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Verifikasi',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#d33',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'PIN tidak boleh kosong!';
+            }
+            if (value.length !== 6) {
+                return 'PIN harus 6 digit!';
+            }
+        }
+    });
+
+    if (isDismissed || !pin) return;
+
     setCheckoutLoading(true);
 
     try {
@@ -221,6 +249,7 @@ export default function TagihanPage() {
           product_name: currentCheckout.product_name,
           category: activeTab,
           use_points: useEcoPointsForDiscount,
+          pin: pin,
         }),
       });
 

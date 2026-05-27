@@ -33,7 +33,7 @@ export default function DashboardPage() {
 
   if (userEcoPoints > 5000) {
     displayTierName = "PRIORITAS";
-    maxPoints = 10000;
+    maxPoints = 10000; // itung persentase poin 5500 dibagi 10000 ben bar e gak nembus kothak
     progressText = "Progress Prioritas";
   } else if (userEcoPoints >= 2001) {
     displayTierName = "PLATINUM";
