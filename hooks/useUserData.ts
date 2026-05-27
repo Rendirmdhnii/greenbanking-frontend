@@ -164,11 +164,11 @@ export function useUserData() {
   }
 
   // FIX: Cek Level Tier Poin Dinamis rek ben sinkron visual global secara real-time
-  let tier = 'Basic';
+  let tier = 'BASIC';
   if (userEcoPoints > 5000) {
-    tier = 'Prioritas';
+    tier = 'PRIORITAS';
   } else if (userEcoPoints >= 2001) {
-    tier = 'Platinum';
+    tier = 'PLATINUM';
   }
 
   const phoneNumber = userData?.user?.phone || userData?.phone || "";

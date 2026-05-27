@@ -31,11 +31,12 @@ function detectOperator(phone: string): string | null {
 }
 
 export default function TagihanPage() {
-  const { userBalance, refreshUserData } = useUserContext();
+  const { userBalance, userEcoPoints, refreshUserData } = useUserContext();
   const [activeTab, setActiveTab] = useState<"pulsa" | "pln" | "pdam">("pulsa");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [strukData, setStrukData] = useState<any>(null);
   const [mangroveProgress, setMangroveProgress] = useState(0);
+  const [useEcoPointsForDiscount, setUseEcoPointsForDiscount] = useState(false);
 
   // Load mangrove progress from localStorage on mount
   useEffect(() => {
@@ -219,6 +220,7 @@ export default function TagihanPage() {
           customer_number: currentCheckout.customer_id,
           product_name: currentCheckout.product_name,
           category: activeTab,
+          use_points: useEcoPointsForDiscount,
         }),
       });
 
@@ -299,6 +301,7 @@ export default function TagihanPage() {
         setPulsaManualAmount("");
         setPlnInquiry(null);
         setPdamInquiry(null);
+        setUseEcoPointsForDiscount(false);
       }
     } catch (err) {
       console.error(err);
@@ -630,10 +633,32 @@ export default function TagihanPage() {
                       <span className="font-semibold text-gray-800">{formatIDR(currentCheckout.admin_fee)}</span>
                     </div>
                   )}
+
+                  {/* PPOB Redeem Eco Poin UI */}
+                  {userEcoPoints > 0 && (
+                    <div className="pt-2">
+                      <label className="flex items-center gap-3 p-3 border border-emerald-100 bg-emerald-50/50 rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors">
+                        <input 
+                          type="checkbox" 
+                          checked={useEcoPointsForDiscount} 
+                          onChange={(e) => setUseEcoPointsForDiscount(e.target.checked)}
+                          className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-gray-300"
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm font-bold text-gray-900">Gunakan Eco Poin untuk Diskon</p>
+                          <p className="text-xs text-emerald-700">Tersedia {userEcoPoints} Poin (Potongan hingga {formatIDR(Math.min(userEcoPoints * 100, currentCheckout.amount))})</p>
+                        </div>
+                      </label>
+                    </div>
+                  )}
+
                   <div className="border-t border-gray-100 pt-4 flex justify-between items-end">
                     <span className="font-bold text-gray-800">Total Harga</span>
                     <span className="text-xl font-black text-emerald-600">
-                      {formatIDR(currentCheckout.amount)}
+                      {useEcoPointsForDiscount 
+                        ? formatIDR(Math.max(0, currentCheckout.amount - (userEcoPoints * 100))) 
+                        : formatIDR(currentCheckout.amount)
+                      }
                     </span>
                   </div>
 

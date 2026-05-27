@@ -125,6 +125,105 @@ export default function PengaturanPage() {
     }
   };
 
+  const handleChangePin = async () => {
+    // 1. Minta PIN Lama (opsional/diisi jika sudah punya)
+    const { value: currentPin } = await Swal.fire({
+      title: 'Masukkan PIN Lama',
+      input: 'password',
+      inputLabel: 'Masukkan 6 digit PIN lama Anda (Kosongkan jika belum pernah diset)',
+      inputPlaceholder: 'PIN Lama (6 digit)',
+      inputAttributes: {
+        maxlength: '6',
+        autocapitalize: 'off',
+        autocorrect: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Lanjut',
+      cancelButtonText: 'Batal',
+      ...SwalGreenBanking.info
+    });
+
+    if (currentPin === undefined) return; // user cancels
+
+    // 2. Minta PIN Baru
+    const { value: newPin } = await Swal.fire({
+      title: 'Masukkan PIN Baru',
+      input: 'password',
+      inputLabel: 'Masukkan 6 digit PIN Baru Anda',
+      inputPlaceholder: 'PIN Baru (6 digit)',
+      inputAttributes: {
+        maxlength: '6',
+        autocapitalize: 'off',
+        autocorrect: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Simpan',
+      cancelButtonText: 'Batal',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'PIN baru tidak boleh kosong!';
+        }
+        if (value.length !== 6 || isNaN(Number(value))) {
+          return 'PIN baru harus berupa 6 digit angka!';
+        }
+      },
+      ...SwalGreenBanking.info
+    });
+
+    if (!newPin) return;
+
+    // 3. Kirim ke API backend
+    Swal.fire({
+      title: 'Memproses PIN...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/settings/change-pin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          current_pin: currentPin || null,
+          new_pin: newPin
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: data.message || 'PIN Transaksi Anda berhasil diperbarui.',
+          ...SwalGreenBanking.success
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal!',
+          text: data.error || data.message || 'Gagal memperbarui PIN Transaksi.',
+          ...SwalGreenBanking.error
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Kesalahan Server',
+        text: 'Tidak dapat menghubungi server.',
+        ...SwalGreenBanking.error
+      });
+    }
+  };
+
   const tabs = [
     { id: "profile", label: "Edit Profil", icon: <User size={20} /> },
     { id: "security", label: "Keamanan", icon: <Lock size={20} /> },
@@ -301,7 +400,7 @@ export default function PengaturanPage() {
                       <h3 className="font-bold text-gray-900">Ubah PIN Transaksi</h3>
                       <p className="text-sm text-gray-500 mt-1">Perbarui PIN 6 digit Anda secara berkala.</p>
                     </div>
-                    <button className="bg-white border border-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors shadow-sm text-sm">Ubah PIN</button>
+                    <button onClick={handleChangePin} className="bg-white border border-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors shadow-sm text-sm">Ubah PIN</button>
                   </div>
                 </motion.div>
               )}

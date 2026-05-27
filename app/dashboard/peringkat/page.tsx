@@ -119,7 +119,7 @@ export default function PeringkatPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-emerald-100">{user.impact_score.toLocaleString('id-ID')}</span>
+                          <span className="font-bold text-emerald-100">{Number(user.impact_score).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</span>
                           <Leaf size={16} className="text-emerald-300" />
                         </div>
                       </div>
@@ -149,7 +149,7 @@ export default function PeringkatPage() {
                         <span className="font-bold text-gray-900">{user.name}{rankBadge}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-[#115e59]">{user.impact_score.toLocaleString('id-ID')}</span>
+                        <span className="font-bold text-[#115e59]">{Number(user.impact_score).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</span>
                         <Leaf size={14} className="text-[#115e59]" />
                       </div>
                     </div>

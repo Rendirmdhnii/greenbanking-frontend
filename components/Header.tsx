@@ -155,7 +155,7 @@ export default function Header({ userHook }: { userHook: any }) {
         )}
         <Link href="/dashboard/peringkat" className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 hover:bg-emerald-100 transition-colors cursor-pointer">
           <Leaf size={16} className="text-[#115e59]" />
-          <span className="text-sm font-bold text-[#064e3b]">Skor Dampak: {impactScore || 0}</span>
+          <span className="text-sm font-bold text-[#064e3b]">Skor Dampak: {Number(impactScore || 0).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</span>
         </Link>
 
         {/* Notification Bell — Functional */}
