@@ -48,16 +48,57 @@ export default function DonasiPage() {
       return;
     }
 
+    // Tampilkan SweetAlert2 untuk minta PIN Transaksi
+    const { value: pin, isDismissed } = await Swal.fire({
+        title: 'Masukkan PIN Transaksi',
+        input: 'password',
+        inputLabel: 'Masukkan 6-Digit PIN Transaksi GreenBanking Anda',
+        inputPlaceholder: '••••••',
+        inputAttributes: {
+            maxlength: '6',
+            autocapitalize: 'off',
+            autocorrect: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Verifikasi',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#d33',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'PIN tidak boleh kosong!';
+            }
+            if (value.length !== 6) {
+                return 'PIN harus 6 digit!';
+            }
+        }
+    });
+
+    if (isDismissed || !pin) {
+        return;
+    }
+
     setDonateLoading(product.id);
+    Swal.fire({
+      title: 'Memproses Donasi',
+      text: 'Mohon tunggu sebentar...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     try {
       const token = localStorage.getItem('token');
       const res = await fetch(`${API_URL}/donate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ name: product.title, type: product.product_id || String(product.id), amount: amt }),
+        body: JSON.stringify({ name: product.title, type: product.product_id || String(product.id), amount: amt, pin: pin }),
       });
       const data = await res.json();
-      if (!res.ok) { Swal.fire({ icon: 'error', title: 'Gagal', text: data.message || 'Gagal donasi', ...SwalGreenBanking.error }); return; }
+      if (!res.ok) { Swal.fire({ icon: 'error', title: 'Gagal', text: data.error || data.message || 'Gagal donasi', ...SwalGreenBanking.error }); return; }
+
+      Swal.close();
 
       setStrukData({
         id: data.transaction_id, title: 'Struk Donasi Lingkungan',

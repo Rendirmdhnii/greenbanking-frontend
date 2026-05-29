@@ -131,7 +131,7 @@ export default function InvestasiPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        Swal.fire({ icon: 'error', title: 'Gagal', text: data.message || 'Gagal investasi', ...SwalGreenBanking.error });
+        Swal.fire({ icon: 'error', title: 'Gagal', text: data.error || data.message || 'Gagal investasi', ...SwalGreenBanking.error });
         return;
       }
 
