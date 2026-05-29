@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { 
   ShieldCheck, Users, TrendingUp, ArrowLeft, Wallet,
-  Loader2, RefreshCw, Crown, Mail, LogOut
+  Loader2, RefreshCw, Crown, Mail, LogOut, Search, ChevronLeft, ChevronRight
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
@@ -70,6 +70,13 @@ export default function SuperAdminDashboard() {
   const [adminUser, setAdminUser] = useState<any>(null);
   const [transactions, setTransactions] = useState<AdminTransaction[]>([]);
   const [transactionsLoading, setTransactionsLoading] = useState(false);
+
+  // Pagination & Search States
+  const [searchQueryNasabah, setSearchQueryNasabah] = useState("");
+  const [currentPageNasabah, setCurrentPageNasabah] = useState(1);
+  const [currentPageTransaksi, setCurrentPageTransaksi] = useState(1);
+  const itemsPerNasabahPage = 5;
+  const itemsPerTransaksiPage = 10;
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -601,6 +608,24 @@ export default function SuperAdminDashboard() {
     );
   }
 
+  // ─── FILTER & PAGINATION LOGIC ───
+  const filteredNasabah = stats?.users?.filter(u => 
+    u.name.toLowerCase().includes(searchQueryNasabah.toLowerCase()) || 
+    u.email.toLowerCase().includes(searchQueryNasabah.toLowerCase())
+  ) || [];
+  
+  const totalPagesNasabah = Math.ceil(filteredNasabah.length / itemsPerNasabahPage);
+  const paginatedNasabah = filteredNasabah.slice(
+    (currentPageNasabah - 1) * itemsPerNasabahPage, 
+    currentPageNasabah * itemsPerNasabahPage
+  );
+
+  const totalPagesTransaksi = Math.ceil(transactions.length / itemsPerTransaksiPage);
+  const paginatedTransactions = transactions.slice(
+    (currentPageTransaksi - 1) * itemsPerTransaksiPage, 
+    currentPageTransaksi * itemsPerTransaksiPage
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
       {/* Header */}
@@ -690,15 +715,32 @@ export default function SuperAdminDashboard() {
 
         {/* Daftar Nasabah */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Database Nasabah</h2>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-full">
-              {stats?.users?.length || 0} PENGGUNA
-            </span>
+          <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50/50 gap-4">
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Database Nasabah</h2>
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-full">
+                {filteredNasabah.length} PENGGUNA
+              </span>
+            </div>
+            <div className="relative w-full sm:w-64">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search size={16} className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Cari nama atau email..."
+                value={searchQueryNasabah}
+                onChange={(e) => {
+                  setSearchQueryNasabah(e.target.value);
+                  setCurrentPageNasabah(1);
+                }}
+                className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white"
+              />
+            </div>
           </div>
-          {stats?.users && stats.users.length > 0 ? (
+          {filteredNasabah.length > 0 ? (
             <div className="divide-y divide-gray-100">
-              {stats.users.map((u) => (
+              {paginatedNasabah.map((u) => (
                 <div key={u.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-2 ${u.is_admin ? 'bg-emerald-100 border-emerald-300 text-emerald-700' : 'bg-gray-100 border-gray-200 text-gray-600'}`}>
@@ -753,6 +795,30 @@ export default function SuperAdminDashboard() {
               ) : (
                 <span className="font-bold uppercase tracking-widest">Tidak ada pengguna</span>
               )}
+            </div>
+          )}
+          
+          {totalPagesNasabah > 1 && (
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white">
+              <span className="text-sm text-gray-500 font-medium">
+                Halaman {currentPageNasabah} dari {totalPagesNasabah}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPageNasabah(p => Math.max(1, p - 1))}
+                  disabled={currentPageNasabah === 1}
+                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, p + 1))}
+                  disabled={currentPageNasabah === totalPagesNasabah}
+                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -848,7 +914,7 @@ export default function SuperAdminDashboard() {
                   </tr>
                 ) : null}
 
-                {transactions.map((t, idx) => {
+                {paginatedTransactions.map((t, idx) => {
                   const nama = t.user?.name || t.user_name || "User tidak dikenal";
                   const email = t.user?.email || t.user_email || "";
                   return (
@@ -879,6 +945,30 @@ export default function SuperAdminDashboard() {
               </tbody>
             </table>
           </div>
+
+          {totalPagesTransaksi > 1 && (
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white">
+              <span className="text-sm text-gray-500 font-medium">
+                Halaman {currentPageTransaksi} dari {totalPagesTransaksi}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPageTransaksi(p => Math.max(1, p - 1))}
+                  disabled={currentPageTransaksi === 1}
+                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, p + 1))}
+                  disabled={currentPageTransaksi === totalPagesTransaksi}
+                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
