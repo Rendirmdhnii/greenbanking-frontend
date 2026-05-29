@@ -48,6 +48,7 @@ export default function StrukModal({ isOpen, onClose, data }: { isOpen: boolean,
             <div class="row"><span class="label">Layanan</span><span class="value">${data.service}</span></div>
             ${data.recipient_name ? `<div class="row"><span class="label">Penerima</span><span class="value">${data.recipient_name}</span></div>` : ''}
             ${data.to_account ? `<div class="row"><span class="label">No. Rekening</span><span class="value">${data.to_account}</span></div>` : ''}
+            <div class="row"><span class="label">Catatan</span><span class="value" style="word-break: break-word; max-width: 200px; text-align: right;">${data.note || data.description || data.notes || "-"}</span></div>
           </div>
           <div class="total">
             ${data.discount ? `<div class="row"><span class="label" style="color:#16a34a;">Potongan Eco-Points</span><span class="value" style="color:#16a34a;">- Rp ${data.discount.toLocaleString('id-ID')}</span></div>` : ''}
@@ -55,12 +56,6 @@ export default function StrukModal({ isOpen, onClose, data }: { isOpen: boolean,
               <span class="label" style="font-weight:700;">Total Nominal</span>
               <span class="value">Rp ${((data.amount || 0) - (data.discount || 0)).toLocaleString('id-ID')}</span>
             </div>
-            ${(data.note || data.description || data.notes) ? `
-              <div class="row" style="border-top: 1px dashed #e5e5e5; padding-top: 12px; margin-top: 8px; flex-direction: column; align-items: flex-start; text-align: left;">
-                <span class="label" style="font-size: 11px; text-transform: uppercase; margin-bottom: 4px; display: block;">Catatan</span>
-                <span class="value" style="text-align: left; font-weight: 500; width: 100%; word-break: break-word; background: #f9fafb; padding: 8px; border-radius: 6px; box-sizing: border-box; font-size: 12px; color: #4b5563;">${data.note || data.description || data.notes}</span>
-              </div>
-            ` : ''}
           </div>
           <div class="footer">
             Terima kasih telah menggunakan GreenBanking Nusantara<br/>
@@ -132,6 +127,10 @@ export default function StrukModal({ isOpen, onClose, data }: { isOpen: boolean,
                 <span className="text-gray-900 font-semibold">{data.to_account}</span>
               </div>
             )}
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 font-medium">Catatan</span>
+              <span className="text-gray-900 font-semibold text-right max-w-[200px] break-words">{data.note || data.description || data.notes || "-"}</span>
+            </div>
           </div>
 
           <div className="p-8 bg-gray-50">
@@ -146,15 +145,8 @@ export default function StrukModal({ isOpen, onClose, data }: { isOpen: boolean,
               <span className="text-2xl font-bold text-[#064e3b]">Rp {((data.amount || 0) - (data.discount || 0)).toLocaleString('id-ID')}</span>
             </div>
             
-            {(data.note || data.description || data.notes) && (
-              <div className="mb-6 pt-4 border-t border-gray-100 text-left">
-                <span className="text-gray-400 font-bold text-[10px] uppercase tracking-wider block mb-1.5">Catatan</span>
-                <p className="text-gray-700 text-sm font-medium bg-white px-4 py-3 rounded-xl border border-gray-100 shadow-sm leading-relaxed break-words">
-                  {data.note || data.description || data.notes}
-                </p>
-              </div>
-            )}
             
+
             <div className="flex gap-3">
               <button onClick={onClose} className="flex-1 py-3 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-colors">
                 Tutup
