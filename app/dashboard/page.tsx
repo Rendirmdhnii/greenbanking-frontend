@@ -213,7 +213,7 @@ export default function DashboardPage() {
   ];
 
   const getTrxIcon = (type: string) => {
-    if (type === 'in') return <ArrowDownLeft size={16} className="text-green-500" />;
+    if (type === 'in' || type === 'admin_addition') return <ArrowDownLeft size={16} className="text-green-500" />;
     return <ArrowUpRight size={16} className="text-gray-500" />;
   };
 
@@ -475,11 +475,11 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full hidden md:inline-block ${tx.type === 'in' ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>
+                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full hidden md:inline-block ${(tx.type === 'in' || tx.type === 'admin_addition') ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>
                       {tx.status}
                     </span>
-                    <span className={`font-bold text-sm ${tx.type === 'in' ? 'text-emerald-600' : 'text-red-500'}`}>
-                      {tx.type === 'in' ? '+' : '-'}{formatIDR(tx.amount)}
+                    <span className={`font-bold text-sm ${(tx.type === 'in' || tx.type === 'admin_addition') ? 'text-emerald-600' : 'text-red-500'}`}>
+                      {(tx.type === 'in' || tx.type === 'admin_addition') ? '+' : '-'}{formatIDR(tx.amount)}
                     </span>
                   </div>
                 </div>

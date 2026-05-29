@@ -61,8 +61,8 @@ export default function RiwayatPage() {
         <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:12px;color:#666;">${new Date(trx.created_at).toLocaleString("id-ID")}</td>
         <td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;">${trx.title}</td>
         <td style="padding:8px 12px;border-bottom:1px solid #eee;font-family:monospace;font-size:11px;color:#888;">${trx.transaction_id}</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${trx.type === 'in' ? '#16a34a' : '#1a1a1a'}">
-          ${trx.type === 'in' ? '+' : '-'}Rp ${Number(trx.amount).toLocaleString('id-ID')}
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:${trx.type === 'in' || trx.type === 'admin_addition' ? '#16a34a' : '#1a1a1a'}">
+          ${trx.type === 'in' || trx.type === 'admin_addition' ? '+' : '-'}Rp ${Number(trx.amount).toLocaleString('id-ID')}
         </td>
         <td style="padding:8px 12px;border-bottom:1px solid #eee;color:#16a34a;font-weight:600;font-size:12px;">${trx.status}</td>
       </tr>
@@ -111,8 +111,12 @@ export default function RiwayatPage() {
 
   const getIcon = (type: string) => {
     switch(type) {
-      case 'in': return <div className="w-10 h-10 bg-green-50 text-green-600 rounded-full flex items-center justify-center"><ArrowDownLeft size={20} /></div>;
-      case 'out': return <div className="w-10 h-10 bg-red-50 text-red-600 rounded-full flex items-center justify-center"><ArrowUpRight size={20} /></div>;
+      case 'in': 
+      case 'admin_addition': 
+        return <div className="w-10 h-10 bg-green-50 text-green-600 rounded-full flex items-center justify-center"><ArrowDownLeft size={20} /></div>;
+      case 'out': 
+      case 'admin_deduction':
+        return <div className="w-10 h-10 bg-red-50 text-red-600 rounded-full flex items-center justify-center"><ArrowUpRight size={20} /></div>;
       case 'investasi': return <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center"><TrendingUp size={20} /></div>;
       case 'donasi': return <div className="w-10 h-10 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center"><Heart size={20} /></div>;
       case 'tagihan': return <div className="w-10 h-10 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center"><Zap size={20} /></div>;
@@ -212,8 +216,8 @@ export default function RiwayatPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`font-bold font-serif text-lg ${trx.type === 'in' ? 'text-green-600' : 'text-red-500'}`}>
-                      {trx.type === 'in' ? '+' : '-'}{formatIDR(trx.amount)}
+                    <p className={`font-bold font-serif text-lg ${trx.type === 'in' || trx.type === 'admin_addition' ? 'text-green-600' : 'text-red-500'}`}>
+                      {trx.type === 'in' || trx.type === 'admin_addition' ? '+' : '-'}{formatIDR(trx.amount)}
                     </p>
                     <p className="text-xs text-[#16a34a] font-bold mt-1 flex items-center justify-end gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span> {trx.status}
@@ -261,8 +265,8 @@ export default function RiwayatPage() {
                   <div className="text-center mb-6">
                     <div className="flex justify-center">{getIcon(selectedTrx.type)}</div>
                     <h4 className="font-bold text-gray-900 mt-3">{selectedTrx.title}</h4>
-                    <p className={`font-serif font-bold text-3xl mt-2 ${selectedTrx.type === 'in' ? 'text-green-600' : 'text-red-500'}`}>
-                      {selectedTrx.type === 'in' ? '+' : '-'}{formatIDR(selectedTrx.amount)}
+                    <p className={`font-serif font-bold text-3xl mt-2 ${selectedTrx.type === 'in' || selectedTrx.type === 'admin_addition' ? 'text-green-600' : 'text-red-500'}`}>
+                      {selectedTrx.type === 'in' || selectedTrx.type === 'admin_addition' ? '+' : '-'}{formatIDR(selectedTrx.amount)}
                     </p>
                   </div>
                   <div className="space-y-4 text-sm bg-gray-50 rounded-2xl p-5 border border-gray-100">

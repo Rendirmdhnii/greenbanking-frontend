@@ -204,12 +204,28 @@ export default function SuperAdminDashboard() {
   };
 
   const handleAdjustBalance = async (user: UserItem) => {
-    const { value: amountInput } = await Swal.fire({
+    const { value: formValues } = await Swal.fire({
       title: `Penyesuaian Saldo: ${user.name}`,
-      input: 'number',
-      inputValue: user.balance,
-      inputLabel: 'Masukkan Nominal Saldo Akhir',
-      inputPlaceholder: 'Ketik nominal saldo di sini...',
+      html: `
+        <div style="text-align: left; margin-bottom: 1rem; padding: 0 10px;">
+          <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; font-size: 0.875rem; color: #374151;">Tipe Aksi</label>
+          <div style="display: flex; gap: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="radio" name="swal-action" value="add" checked style="accent-color: #059669;" />
+              <span style="font-size: 0.875rem;">Tambah Saldo (+)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="radio" name="swal-action" value="subtract" style="accent-color: #dc2626;" />
+              <span style="font-size: 0.875rem;">Kurangi Saldo (-)</span>
+            </label>
+          </div>
+        </div>
+        <div style="text-align: left; padding: 0 10px;">
+          <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; font-size: 0.875rem; color: #374151;">Nominal</label>
+          <input id="swal-amount" type="number" class="swal2-input" style="width: 100%; margin: 0; box-sizing: border-box; height: 3em; font-size: 1rem; padding: 0 1em;" placeholder="Contoh: 50000">
+        </div>
+      `,
+      focusConfirm: false,
       showCancelButton: true,
       background: '#ffffff',
       color: '#111827',
@@ -218,11 +234,21 @@ export default function SuperAdminDashboard() {
       confirmButtonColor: '#059669',
       cancelButtonColor: '#dc2626',
       showLoaderOnConfirm: true,
-      preConfirm: async (amountValue) => {
+      preConfirm: async () => {
+        const amountEl = document.getElementById('swal-amount') as HTMLInputElement;
+        const actionEl = document.querySelector('input[name="swal-action"]:checked') as HTMLInputElement;
+        
+        if (!amountEl || !amountEl.value) {
+          Swal.showValidationMessage('Nominal wajib diisi!');
+          return false;
+        }
+
         try {
           const token = localStorage.getItem('admin_token');
-          // KONVERSI NOMINAL KE NUMBER MUTLAK!
-          const payload = { amount: Number(amountValue) };
+          const payload = { 
+            action: actionEl.value,
+            amount: Number(amountEl.value) 
+          };
           
           const res = await fetch(`${API_URL}/admin/users/${user.id}/adjust-balance`, {
             method: 'POST',
@@ -236,7 +262,7 @@ export default function SuperAdminDashboard() {
 
           if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
-            throw new Error(errorData.error || 'Gagal mengubah saldo');
+            throw new Error(errorData.error || errorData.message || 'Gagal mengubah saldo');
           }
           return await res.json();
         } catch (error: any) {
@@ -246,7 +272,7 @@ export default function SuperAdminDashboard() {
       allowOutsideClick: () => !Swal.isLoading()
     });
 
-    if (amountInput) {
+    if (formValues) {
       Swal.fire({
         icon: 'success',
         title: 'Sukses Mutlak!',
