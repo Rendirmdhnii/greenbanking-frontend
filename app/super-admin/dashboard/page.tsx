@@ -748,7 +748,7 @@ export default function SuperAdminDashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Nasabah</p>
-                    <h3 className="text-2xl font-black text-gray-900 truncate" title={String(stats?.total_users || 0)}>{stats?.total_users || 0}</h3>
+                    <h3 className="text-xl font-black text-gray-900 truncate" title={String(stats?.total_users || 0)}>{stats?.total_users || 0}</h3>
                   </div>
                 </div>
 
@@ -761,7 +761,7 @@ export default function SuperAdminDashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Beredar</p>
-                    <h3 className="text-2xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_balance || 0).toLocaleString('id-ID')}`}>
+                    <h3 className="text-xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_balance || 0).toLocaleString('id-ID')}`}>
                       Rp {Number(stats?.total_balance || 0).toLocaleString('id-ID')}
                     </h3>
                   </div>
@@ -776,7 +776,7 @@ export default function SuperAdminDashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Investasi Aktif</p>
-                    <h3 className="text-2xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_investments || 0).toLocaleString('id-ID')}`}>
+                    <h3 className="text-xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_investments || 0).toLocaleString('id-ID')}`}>
                       Rp {Number(stats?.total_investments || 0).toLocaleString('id-ID')}
                     </h3>
                   </div>
@@ -791,7 +791,7 @@ export default function SuperAdminDashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Produk Hijau</p>
-                    <h3 className="text-2xl font-black text-gray-900 truncate">
+                    <h3 className="text-xl font-black text-gray-900 truncate">
                       {stats?.products?.length || 0}
                     </h3>
                   </div>
@@ -804,7 +804,7 @@ export default function SuperAdminDashboard() {
               
               {/* Database Nasabah Section */}
               {(activeTab === 'dashboard' || activeTab === 'nasabah') && (
-                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : ''}`}>
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
                   <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
@@ -832,9 +832,9 @@ export default function SuperAdminDashboard() {
                     </div>
                   </div>
                   
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-100">
-                      <thead className="bg-gray-50/50">
+                  <div className="overflow-x-auto overflow-y-auto max-h-[600px] w-full">
+                    <table className="min-w-full divide-y divide-gray-100 relative">
+                      <thead className="bg-gray-50/50 sticky top-0 z-10 shadow-sm">
                         <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                           <th className="px-6 py-4">Nasabah</th>
                           <th className="px-6 py-4">Saldo</th>
@@ -923,7 +923,7 @@ export default function SuperAdminDashboard() {
 
               {/* Riwayat Transaksi Section */}
               {(activeTab === 'dashboard' || activeTab === 'transaksi') && (
-                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : ''}`}>
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
                   <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
@@ -936,9 +936,9 @@ export default function SuperAdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-100">
-                      <thead className="bg-gray-50/50">
+                  <div className="overflow-x-auto overflow-y-auto max-h-[600px] w-full">
+                    <table className="min-w-full divide-y divide-gray-100 relative">
+                      <thead className="bg-gray-50/50 sticky top-0 z-10 shadow-sm">
                         <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                           <th className="px-6 py-4">Waktu & Trace ID</th>
                           <th className="px-6 py-4">Tipe Transaksi</th>
@@ -1010,7 +1010,7 @@ export default function SuperAdminDashboard() {
                                   {tipe}
                                 </span>
                               </td>
-                              <td className="px-6 py-5 min-w-[320px]">
+                              <td className="px-6 py-5 min-w-[420px]">
                                 <div className="flex items-center gap-3">
                                   <div className="flex-1 text-right bg-gray-50/50 p-2 rounded-lg border border-gray-100">
                                     <div className="font-bold text-gray-900 truncate" title={senderName}>{senderName}</div>
