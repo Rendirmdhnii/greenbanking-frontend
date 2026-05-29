@@ -55,6 +55,11 @@ interface AdminTransaction {
   };
   user_name?: string;
   user_email?: string;
+  transaction_type_label?: string;
+  type?: string;
+  sender_name?: string;
+  receiver_name?: string;
+  transaction_id?: string;
 }
 
 export default function SuperAdminDashboard() {
@@ -827,16 +832,17 @@ export default function SuperAdminDashboard() {
               <thead className="bg-white">
                 <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                   <th className="px-6 py-4">Waktu</th>
-                  <th className="px-6 py-4">Pengguna</th>
+                  <th className="px-6 py-4">Tipe Transaksi</th>
+                  <th className="px-6 py-4">Pengirim</th>
+                  <th className="px-6 py-4">Penerima / Tujuan</th>
                   <th className="px-6 py-4">Nominal</th>
-                  <th className="px-6 py-4">Status Pembayaran</th>
-                  <th className="px-6 py-4">Referensi</th>
+                  <th className="px-6 py-4">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 bg-white">
                 {transactions.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-10 text-center text-sm text-gray-500">
+                    <td colSpan={6} className="px-6 py-10 text-center text-sm text-gray-500">
                       {transactionsLoading ? "Memuat transaksi..." : "Belum ada transaksi."}
                     </td>
                   </tr>
@@ -848,9 +854,18 @@ export default function SuperAdminDashboard() {
                   return (
                     <tr key={String(t.id ?? idx)} className="text-sm">
                       <td className="px-6 py-4 text-gray-600 whitespace-nowrap">{formatTanggal(t.created_at)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                          {t.transaction_type_label || String(t.type).toUpperCase()}
+                        </span>
+                      </td>
                       <td className="px-6 py-4">
-                        <div className="font-bold text-gray-900">{nama}</div>
+                        <div className="font-bold text-gray-900">{t.sender_name || nama}</div>
                         <div className="text-xs text-gray-500">{email || "—"}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-gray-900">{t.receiver_name || "—"}</div>
+                        <div className="text-xs text-gray-500">{t.reference || t.transaction_id || "—"}</div>
                       </td>
                       <td className="px-6 py-4 font-black text-gray-900 whitespace-nowrap">{formatRupiah(t.amount)}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -858,7 +873,6 @@ export default function SuperAdminDashboard() {
                           {getIndonesianStatus(t.status).toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-gray-700 whitespace-nowrap font-mono text-xs">{t.reference || "—"}</td>
                     </tr>
                   );
                 })}
