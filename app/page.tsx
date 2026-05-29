@@ -28,7 +28,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight"
           >
-            Investasi Hijau, <br/> Masa Depan Lestari
+            Lebih dari Sekadar Bank. <br/> Ini Green Banking.
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -36,7 +36,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl md:text-2xl text-emerald-50 mb-10 max-w-2xl mx-auto font-light"
           >
-            Bersama mewujudkan perbankan yang tidak hanya menumbuhkan kekayaan, tapi juga merawat bumi.
+            Kembangkan aset finansial Anda sekaligus kurangi jejak karbon. EcoBank Nusantara menghadirkan layanan perbankan digital modern yang peduli pada bumi.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
