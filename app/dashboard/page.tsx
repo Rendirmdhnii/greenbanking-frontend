@@ -319,8 +319,12 @@ export default function DashboardPage() {
             </div>
             <div className="mt-4">
               <div className="flex justify-between text-[10px] text-gray-500 font-bold mb-1">
-                <span>{progressText}</span>
-                <span>{userLifetimeEcoPoints} / {maxPoints} XP</span>
+                <span>{displayTierName === 'PRIORITAS' ? 'Tier Tertinggi Dicapai' : progressText}</span>
+                <span>
+                  {displayTierName === 'PRIORITAS' 
+                    ? `${userLifetimeEcoPoints.toLocaleString('id-ID')} XP (Max Tier)`
+                    : `${userLifetimeEcoPoints.toLocaleString('id-ID')} / ${maxPoints.toLocaleString('id-ID')} XP`}
+                </span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-1.5">
                 <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-700" style={{ width: `${Math.min((userLifetimeEcoPoints / maxPoints) * 100, 100)}%` }}></div>
