@@ -643,389 +643,479 @@ export default function SuperAdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-6 shadow-sm mb-8 w-full sticky top-0 z-50">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
-                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200 tracking-wider">SUPER ADMIN</span>
-              </div>
-              <p className="text-sm text-gray-500">Pusat Kendali GreenBanking Nusantara</p>
-            </div>
+    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+      {/* Sidebar */}
+      <aside className="w-64 bg-emerald-900 text-emerald-50 flex-col hidden md:flex flex-shrink-0 relative overflow-hidden">
+        {/* Background Accent */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+        
+        <div className="p-6 flex items-center gap-3 border-b border-emerald-800/50 relative z-10">
+          <ShieldCheck size={32} className="text-emerald-400" />
+          <div>
+            <h1 className="font-bold text-lg tracking-wide text-white">GreenBanking</h1>
+            <p className="text-[10px] uppercase tracking-widest text-emerald-300 font-bold">Super Admin</p>
           </div>
-          <div className="flex gap-3">
+        </div>
+        
+        <nav className="flex-1 py-8 flex flex-col gap-2 px-4 relative z-10">
+          <div className="px-4 py-3 bg-emerald-800/50 rounded-xl flex items-center gap-3 text-white cursor-pointer border border-emerald-700/50 shadow-inner">
+            <LayoutDashboard size={20} className="text-emerald-400" />
+            <span className="font-bold text-sm">Dashboard Utama</span>
+          </div>
+          <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
+            <Users size={20} />
+            <span className="font-semibold text-sm">Database Nasabah</span>
+          </div>
+          <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
+            <Package size={20} />
+            <span className="font-semibold text-sm">Katalog Produk</span>
+          </div>
+          <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
+            <History size={20} />
+            <span className="font-semibold text-sm">Riwayat Transaksi</span>
+          </div>
+        </nav>
+        
+        <div className="p-6 border-t border-emerald-800/50 relative z-10">
+          <div className="bg-emerald-950/50 p-4 rounded-xl mb-4 border border-emerald-800/50">
+            <p className="text-xs text-emerald-300 mb-1">Akses Saat Ini</p>
+            <p className="text-sm font-bold text-white truncate">{adminUser?.email || 'admin@greenbanking.com'}</p>
+          </div>
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-300 hover:text-red-200 rounded-xl border border-red-500/20 transition-all"
+          >
+            <LogOut size={18} />
+            <span className="font-bold text-sm">Logout Sesi</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden relative">
+        {/* Top Header */}
+        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-200 px-8 flex items-center justify-between sticky top-0 z-50">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Ikhtisar Platform</h2>
+            <p className="text-sm text-gray-500 font-medium">Pusat kendali operasional dan transaksi</p>
+          </div>
+          <div className="flex items-center gap-6">
             <button 
               onClick={() => { fetchStats(); fetchTransactions(); }}
               disabled={statsLoading}
-              className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100 hover:bg-emerald-100 transition-colors text-sm font-bold"
             >
-              <RefreshCw size={16} className={statsLoading ? 'animate-spin text-emerald-600' : 'text-emerald-600'} /> Sinkronkan Data
+              <RefreshCw size={16} className={statsLoading ? 'animate-spin' : ''} /> 
+              <span className="hidden sm:inline">{statsLoading ? 'Menyinkronkan...' : 'Sinkronkan Data'}</span>
             </button>
-            <button 
-              onClick={handleLogout}
-              className="flex items-center gap-2 bg-red-50 text-red-600 border border-red-100 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-100 transition-colors"
-            >
-              <LogOut size={16} /> Logout
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="max-w-7xl mx-auto px-8">
-        {/* Welcome Banner */}
-        <div className="bg-gradient-to-r from-emerald-700 to-emerald-900 border border-emerald-600 rounded-2xl p-8 text-white mb-8 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
-          <div className="flex items-center gap-3 mb-4 relative z-10">
-            <ShieldCheck size={28} className="text-emerald-300" />
-            <h2 className="text-2xl font-bold tracking-tight">Selamat Datang, {adminUser?.name || 'Admin'}!</h2>
-          </div>
-          <p className="text-emerald-100 leading-relaxed max-w-2xl text-sm relative z-10">
-            Login sebagai <strong>{adminUser?.email}</strong>.
-            Anda memiliki akses penuh untuk mengelola pengguna, memantau statistik platform, dan mengelola katalog produk investasi/donasi.
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full blur-[60px] opacity-50 group-hover:opacity-100 transition-opacity"></div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center">
-                <Users size={20} className="text-emerald-600" />
-              </div>
-              <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Nasabah</span>
-            </div>
-            <p className="text-4xl font-black text-gray-900">
-              {stats ? stats.total_users : '—'}
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-[60px] opacity-50 group-hover:opacity-100 transition-opacity"></div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center">
-                <Wallet size={20} className="text-blue-600" />
-              </div>
-              <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Saldo Beredar</span>
-            </div>
-            <p className="text-4xl font-black text-gray-900 tracking-tight">
-              {stats ? `Rp ${Number(stats.total_balance).toLocaleString('id-ID')}` : '—'}
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-[60px] opacity-50 group-hover:opacity-100 transition-opacity"></div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-purple-50 border border-purple-100 rounded-xl flex items-center justify-center">
-                <TrendingUp size={20} className="text-purple-600" />
-              </div>
-              <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Investasi Aktif</span>
-            </div>
-            <p className="text-4xl font-black text-gray-900 tracking-tight">
-              {stats ? `Rp ${Number(stats.total_investments).toLocaleString('id-ID')}` : '—'}
-            </p>
-          </div>
-        </div>
-
-        {/* Daftar Nasabah */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50/50 gap-4">
+            <div className="h-8 w-px bg-gray-200"></div>
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Database Nasabah</h2>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-full">
-                {filteredNasabah.length} PENGGUNA
-              </span>
-            </div>
-            <div className="relative w-full sm:w-64">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={16} className="text-gray-400" />
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-bold text-gray-900">{adminUser?.name || 'Super Admin'}</p>
+                <p className="text-xs text-emerald-600 font-medium uppercase tracking-wider">Otoritas Penuh</p>
               </div>
-              <input
-                type="text"
-                placeholder="Cari nama atau email..."
-                value={searchQueryNasabah}
-                onChange={(e) => {
-                  setSearchQueryNasabah(e.target.value);
-                  setCurrentPageNasabah(1);
-                }}
-                className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white"
-              />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-md">
+                {(adminUser?.name || 'A').charAt(0).toUpperCase()}
+              </div>
             </div>
           </div>
-          {filteredNasabah.length > 0 ? (
-            <div className="divide-y divide-gray-100">
-              {paginatedNasabah.map((u) => (
-                <div key={u.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-2 ${u.is_admin ? 'bg-emerald-100 border-emerald-300 text-emerald-700' : 'bg-gray-100 border-gray-200 text-gray-600'}`}>
-                      {u.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-gray-900 text-lg tracking-tight">{u.name}</p>
-                        {u.is_admin && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded border border-emerald-200 tracking-wider">
-                            <Crown size={12} /> ADMIN
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1.5 text-sm text-gray-500 mt-0.5">
-                        <Mail size={14} />
-                        {u.email} <span className="text-gray-300 mx-1">•</span> ID: {u.id}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right flex items-center gap-6">
-                    <div>
-                      <p className="font-black text-emerald-600 text-lg">Rp {Number(u.balance).toLocaleString('id-ID')}</p>
-                      <p className="text-xs text-gray-400 font-medium mt-0.5 uppercase tracking-wide">Bergabung {u.joined}</p>
-                    </div>
-                    {/* Edit actions */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                      <button 
-                        onClick={() => handleAdjustBalance(u)}
-                        className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200 shadow-sm transition-all hover:shadow"
-                      >
-                        UBAH SALDO
-                      </button>
-                      <button 
-                        onClick={() => handleToggleBan(u)}
-                        className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg border border-red-200 shadow-sm transition-all hover:shadow"
-                      >
-                        SUSPEND
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="px-6 py-16 text-center text-gray-500">
-              {statsLoading ? (
-                <div className="flex flex-col items-center justify-center gap-3">
-                  <Loader2 className="animate-spin text-emerald-500" size={32} />
-                  <span className="font-bold uppercase tracking-widest text-sm">Memuat Database...</span>
-                </div>
-              ) : (
-                <span className="font-bold uppercase tracking-widest">Tidak ada pengguna</span>
-              )}
-            </div>
-          )}
+        </header>
+
+        {/* Scrollable Content */}
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
           
-          {totalPagesNasabah > 1 && (
-            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white">
-              <span className="text-sm text-gray-500 font-medium">
-                Halaman {currentPageNasabah} dari {totalPagesNasabah}
-              </span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setCurrentPageNasabah(p => Math.max(1, p - 1))}
-                  disabled={currentPageNasabah === 1}
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <button
-                  onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, p + 1))}
-                  disabled={currentPageNasabah === totalPagesNasabah}
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronRight size={16} />
-                </button>
+          {/* Visual Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
+              <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                <Users size={120} />
+              </div>
+              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 border border-blue-100">
+                <Users size={24} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Nasabah</p>
+                <h3 className="text-3xl font-black text-gray-900">{stats ? stats.total_users : '-'}</h3>
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Daftar Produk */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Katalog Produk Hijau</h2>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleTambahProduk}
-                className="text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl border border-emerald-700 shadow-sm transition-all"
-              >
-                TAMBAH PRODUK
-              </button>
-              <span className="text-xs font-bold text-blue-700 bg-blue-100 border border-blue-200 px-3 py-1 rounded-full">
-                {stats?.products?.length || 0} PRODUK
-              </span>
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
+              <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                <Wallet size={120} />
+              </div>
+              <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 border border-emerald-100">
+                <Wallet size={24} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Beredar</p>
+                <h3 className="text-3xl font-black text-gray-900 tracking-tight">
+                  {stats ? `Rp ${Number(stats.total_balance).toLocaleString('id-ID')}` : '-'}
+                </h3>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(139,92,246,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
+              <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                <TrendingUp size={120} />
+              </div>
+              <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 mb-6 border border-purple-100">
+                <TrendingUp size={24} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Investasi Aktif</p>
+                <h3 className="text-3xl font-black text-gray-900 tracking-tight">
+                  {stats ? `Rp ${Number(stats.total_investments).toLocaleString('id-ID')}` : '-'}
+                </h3>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(245,158,11,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
+              <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                <Package size={120} />
+              </div>
+              <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 mb-6 border border-amber-100">
+                <Package size={24} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Produk Hijau</p>
+                <h3 className="text-3xl font-black text-gray-900">
+                  {stats?.products ? stats.products.length : '-'}
+                </h3>
+              </div>
             </div>
           </div>
-          {stats?.products && stats.products.length > 0 ? (
-            <div className="divide-y divide-gray-100">
-              {stats.products.map((p) => (
-                <div key={p.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                      <img src={globalProjectImages[p.title] || fallbackImage} alt={p.title} className="w-full h-full object-cover" />
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* Kiri: Daftar Nasabah & Transaksi (2/3 width on large screens) */}
+            <div className="xl:col-span-2 space-y-8">
+              {/* Database Nasabah */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                      <Users size={20} className="text-emerald-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900 text-md tracking-tight">{p.title}</p>
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
-                        <span className="uppercase text-blue-600 font-bold">{p.category}</span> • ID: {p.product_id}
-                      </div>
+                      <h2 className="text-lg font-bold text-gray-900">Database Nasabah</h2>
+                      <p className="text-xs text-gray-500 font-medium">Manajemen akun pengguna</p>
                     </div>
                   </div>
-                  <div className="text-right flex items-center gap-6">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                      <button 
-                        onClick={() => handleEditProduct(p)}
-                        className="text-xs font-bold bg-white hover:bg-blue-50 text-blue-700 px-4 py-2 rounded-lg border border-gray-200 shadow-sm transition-all hover:shadow hover:border-blue-200"
+                  <div className="relative w-full sm:w-64">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Search size={16} className="text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Cari nama atau email..."
+                      value={searchQueryNasabah}
+                      onChange={(e) => {
+                        setSearchQueryNasabah(e.target.value);
+                        setCurrentPageNasabah(1);
+                      }}
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900"
+                    />
+                  </div>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-100">
+                    <thead className="bg-gray-50/50">
+                      <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                        <th className="px-6 py-4">Nasabah</th>
+                        <th className="px-6 py-4">Saldo</th>
+                        <th className="px-6 py-4 text-right">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 bg-white">
+                      {filteredNasabah.length === 0 ? (
+                        <tr>
+                          <td colSpan={3} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                            Tidak ada nasabah ditemukan.
+                          </td>
+                        </tr>
+                      ) : (
+                        paginatedNasabah.map((u) => (
+                          <tr key={u.id} className="hover:bg-gray-50/50 transition-colors group">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0 ${u.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                                  {u.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-bold text-gray-900">{u.name}</span>
+                                    {u.is_admin && (
+                                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black rounded border border-emerald-200 tracking-wider">
+                                        ADMIN
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-gray-500 mt-0.5">{u.email}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="font-black text-gray-900">Rp {Number(u.balance).toLocaleString('id-ID')}</span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button 
+                                  onClick={() => handleAdjustBalance(u)}
+                                  className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+                                >
+                                  EDIT SALDO
+                                </button>
+                                <button 
+                                  onClick={() => handleToggleBan(u)}
+                                  className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 rounded-lg border border-red-200 transition-colors"
+                                >
+                                  SUSPEND
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {totalPagesNasabah > 1 && (
+                  <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                    <span className="text-xs font-medium text-gray-500">
+                      Hal {currentPageNasabah} / {totalPagesNasabah}
+                    </span>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => setCurrentPageNasabah(p => Math.max(1, p - 1))}
+                        disabled={currentPageNasabah === 1}
+                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
-                        EDIT PRODUK
+                        <ChevronLeft size={16} />
                       </button>
                       <button
-                        onClick={() => handleHapusProduk(p)}
-                        className="text-xs font-bold bg-white hover:bg-red-50 text-red-600 px-4 py-2 rounded-lg border border-gray-200 shadow-sm transition-all hover:shadow hover:border-red-200"
+                        onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, p + 1))}
+                        disabled={currentPageNasabah === totalPagesNasabah}
+                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
-                        HAPUS
+                        <ChevronRight size={16} />
                       </button>
                     </div>
                   </div>
+                )}
+              </div>
+
+              {/* Riwayat Transaksi (Visual Overhaul) */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                      <Activity size={20} className="text-indigo-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-gray-900">Riwayat Transaksi Terpadu</h2>
+                      <p className="text-xs text-gray-500 font-medium">Monitoring pergerakan dana real-time</p>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="px-6 py-12 text-center text-gray-500">
-              <span className="font-bold uppercase tracking-widest">Tidak Ada Produk</span>
-            </div>
-          )}
-        </div>
 
-        {/* Riwayat Transaksi */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Riwayat Transaksi</h2>
-            <button
-              onClick={() => fetchTransactions()}
-              disabled={transactionsLoading}
-              className="text-xs font-bold bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl border border-gray-200 shadow-sm transition-all disabled:opacity-50"
-            >
-              {transactionsLoading ? "MEMUAT..." : "MUAT ULANG"}
-            </button>
-          </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-100">
+                    <thead className="bg-gray-50/50">
+                      <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                        <th className="px-6 py-4">Waktu & Trace ID</th>
+                        <th className="px-6 py-4">Tipe Transaksi</th>
+                        <th className="px-6 py-4">Alur Uang</th>
+                        <th className="px-6 py-4">Nominal</th>
+                        <th className="px-6 py-4">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 bg-white">
+                      {transactions.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                            {transactionsLoading ? (
+                              <div className="flex items-center justify-center gap-2">
+                                <Loader2 className="animate-spin text-indigo-500" size={20} />
+                                <span>Memuat data...</span>
+                              </div>
+                            ) : "Belum ada transaksi."}
+                          </td>
+                        </tr>
+                      ) : null}
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-white">
-                <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                  <th className="px-6 py-4">Waktu & Trace ID</th>
-                  <th className="px-6 py-4">Tipe Transaksi</th>
-                  <th className="px-6 py-4">Alur Transaksi</th>
-                  <th className="px-6 py-4">Nominal</th>
-                  <th className="px-6 py-4">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 bg-white">
-                {transactions.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-10 text-center text-sm text-gray-500">
-                      {transactionsLoading ? "Memuat transaksi..." : "Belum ada transaksi."}
-                    </td>
-                  </tr>
-                ) : null}
+                      {paginatedTransactions.map((t, idx) => {
+                        const nama = t.user?.name || t.user_name || "User";
+                        const email = t.user?.email || t.user_email || "";
+                        
+                        let tipe = t.transaction_type_label || String(t.type).toUpperCase();
+                        let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
+                        
+                        if (tipe.toLowerCase().includes("transfer")) {
+                          tipe = "Transfer Dana";
+                          badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+                        } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
+                          tipe = "Top Up Saldo";
+                          badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                        }
 
-                {paginatedTransactions.map((t, idx) => {
-                  const nama = t.user?.name || t.user_name || "User tidak dikenal";
-                  const email = t.user?.email || t.user_email || "";
-                  
-                  let tipe = t.transaction_type_label || String(t.type).toUpperCase();
-                  if (tipe.toLowerCase().includes("transfer")) {
-                    tipe = "Transfer Dana";
-                  } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
-                    tipe = "Top Up Saldo";
-                  }
+                        let senderName = t.sender_name || nama;
+                        let senderEmail = email;
+                        let receiverName = t.receiver_name || "-";
+                        let receiverEmail = "";
 
-                  let senderName = t.sender_name || nama;
-                  let senderEmail = email;
-                  let receiverName = t.receiver_name || "—";
-                  let receiverEmail = "";
+                        if (tipe === "Top Up Saldo") {
+                          senderName = "Sistem Bank";
+                          senderEmail = "Otomatis";
+                          receiverName = nama;
+                          receiverEmail = email;
+                        } else if (t.type?.toLowerCase() === 'withdrawal' || t.type?.toLowerCase() === 'tarik tunai') {
+                          senderName = nama;
+                          senderEmail = email;
+                          receiverName = "Sistem Bank";
+                          receiverEmail = "Otomatis";
+                        } else {
+                          if (!t.receiver_name && !t.sender_name) {
+                            receiverName = "Tujuan Tidak Diketahui";
+                          }
+                        }
 
-                  if (tipe === "Top Up Saldo") {
-                    senderName = "Sistem";
-                    senderEmail = "";
-                    receiverName = nama;
-                    receiverEmail = email;
-                  } else if (t.type?.toLowerCase() === 'withdrawal' || t.type?.toLowerCase() === 'tarik tunai') {
-                    senderName = nama;
-                    senderEmail = email;
-                    receiverName = "Sistem";
-                    receiverEmail = "";
-                  } else {
-                    if (!t.receiver_name && !t.sender_name) {
-                      receiverName = "Tujuan Tidak Diketahui";
-                    }
-                  }
+                        return (
+                          <tr key={String(t.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-gray-900 font-bold mb-1">{formatTanggal(t.created_at)}</div>
+                              <div className="font-mono text-xs text-gray-500 bg-gray-100/80 px-2 py-0.5 rounded border border-gray-200 inline-block tracking-tight">
+                                {t.reference || t.transaction_id || "-"}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-black border uppercase tracking-wider ${badgeColor}`}>
+                                {tipe}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 min-w-[320px]">
+                              <div className="flex items-center gap-3">
+                                <div className="flex-1 text-right bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+                                  <div className="font-bold text-gray-900 truncate" title={senderName}>{senderName}</div>
+                                  <div className="text-[10px] text-gray-500 truncate">{senderEmail}</div>
+                                </div>
+                                <div className="flex-shrink-0 text-gray-300">
+                                  <ArrowRight size={18} strokeWidth={3} className="text-emerald-500" />
+                                </div>
+                                <div className="flex-1 text-left bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+                                  <div className="font-bold text-gray-900 truncate" title={receiverName}>{receiverName}</div>
+                                  <div className="text-[10px] text-gray-500 truncate">{receiverEmail}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="font-black text-gray-900 text-base">{formatRupiah(t.amount)}</span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t.status)}`}>
+                                {getIndonesianStatus(t.status)}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
 
-                  return (
-                    <tr key={String(t.id ?? idx)} className="text-sm hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-gray-600 font-medium mb-1">{formatTanggal(t.created_at)}</div>
-                        <div className="font-mono text-xs text-gray-500 bg-gray-50 px-2 py-0.5 rounded border border-gray-100 inline-block">
-                          {t.reference || t.transaction_id || "—"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
-                          {tipe}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 min-w-[300px]">
-                        <div className="flex items-center gap-4">
-                          <div className="flex-1 text-right">
-                            <div className="font-bold text-gray-900">{senderName}</div>
-                            {senderEmail && <div className="text-xs text-gray-500">{senderEmail}</div>}
-                          </div>
-                          <div className="flex-shrink-0 text-emerald-500">
-                            <ArrowRight size={18} strokeWidth={2.5} />
-                          </div>
-                          <div className="flex-1 text-left">
-                            <div className="font-bold text-gray-900">{receiverName}</div>
-                            {receiverEmail && <div className="text-xs text-gray-500">{receiverEmail}</div>}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 font-black text-gray-900 whitespace-nowrap">{formatRupiah(t.amount)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black border ${getBadgeStatus(t.status)}`}>
-                          {getIndonesianStatus(t.status).toUpperCase()}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {totalPagesTransaksi > 1 && (
-            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white">
-              <span className="text-sm text-gray-500 font-medium">
-                Halaman {currentPageTransaksi} dari {totalPagesTransaksi}
-              </span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setCurrentPageTransaksi(p => Math.max(1, p - 1))}
-                  disabled={currentPageTransaksi === 1}
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <button
-                  onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, p + 1))}
-                  disabled={currentPageTransaksi === totalPagesTransaksi}
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronRight size={16} />
-                </button>
+                {totalPagesTransaksi > 1 && (
+                  <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                    <span className="text-xs font-medium text-gray-500">
+                      Hal {currentPageTransaksi} / {totalPagesTransaksi}
+                    </span>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => setCurrentPageTransaksi(p => Math.max(1, p - 1))}
+                        disabled={currentPageTransaksi === 1}
+                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                      >
+                        <ChevronLeft size={16} />
+                      </button>
+                      <button
+                        onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, p + 1))}
+                        disabled={currentPageTransaksi === totalPagesTransaksi}
+                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                      >
+                        <ChevronRight size={16} />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
-        </div>
+
+            {/* Kanan: Katalog Produk (1/3 width) */}
+            <div className="xl:col-span-1">
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden sticky top-8">
+                <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                      <Package size={20} className="text-amber-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-gray-900">Katalog Produk</h2>
+                      <p className="text-xs text-gray-500 font-medium">Investasi & Donasi Hijau</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleTambahProduk}
+                    className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100"
+                    title="Tambah Produk"
+                  >
+                    <span className="font-bold text-lg leading-none">+</span>
+                  </button>
+                </div>
+                
+                {stats?.products && stats.products.length > 0 ? (
+                  <div className="divide-y divide-gray-100 max-h-[700px] overflow-y-auto">
+                    {stats.products.map((p) => (
+                      <div key={p.id} className="p-6 hover:bg-gray-50/50 transition-colors group">
+                        <div className="flex gap-4">
+                          <div className="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0">
+                            <img src={globalProjectImages[p.title] || fallbackImage} alt={p.title} className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-gray-900 text-sm leading-tight truncate mb-1" title={p.title}>{p.title}</h3>
+                            <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-black uppercase tracking-wider mb-2">
+                              {p.category}
+                            </span>
+                            <div className="text-xs font-bold text-emerald-600">
+                              Target: {formatRupiah(p.target_funding || 0)}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex gap-2">
+                          <button 
+                            onClick={() => handleEditProduct(p)}
+                            className="flex-1 text-[11px] font-bold bg-white hover:bg-gray-50 text-gray-700 py-2 rounded-lg border border-gray-200 transition-colors"
+                          >
+                            EDIT
+                          </button>
+                          <button
+                            onClick={() => handleHapusProduk(p)}
+                            className="flex-1 text-[11px] font-bold bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-lg border border-red-100 transition-colors"
+                          >
+                            HAPUS
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-12 text-center text-sm font-medium text-gray-500">
+                    Katalog kosong.
+                  </div>
+                )}
+              </div>
+            </div>
+            
+          </div>
+        </main>
       </div>
     </div>
   );
