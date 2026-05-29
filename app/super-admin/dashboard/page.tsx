@@ -735,7 +735,7 @@ export default function SuperAdminDashboard() {
               </div>
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Nasabah</p>
-                <h3 className="text-3xl font-black text-gray-900">{stats ? stats.total_users : '-'}</h3>
+                <h3 className="text-3xl font-black text-gray-900">{stats?.total_users || 0}</h3>
               </div>
             </div>
 
@@ -749,7 +749,7 @@ export default function SuperAdminDashboard() {
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Beredar</p>
                 <h3 className="text-3xl font-black text-gray-900 tracking-tight">
-                  {stats ? `Rp ${Number(stats.total_balance).toLocaleString('id-ID')}` : '-'}
+                  Rp {Number(stats?.total_balance || 0).toLocaleString('id-ID')}
                 </h3>
               </div>
             </div>
@@ -764,7 +764,7 @@ export default function SuperAdminDashboard() {
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Investasi Aktif</p>
                 <h3 className="text-3xl font-black text-gray-900 tracking-tight">
-                  {stats ? `Rp ${Number(stats.total_investments).toLocaleString('id-ID')}` : '-'}
+                  Rp {Number(stats?.total_investments || 0).toLocaleString('id-ID')}
                 </h3>
               </div>
             </div>
@@ -779,7 +779,7 @@ export default function SuperAdminDashboard() {
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Produk Hijau</p>
                 <h3 className="text-3xl font-black text-gray-900">
-                  {stats?.products ? stats.products.length : '-'}
+                  {stats?.products?.length || 0}
                 </h3>
               </div>
             </div>
@@ -827,46 +827,46 @@ export default function SuperAdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 bg-white">
-                      {filteredNasabah.length === 0 ? (
+                      {(!filteredNasabah || filteredNasabah.length === 0) ? (
                         <tr>
                           <td colSpan={3} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
                             Tidak ada nasabah ditemukan.
                           </td>
                         </tr>
                       ) : (
-                        paginatedNasabah.map((u) => (
-                          <tr key={u.id} className="hover:bg-gray-50/50 transition-colors group">
+                        paginatedNasabah?.map((u) => (
+                          <tr key={u?.id || Math.random()} className="hover:bg-gray-50/50 transition-colors group">
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0 ${u.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
-                                  {u.name.charAt(0).toUpperCase()}
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0 ${u?.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                                  {(u?.name || 'U').charAt(0).toUpperCase()}
                                 </div>
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <span className="font-bold text-gray-900">{u.name}</span>
-                                    {u.is_admin && (
+                                    <span className="font-bold text-gray-900">{u?.name || 'Unknown'}</span>
+                                    {u?.is_admin && (
                                       <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black rounded border border-emerald-200 tracking-wider">
                                         ADMIN
                                       </span>
                                     )}
                                   </div>
-                                  <div className="text-xs text-gray-500 mt-0.5">{u.email}</div>
+                                  <div className="text-xs text-gray-500 mt-0.5">{u?.email || 'Tidak ada email'}</div>
                                 </div>
                               </div>
                             </td>
                             <td className="px-6 py-4">
-                              <span className="font-black text-gray-900">Rp {Number(u.balance).toLocaleString('id-ID')}</span>
+                              <span className="font-black text-gray-900">Rp {Number(u?.balance || 0).toLocaleString('id-ID')}</span>
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button 
-                                  onClick={() => handleAdjustBalance(u)}
+                                  onClick={() => u && handleAdjustBalance(u)}
                                   className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
                                 >
                                   EDIT SALDO
                                 </button>
                                 <button 
-                                  onClick={() => handleToggleBan(u)}
+                                  onClick={() => u && handleToggleBan(u)}
                                   className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 rounded-lg border border-red-200 transition-colors"
                                 >
                                   SUSPEND
@@ -883,18 +883,18 @@ export default function SuperAdminDashboard() {
                 {totalPagesNasabah > 1 && (
                   <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
                     <span className="text-xs font-medium text-gray-500">
-                      Hal {currentPageNasabah} / {totalPagesNasabah}
+                      Hal {currentPageNasabah || 1} / {totalPagesNasabah || 1}
                     </span>
                     <div className="flex gap-1">
                       <button
-                        onClick={() => setCurrentPageNasabah(p => Math.max(1, p - 1))}
+                        onClick={() => setCurrentPageNasabah(p => Math.max(1, (p || 1) - 1))}
                         disabled={currentPageNasabah === 1}
                         className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
                         <ChevronLeft size={16} />
                       </button>
                       <button
-                        onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, p + 1))}
+                        onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, (p || 1) + 1))}
                         disabled={currentPageNasabah === totalPagesNasabah}
                         className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
@@ -931,7 +931,7 @@ export default function SuperAdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 bg-white">
-                      {transactions.length === 0 ? (
+                      {(!transactions || transactions.length === 0) ? (
                         <tr>
                           <td colSpan={5} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
                             {transactionsLoading ? (
@@ -944,11 +944,11 @@ export default function SuperAdminDashboard() {
                         </tr>
                       ) : null}
 
-                      {paginatedTransactions.map((t, idx) => {
-                        const nama = t.user?.name || t.user_name || "User";
-                        const email = t.user?.email || t.user_email || "";
+                      {paginatedTransactions?.map((t, idx) => {
+                        const nama = t?.user?.name || t?.user_name || "User";
+                        const email = t?.user?.email || t?.user_email || "";
                         
-                        let tipe = t.transaction_type_label || String(t.type).toUpperCase();
+                        let tipe = t?.transaction_type_label || String(t?.type || "Transaksi").toUpperCase();
                         let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
                         
                         if (tipe.toLowerCase().includes("transfer")) {
@@ -959,9 +959,9 @@ export default function SuperAdminDashboard() {
                           badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
                         }
 
-                        let senderName = t.sender_name || nama;
+                        let senderName = t?.sender_name || nama;
                         let senderEmail = email;
-                        let receiverName = t.receiver_name || "-";
+                        let receiverName = t?.receiver_name || "-";
                         let receiverEmail = "";
 
                         if (tipe === "Top Up Saldo") {
@@ -969,23 +969,23 @@ export default function SuperAdminDashboard() {
                           senderEmail = "Otomatis";
                           receiverName = nama;
                           receiverEmail = email;
-                        } else if (t.type?.toLowerCase() === 'withdrawal' || t.type?.toLowerCase() === 'tarik tunai') {
+                        } else if (t?.type?.toLowerCase() === 'withdrawal' || t?.type?.toLowerCase() === 'tarik tunai') {
                           senderName = nama;
                           senderEmail = email;
                           receiverName = "Sistem Bank";
                           receiverEmail = "Otomatis";
                         } else {
-                          if (!t.receiver_name && !t.sender_name) {
+                          if (!t?.receiver_name && !t?.sender_name) {
                             receiverName = "Tujuan Tidak Diketahui";
                           }
                         }
 
                         return (
-                          <tr key={String(t.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
+                          <tr key={String(t?.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-gray-900 font-bold mb-1">{formatTanggal(t.created_at)}</div>
+                              <div className="text-gray-900 font-bold mb-1">{formatTanggal(t?.created_at)}</div>
                               <div className="font-mono text-xs text-gray-500 bg-gray-100/80 px-2 py-0.5 rounded border border-gray-200 inline-block tracking-tight">
-                                {t.reference || t.transaction_id || "-"}
+                                {t?.reference || t?.transaction_id || "-"}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -997,23 +997,23 @@ export default function SuperAdminDashboard() {
                               <div className="flex items-center gap-3">
                                 <div className="flex-1 text-right bg-gray-50/50 p-2 rounded-lg border border-gray-100">
                                   <div className="font-bold text-gray-900 truncate" title={senderName}>{senderName}</div>
-                                  <div className="text-[10px] text-gray-500 truncate">{senderEmail}</div>
+                                  <div className="text-[10px] text-gray-500 truncate">{senderEmail || '-'}</div>
                                 </div>
                                 <div className="flex-shrink-0 text-gray-300">
                                   <ArrowRight size={18} strokeWidth={3} className="text-emerald-500" />
                                 </div>
                                 <div className="flex-1 text-left bg-gray-50/50 p-2 rounded-lg border border-gray-100">
                                   <div className="font-bold text-gray-900 truncate" title={receiverName}>{receiverName}</div>
-                                  <div className="text-[10px] text-gray-500 truncate">{receiverEmail}</div>
+                                  <div className="text-[10px] text-gray-500 truncate">{receiverEmail || '-'}</div>
                                 </div>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="font-black text-gray-900 text-base">{formatRupiah(t.amount)}</span>
+                              <span className="font-black text-gray-900 text-base">{formatRupiah(t?.amount || 0)}</span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t.status)}`}>
-                                {getIndonesianStatus(t.status)}
+                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t?.status)}`}>
+                                {getIndonesianStatus(t?.status)}
                               </span>
                             </td>
                           </tr>
@@ -1026,18 +1026,18 @@ export default function SuperAdminDashboard() {
                 {totalPagesTransaksi > 1 && (
                   <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
                     <span className="text-xs font-medium text-gray-500">
-                      Hal {currentPageTransaksi} / {totalPagesTransaksi}
+                      Hal {currentPageTransaksi || 1} / {totalPagesTransaksi || 1}
                     </span>
                     <div className="flex gap-1">
                       <button
-                        onClick={() => setCurrentPageTransaksi(p => Math.max(1, p - 1))}
+                        onClick={() => setCurrentPageTransaksi(p => Math.max(1, (p || 1) - 1))}
                         disabled={currentPageTransaksi === 1}
                         className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
                         <ChevronLeft size={16} />
                       </button>
                       <button
-                        onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, p + 1))}
+                        onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, (p || 1) + 1))}
                         disabled={currentPageTransaksi === totalPagesTransaksi}
                         className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
@@ -1071,33 +1071,33 @@ export default function SuperAdminDashboard() {
                   </button>
                 </div>
                 
-                {stats?.products && stats.products.length > 0 ? (
+                {(stats?.products && stats.products.length > 0) ? (
                   <div className="divide-y divide-gray-100 max-h-[700px] overflow-y-auto">
                     {stats.products.map((p) => (
-                      <div key={p.id} className="p-6 hover:bg-gray-50/50 transition-colors group">
+                      <div key={p?.id || Math.random()} className="p-6 hover:bg-gray-50/50 transition-colors group">
                         <div className="flex gap-4">
                           <div className="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0">
-                            <img src={globalProjectImages[p.title] || fallbackImage} alt={p.title} className="w-full h-full object-cover" />
+                            <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-gray-900 text-sm leading-tight truncate mb-1" title={p.title}>{p.title}</h3>
+                            <h3 className="font-bold text-gray-900 text-sm leading-tight truncate mb-1" title={p?.title || 'Tanpa Judul'}>{p?.title || 'Tanpa Judul'}</h3>
                             <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-black uppercase tracking-wider mb-2">
-                              {p.category}
+                              {p?.category || 'Umum'}
                             </span>
                             <div className="text-xs font-bold text-emerald-600">
-                              Target: {formatRupiah(p.target_funding || 0)}
+                              Target: {formatRupiah(p?.target_funding || 0)}
                             </div>
                           </div>
                         </div>
                         <div className="mt-4 flex gap-2">
                           <button 
-                            onClick={() => handleEditProduct(p)}
+                            onClick={() => p && handleEditProduct(p)}
                             className="flex-1 text-[11px] font-bold bg-white hover:bg-gray-50 text-gray-700 py-2 rounded-lg border border-gray-200 transition-colors"
                           >
                             EDIT
                           </button>
                           <button
-                            onClick={() => handleHapusProduk(p)}
+                            onClick={() => p && handleHapusProduk(p)}
                             className="flex-1 text-[11px] font-bold bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-lg border border-red-100 transition-colors"
                           >
                             HAPUS
