@@ -24,7 +24,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
 export default function DashboardPage() {
   const userHook = useUserContext();
-  const { userData, isLoading, syncStatus, isAdmin, userName, userEmail, userBalance, userEcoPoints, refreshUserData, tier, impactScore, accountNumber } = userHook;
+  const { userData, isLoading, syncStatus, isAdmin, userName, userEmail, userBalance, userEcoPoints, userLifetimeEcoPoints, refreshUserData, tier, impactScore, accountNumber } = userHook;
   const [copied, setCopied] = useState(false);
 
   // Cek Level Tier Poin Dinamis rek
@@ -32,11 +32,11 @@ export default function DashboardPage() {
   let progressText = "Progress Basic";
   let displayTierName = "BASIC";
 
-  if (userEcoPoints > 5000) {
+  if (userLifetimeEcoPoints > 5000) {
     displayTierName = "PRIORITAS";
     maxPoints = 10000; // itung persentase poin 5500 dibagi 10000 ben bar e gak nembus kothak
     progressText = "Progress Prioritas";
-  } else if (userEcoPoints >= 2001) {
+  } else if (userLifetimeEcoPoints >= 2001) {
     displayTierName = "PLATINUM";
     maxPoints = 5000;
     progressText = "Progress Platinum";
@@ -320,10 +320,10 @@ export default function DashboardPage() {
             <div className="mt-4">
               <div className="flex justify-between text-[10px] text-gray-500 font-bold mb-1">
                 <span>{progressText}</span>
-                <span>{userEcoPoints} / {maxPoints}</span>
+                <span>{userLifetimeEcoPoints} / {maxPoints} XP</span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-1.5">
-                <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-700" style={{ width: `${Math.min((userEcoPoints / maxPoints) * 100, 100)}%` }}></div>
+                <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-700" style={{ width: `${Math.min((userLifetimeEcoPoints / maxPoints) * 100, 100)}%` }}></div>
               </div>
             </div>
           </div>

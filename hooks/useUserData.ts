@@ -142,6 +142,7 @@ export function useUserData() {
   const userEmail    = userData?.user?.email || userData?.email || supabaseUser?.email || '';
   const userBalance  = userData?.user?.balance ?? userData?.balance ?? 0;
   const userEcoPoints = userData?.user?.eco_points ?? userData?.eco_points ?? 0;
+  const userLifetimeEcoPoints = userData?.user?.lifetime_eco_points ?? userData?.lifetime_eco_points ?? 0;
   const impactScore  = userData?.user?.impact_score ?? userData?.impact_score ?? 0;
   const accountNumber = userData?.user?.account_number || userData?.account_number || '';
   const totalDonation = userData?.total_donation || 0;
@@ -165,9 +166,9 @@ export function useUserData() {
 
   // FIX: Cek Level Tier Poin Dinamis rek ben sinkron visual global secara real-time
   let tier = 'BASIC';
-  if (userEcoPoints > 5000) {
+  if (userLifetimeEcoPoints > 5000) {
     tier = 'PRIORITAS';
-  } else if (userEcoPoints >= 2001) {
+  } else if (userLifetimeEcoPoints >= 2001) {
     tier = 'PLATINUM';
   }
 
@@ -177,7 +178,7 @@ export function useUserData() {
 
   return {
     userData, supabaseUser, isLoading, syncStatus,
-    isAdmin, userName, userEmail, userBalance, userEcoPoints, avatarUrl, initials,
+    isAdmin, userName, userEmail, userBalance, userEcoPoints, userLifetimeEcoPoints, avatarUrl, initials,
     tier, impactScore, phoneNumber, address, accountNumber, totalDonation, isOwner,
     refreshUserData: (newUserData?: any) => {
       if (newUserData) {
