@@ -74,6 +74,9 @@ export default function SuperAdminDashboard() {
   const itemsPerNasabahPage = 5;
   const itemsPerTransaksiPage = 10;
 
+  // Tab Navigation State
+  const [activeTab, setActiveTab] = useState('dashboard');
+
   useEffect(() => {
     const checkAdmin = async () => {
       try {
@@ -637,7 +640,6 @@ export default function SuperAdminDashboard() {
     (currentPageTransaksi - 1) * itemsPerTransaksiPage, 
     currentPageTransaksi * itemsPerTransaksiPage
   );
-
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
       {/* Sidebar */}
@@ -654,21 +656,33 @@ export default function SuperAdminDashboard() {
         </div>
         
         <nav className="flex-1 py-8 flex flex-col gap-2 px-4 relative z-10">
-          <div className="px-4 py-3 bg-emerald-800/50 rounded-xl flex items-center gap-3 text-white cursor-pointer border border-emerald-700/50 shadow-inner">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-400"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
-            <span className="font-bold text-sm">Dashboard Utama</span>
+          <div 
+            onClick={() => setActiveTab('dashboard')}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'dashboard' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'dashboard' ? 'text-emerald-400' : ''}`}><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+            <span className={`text-sm ${activeTab === 'dashboard' ? 'font-bold' : 'font-semibold'}`}>Dashboard Utama</span>
           </div>
-          <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            <span className="font-semibold text-sm">Database Nasabah</span>
+          <div 
+            onClick={() => setActiveTab('nasabah')}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'nasabah' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'nasabah' ? 'text-emerald-400' : ''}`}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span className={`text-sm ${activeTab === 'nasabah' ? 'font-bold' : 'font-semibold'}`}>Database Nasabah</span>
           </div>
-          <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
-            <span className="font-semibold text-sm">Katalog Produk</span>
+          <div 
+            onClick={() => setActiveTab('produk')}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'produk' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'produk' ? 'text-emerald-400' : ''}`}><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+            <span className={`text-sm ${activeTab === 'produk' ? 'font-bold' : 'font-semibold'}`}>Katalog Produk</span>
           </div>
-          <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
-            <span className="font-semibold text-sm">Riwayat Transaksi</span>
+          <div 
+            onClick={() => setActiveTab('transaksi')}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'transaksi' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'transaksi' ? 'text-emerald-400' : ''}`}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
+            <span className={`text-sm ${activeTab === 'transaksi' ? 'font-bold' : 'font-semibold'}`}>Riwayat Transaksi</span>
           </div>
         </nav>
         
@@ -718,398 +732,406 @@ export default function SuperAdminDashboard() {
         </header>
 
         {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
-          
-          {/* Visual Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
-              <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              </div>
-              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 border border-blue-100">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Nasabah</p>
-                <h3 className="text-3xl font-black text-gray-900">{stats?.total_users || 0}</h3>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
-              <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
-              </div>
-              <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 border border-emerald-100">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Beredar</p>
-                <h3 className="text-3xl font-black text-gray-900 tracking-tight">
-                  Rp {Number(stats?.total_balance || 0).toLocaleString('id-ID')}
-                </h3>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(139,92,246,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
-              <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-              </div>
-              <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 mb-6 border border-purple-100">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Investasi Aktif</p>
-                <h3 className="text-3xl font-black text-gray-900 tracking-tight">
-                  Rp {Number(stats?.total_investments || 0).toLocaleString('id-ID')}
-                </h3>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(245,158,11,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
-              <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
-              </div>
-              <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 mb-6 border border-amber-100">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Produk Hijau</p>
-                <h3 className="text-3xl font-black text-gray-900">
-                  {stats?.products?.length || 0}
-                </h3>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            {/* Kiri: Daftar Nasabah & Transaksi (2/3 width on large screens) */}
-            <div className="xl:col-span-2 space-y-8">
-              {/* Database Nasabah */}
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-gray-900">Database Nasabah</h2>
-                      <p className="text-xs text-gray-500 font-medium">Manajemen akun pengguna</p>
-                    </div>
+        <main className="flex-1 overflow-y-auto w-full">
+          {/* Centered Main Container */}
+          <div className="max-w-7xl mx-auto p-6 md:p-8 space-y-6">
+            
+            {/* Conditional Rendering: SUMMARY CARDS (Dashboard Only) */}
+            {activeTab === 'dashboard' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                   </div>
-                  <div className="relative w-full sm:w-64">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-gray-400"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Cari nama atau email..."
-                      value={searchQueryNasabah}
-                      onChange={(e) => {
-                        setSearchQueryNasabah(e.target.value);
-                        setCurrentPageNasabah(1);
-                      }}
-                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900"
-                    />
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-5 border border-blue-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Nasabah</p>
+                    <h3 className="text-2xl font-black text-gray-900 truncate" title={String(stats?.total_users || 0)}>{stats?.total_users || 0}</h3>
                   </div>
                 </div>
-                
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-100">
-                    <thead className="bg-gray-50/50">
-                      <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                        <th className="px-6 py-4">Nasabah</th>
-                        <th className="px-6 py-4">Saldo</th>
-                        <th className="px-6 py-4 text-right">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100 bg-white">
-                      {(!filteredNasabah || filteredNasabah.length === 0) ? (
-                        <tr>
-                          <td colSpan={3} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
-                            Tidak ada nasabah ditemukan.
-                          </td>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                  </div>
+                  <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 mb-5 border border-emerald-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Beredar</p>
+                    <h3 className="text-2xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_balance || 0).toLocaleString('id-ID')}`}>
+                      Rp {Number(stats?.total_balance || 0).toLocaleString('id-ID')}
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                  </div>
+                  <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 mb-5 border border-purple-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Investasi Aktif</p>
+                    <h3 className="text-2xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_investments || 0).toLocaleString('id-ID')}`}>
+                      Rp {Number(stats?.total_investments || 0).toLocaleString('id-ID')}
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                  </div>
+                  <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 mb-5 border border-amber-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Produk Hijau</p>
+                    <h3 className="text-2xl font-black text-gray-900 truncate">
+                      {stats?.products?.length || 0}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Main Grid for Tables / Catalog */}
+            <div className={`grid grid-cols-1 ${(activeTab === 'dashboard') ? 'lg:grid-cols-3' : ''} gap-6`}>
+              
+              {/* Database Nasabah Section */}
+              {(activeTab === 'dashboard' || activeTab === 'nasabah') && (
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : ''}`}>
+                  <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-bold text-gray-900">Database Nasabah</h2>
+                        <p className="text-xs text-gray-500 font-medium">Manajemen akun pengguna</p>
+                      </div>
+                    </div>
+                    <div className="relative w-full sm:w-64">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-gray-400"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Cari nama atau email..."
+                        value={searchQueryNasabah}
+                        onChange={(e) => {
+                          setSearchQueryNasabah(e.target.value);
+                          setCurrentPageNasabah(1);
+                        }}
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-100">
+                      <thead className="bg-gray-50/50">
+                        <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                          <th className="px-6 py-4">Nasabah</th>
+                          <th className="px-6 py-4">Saldo</th>
+                          <th className="px-6 py-4 text-right">Aksi</th>
                         </tr>
-                      ) : (
-                        paginatedNasabah?.map((u) => (
-                          <tr key={u?.id || Math.random()} className="hover:bg-gray-50/50 transition-colors group">
-                            <td className="px-6 py-4">
-                              <div className="flex items-center gap-3">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0 ${u?.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
-                                  {(u?.name || 'U').charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-bold text-gray-900">{u?.name || 'Unknown'}</span>
-                                    {u?.is_admin && (
-                                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black rounded border border-emerald-200 tracking-wider">
-                                        ADMIN
-                                      </span>
-                                    )}
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 bg-white">
+                        {(!filteredNasabah || filteredNasabah.length === 0) ? (
+                          <tr>
+                            <td colSpan={3} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                              Tidak ada nasabah ditemukan.
+                            </td>
+                          </tr>
+                        ) : (
+                          paginatedNasabah?.map((u) => (
+                            <tr key={u?.id || Math.random()} className="hover:bg-gray-50/50 transition-colors group">
+                              <td className="px-6 py-5">
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0 ${u?.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                                    {(u?.name || 'U').charAt(0).toUpperCase()}
                                   </div>
-                                  <div className="text-xs text-gray-500 mt-0.5">{u?.email || 'Tidak ada email'}</div>
+                                  <div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-bold text-gray-900">{u?.name || 'Unknown'}</span>
+                                      {u?.is_admin && (
+                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black rounded border border-emerald-200 tracking-wider">
+                                          ADMIN
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-0.5">{u?.email || 'Tidak ada email'}</div>
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <span className="font-black text-gray-900">Rp {Number(u?.balance || 0).toLocaleString('id-ID')}</span>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button 
-                                  onClick={() => u && handleAdjustBalance(u)}
-                                  className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
-                                >
-                                  EDIT SALDO
-                                </button>
-                                <button 
-                                  onClick={() => u && handleToggleBan(u)}
-                                  className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 rounded-lg border border-red-200 transition-colors"
-                                >
-                                  SUSPEND
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                              </td>
+                              <td className="px-6 py-5">
+                                <span className="font-black text-gray-900">Rp {Number(u?.balance || 0).toLocaleString('id-ID')}</span>
+                              </td>
+                              <td className="px-6 py-5">
+                                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button 
+                                    onClick={() => u && handleAdjustBalance(u)}
+                                    className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+                                  >
+                                    EDIT SALDO
+                                  </button>
+                                  <button 
+                                    onClick={() => u && handleToggleBan(u)}
+                                    className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 rounded-lg border border-red-200 transition-colors"
+                                  >
+                                    SUSPEND
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
 
-                {totalPagesNasabah > 1 && (
-                  <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-                    <span className="text-xs font-medium text-gray-500">
-                      Hal {currentPageNasabah || 1} / {totalPagesNasabah || 1}
-                    </span>
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => setCurrentPageNasabah(p => Math.max(1, (p || 1) - 1))}
-                        disabled={currentPageNasabah === 1}
-                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
-                      </button>
-                      <button
-                        onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, (p || 1) + 1))}
-                        disabled={currentPageNasabah === totalPagesNasabah}
-                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
-                      </button>
+                  {totalPagesNasabah > 1 && (
+                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                      <span className="text-xs font-medium text-gray-500">
+                        Hal {currentPageNasabah || 1} / {totalPagesNasabah || 1}
+                      </span>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setCurrentPageNasabah(p => Math.max(1, (p || 1) - 1))}
+                          disabled={currentPageNasabah === 1}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
+                        </button>
+                        <button
+                          onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, (p || 1) + 1))}
+                          disabled={currentPageNasabah === totalPagesNasabah}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Riwayat Transaksi Section */}
+              {(activeTab === 'dashboard' || activeTab === 'transaksi') && (
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : ''}`}>
+                  <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-bold text-gray-900">Riwayat Transaksi Terpadu</h2>
+                        <p className="text-xs text-gray-500 font-medium">Monitoring pergerakan dana real-time</p>
+                      </div>
                     </div>
                   </div>
-                )}
-              </div>
 
-              {/* Riwayat Transaksi (Visual Overhaul) */}
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-gray-900">Riwayat Transaksi Terpadu</h2>
-                      <p className="text-xs text-gray-500 font-medium">Monitoring pergerakan dana real-time</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-100">
-                    <thead className="bg-gray-50/50">
-                      <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                        <th className="px-6 py-4">Waktu & Trace ID</th>
-                        <th className="px-6 py-4">Tipe Transaksi</th>
-                        <th className="px-6 py-4">Alur Uang</th>
-                        <th className="px-6 py-4">Nominal</th>
-                        <th className="px-6 py-4">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100 bg-white">
-                      {(!transactions || transactions.length === 0) ? (
-                        <tr>
-                          <td colSpan={5} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
-                            {transactionsLoading ? (
-                              <div className="flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 animate-spin text-indigo-500"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
-                                <span>Memuat data...</span>
-                              </div>
-                            ) : "Belum ada transaksi."}
-                          </td>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-100">
+                      <thead className="bg-gray-50/50">
+                        <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                          <th className="px-6 py-4">Waktu & Trace ID</th>
+                          <th className="px-6 py-4">Tipe Transaksi</th>
+                          <th className="px-6 py-4">Alur Uang</th>
+                          <th className="px-6 py-4">Nominal</th>
+                          <th className="px-6 py-4">Status</th>
                         </tr>
-                      ) : null}
-
-                      {paginatedTransactions?.map((t, idx) => {
-                        const nama = t?.user?.name || t?.user_name || "User";
-                        const email = t?.user?.email || t?.user_email || "";
-                        
-                        let tipe = t?.transaction_type_label || String(t?.type || "Transaksi").toUpperCase();
-                        let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
-                        
-                        if (tipe.toLowerCase().includes("transfer")) {
-                          tipe = "Transfer Dana";
-                          badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
-                        } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
-                          tipe = "Top Up Saldo";
-                          badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                        }
-
-                        let senderName = t?.sender_name || nama;
-                        let senderEmail = email;
-                        let receiverName = t?.receiver_name || "-";
-                        let receiverEmail = "";
-
-                        if (tipe === "Top Up Saldo") {
-                          senderName = "Sistem Bank";
-                          senderEmail = "Otomatis";
-                          receiverName = nama;
-                          receiverEmail = email;
-                        } else if (t?.type?.toLowerCase() === 'withdrawal' || t?.type?.toLowerCase() === 'tarik tunai') {
-                          senderName = nama;
-                          senderEmail = email;
-                          receiverName = "Sistem Bank";
-                          receiverEmail = "Otomatis";
-                        } else {
-                          if (!t?.receiver_name && !t?.sender_name) {
-                            receiverName = "Tujuan Tidak Diketahui";
-                          }
-                        }
-
-                        return (
-                          <tr key={String(t?.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-gray-900 font-bold mb-1">{formatTanggal(t?.created_at)}</div>
-                              <div className="font-mono text-xs text-gray-500 bg-gray-100/80 px-2 py-0.5 rounded border border-gray-200 inline-block tracking-tight">
-                                {t?.reference || t?.transaction_id || "-"}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-black border uppercase tracking-wider ${badgeColor}`}>
-                                {tipe}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 min-w-[320px]">
-                              <div className="flex items-center gap-3">
-                                <div className="flex-1 text-right bg-gray-50/50 p-2 rounded-lg border border-gray-100">
-                                  <div className="font-bold text-gray-900 truncate" title={senderName}>{senderName}</div>
-                                  <div className="text-[10px] text-gray-500 truncate">{senderEmail || '-'}</div>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 bg-white">
+                        {(!transactions || transactions.length === 0) ? (
+                          <tr>
+                            <td colSpan={5} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                              {transactionsLoading ? (
+                                <div className="flex items-center justify-center gap-2">
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 animate-spin text-indigo-500"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                                  <span>Memuat data...</span>
                                 </div>
-                                <div className="flex-shrink-0 text-gray-300">
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px] text-emerald-500"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                                </div>
-                                <div className="flex-1 text-left bg-gray-50/50 p-2 rounded-lg border border-gray-100">
-                                  <div className="font-bold text-gray-900 truncate" title={receiverName}>{receiverName}</div>
-                                  <div className="text-[10px] text-gray-500 truncate">{receiverEmail || '-'}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="font-black text-gray-900 text-base">{formatRupiah(t?.amount || 0)}</span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t?.status)}`}>
-                                {getIndonesianStatus(t?.status)}
-                              </span>
+                              ) : "Belum ada transaksi."}
                             </td>
                           </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                        ) : null}
 
-                {totalPagesTransaksi > 1 && (
-                  <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-                    <span className="text-xs font-medium text-gray-500">
-                      Hal {currentPageTransaksi || 1} / {totalPagesTransaksi || 1}
-                    </span>
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => setCurrentPageTransaksi(p => Math.max(1, (p || 1) - 1))}
-                        disabled={currentPageTransaksi === 1}
-                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
-                      </button>
-                      <button
-                        onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, (p || 1) + 1))}
-                        disabled={currentPageTransaksi === totalPagesTransaksi}
-                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+                        {paginatedTransactions?.map((t, idx) => {
+                          const nama = t?.user?.name || t?.user_name || "User";
+                          const email = t?.user?.email || t?.user_email || "";
+                          
+                          let tipe = t?.transaction_type_label || String(t?.type || "Transaksi").toUpperCase();
+                          let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
+                          
+                          if (tipe.toLowerCase().includes("transfer")) {
+                            tipe = "Transfer Dana";
+                            badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+                          } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
+                            tipe = "Top Up Saldo";
+                            badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                          }
 
-            {/* Kanan: Katalog Produk (1/3 width) */}
-            <div className="xl:col-span-1">
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden sticky top-8">
-                <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-amber-600"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-gray-900">Katalog Produk</h2>
-                      <p className="text-xs text-gray-500 font-medium">Investasi & Donasi Hijau</p>
-                    </div>
+                          let senderName = t?.sender_name || nama;
+                          let senderEmail = email;
+                          let receiverName = t?.receiver_name || "-";
+                          let receiverEmail = "";
+
+                          if (tipe === "Top Up Saldo") {
+                            senderName = "Sistem Bank";
+                            senderEmail = "Otomatis";
+                            receiverName = nama;
+                            receiverEmail = email;
+                          } else if (t?.type?.toLowerCase() === 'withdrawal' || t?.type?.toLowerCase() === 'tarik tunai') {
+                            senderName = nama;
+                            senderEmail = email;
+                            receiverName = "Sistem Bank";
+                            receiverEmail = "Otomatis";
+                          } else {
+                            if (!t?.receiver_name && !t?.sender_name) {
+                              receiverName = "Tujuan Tidak Diketahui";
+                            }
+                          }
+
+                          return (
+                            <tr key={String(t?.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
+                              <td className="px-6 py-5 whitespace-nowrap">
+                                <div className="text-gray-900 font-bold mb-1">{formatTanggal(t?.created_at)}</div>
+                                <div className="font-mono text-xs text-gray-500 bg-gray-100/80 px-2 py-0.5 rounded border border-gray-200 inline-block tracking-tight">
+                                  {t?.reference || t?.transaction_id || "-"}
+                                </div>
+                              </td>
+                              <td className="px-6 py-5 whitespace-nowrap">
+                                <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-black border uppercase tracking-wider ${badgeColor}`}>
+                                  {tipe}
+                                </span>
+                              </td>
+                              <td className="px-6 py-5 min-w-[320px]">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex-1 text-right bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+                                    <div className="font-bold text-gray-900 truncate" title={senderName}>{senderName}</div>
+                                    <div className="text-[10px] text-gray-500 truncate">{senderEmail || '-'}</div>
+                                  </div>
+                                  <div className="flex-shrink-0 text-gray-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px] text-emerald-500"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                                  </div>
+                                  <div className="flex-1 text-left bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+                                    <div className="font-bold text-gray-900 truncate" title={receiverName}>{receiverName}</div>
+                                    <div className="text-[10px] text-gray-500 truncate">{receiverEmail || '-'}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-5 whitespace-nowrap">
+                                <span className="font-black text-gray-900 text-base">{formatRupiah(t?.amount || 0)}</span>
+                              </td>
+                              <td className="px-6 py-5 whitespace-nowrap">
+                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t?.status)}`}>
+                                  {getIndonesianStatus(t?.status)}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
-                  <button
-                    onClick={handleTambahProduk}
-                    className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100"
-                    title="Tambah Produk"
-                  >
-                    <span className="font-bold text-lg leading-none">+</span>
-                  </button>
+
+                  {totalPagesTransaksi > 1 && (
+                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                      <span className="text-xs font-medium text-gray-500">
+                        Hal {currentPageTransaksi || 1} / {totalPagesTransaksi || 1}
+                      </span>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setCurrentPageTransaksi(p => Math.max(1, (p || 1) - 1))}
+                          disabled={currentPageTransaksi === 1}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
+                        </button>
+                        <button
+                          onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, (p || 1) + 1))}
+                          disabled={currentPageTransaksi === totalPagesTransaksi}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                
-                {(stats?.products && stats.products.length > 0) ? (
-                  <div className="divide-y divide-gray-100 max-h-[700px] overflow-y-auto">
-                    {stats.products.map((p) => (
-                      <div key={p?.id || Math.random()} className="p-6 hover:bg-gray-50/50 transition-colors group">
-                        <div className="flex gap-4">
-                          <div className="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0">
-                            <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-gray-900 text-sm leading-tight truncate mb-1" title={p?.title || 'Tanpa Judul'}>{p?.title || 'Tanpa Judul'}</h3>
-                            <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-black uppercase tracking-wider mb-2">
-                              {p?.category || 'Umum'}
-                            </span>
-                            <div className="text-xs font-bold text-emerald-600">
-                              Target: {formatRupiah(p?.target_funding || 0)}
+              )}
+
+              {/* Katalog Produk Section */}
+              {(activeTab === 'dashboard' || activeTab === 'produk') && (
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-1' : ''}`}>
+                  <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-amber-600"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-bold text-gray-900">Katalog Produk</h2>
+                        <p className="text-xs text-gray-500 font-medium">Investasi & Donasi Hijau</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleTambahProduk}
+                      className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100"
+                      title="Tambah Produk"
+                    >
+                      <span className="font-bold text-lg leading-none">+</span>
+                    </button>
+                  </div>
+                  
+                  {(stats?.products && stats.products.length > 0) ? (
+                    <div className="divide-y divide-gray-100 max-h-[700px] overflow-y-auto">
+                      {stats.products.map((p) => (
+                        <div key={p?.id || Math.random()} className="p-6 hover:bg-gray-50/50 transition-colors group">
+                          <div className="flex gap-4">
+                            <div className="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0">
+                              <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold text-gray-900 text-sm leading-tight truncate mb-1" title={p?.title || 'Tanpa Judul'}>{p?.title || 'Tanpa Judul'}</h3>
+                              <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-black uppercase tracking-wider mb-2">
+                                {p?.category || 'Umum'}
+                              </span>
+                              <div className="text-xs font-bold text-emerald-600">
+                                Target: {formatRupiah(p?.target_funding || 0)}
+                              </div>
                             </div>
                           </div>
+                          <div className="mt-4 flex gap-2">
+                            <button 
+                              onClick={() => p && handleEditProduct(p)}
+                              className="flex-1 text-[11px] font-bold bg-white hover:bg-gray-50 text-gray-700 py-2.5 rounded-lg border border-gray-200 transition-colors"
+                            >
+                              EDIT
+                            </button>
+                            <button
+                              onClick={() => p && handleHapusProduk(p)}
+                              className="flex-1 text-[11px] font-bold bg-red-50 hover:bg-red-100 text-red-600 py-2.5 rounded-lg border border-red-100 transition-colors"
+                            >
+                              HAPUS
+                            </button>
+                          </div>
                         </div>
-                        <div className="mt-4 flex gap-2">
-                          <button 
-                            onClick={() => p && handleEditProduct(p)}
-                            className="flex-1 text-[11px] font-bold bg-white hover:bg-gray-50 text-gray-700 py-2 rounded-lg border border-gray-200 transition-colors"
-                          >
-                            EDIT
-                          </button>
-                          <button
-                            onClick={() => p && handleHapusProduk(p)}
-                            className="flex-1 text-[11px] font-bold bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-lg border border-red-100 transition-colors"
-                          >
-                            HAPUS
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-12 text-center text-sm font-medium text-gray-500">
-                    Katalog kosong.
-                  </div>
-                )}
-              </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-12 text-center text-sm font-medium text-gray-500">
+                      Katalog kosong.
+                    </div>
+                  )}
+                </div>
+              )}
+              
             </div>
-            
           </div>
         </main>
       </div>
