@@ -214,6 +214,8 @@ export default function TransferModal({
         amount: rawAmount,
         to_account: rekening || undefined,
         recipient_name: recipientName || data.receiver_name || data.recipient_name || rekening,
+        note: note,
+        description: note,
       });
       onClose();
       // Reset form

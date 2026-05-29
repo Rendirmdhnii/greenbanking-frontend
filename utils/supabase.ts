@@ -1,9 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Koneksi ke Supabase — GreenBanking Nusantara
-// jarno moco soko .env, bahaya lek disimpen kene iso dimaling uwong
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  'https://kxdiqofkrxtwycmssbgp.supabase.co';
+
+const supabaseAnonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  'sb_publishable_ul9Q9xot7UWlJ09H4M3dBQ_8yUbnKwJ';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -13,4 +17,4 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     detectSessionInUrl: true,
   },
-});
+})
