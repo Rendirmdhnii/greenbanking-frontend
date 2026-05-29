@@ -28,18 +28,18 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState(false);
 
   // Cek Level Tier Poin Dinamis rek
-  let maxPoints = 2000;
+  let maxPoints = 10000;
   let progressText = "Progress Basic";
   let displayTierName = "BASIC";
 
-  if (userLifetimeEcoPoints > 5000) {
-    displayTierName = "PRIORITAS";
-    maxPoints = 10000; // itung persentase poin 5500 dibagi 10000 ben bar e gak nembus kothak
-    progressText = "Progress Prioritas";
-  } else if (userLifetimeEcoPoints >= 2001) {
+  if (userLifetimeEcoPoints >= 50000) {
     displayTierName = "PLATINUM";
-    maxPoints = 5000;
+    maxPoints = 50000; 
     progressText = "Progress Platinum";
+  } else if (userLifetimeEcoPoints >= 10000) {
+    displayTierName = "PRIORITAS";
+    maxPoints = 50000;
+    progressText = "Progress Prioritas";
   }
   
   const [topUpAmount, setTopUpAmount] = useState('');
@@ -319,10 +319,10 @@ export default function DashboardPage() {
             </div>
             <div className="mt-4">
               <div className="flex justify-between text-[10px] text-gray-500 font-bold mb-1">
-                <span>{displayTierName === 'PRIORITAS' ? 'Tier Tertinggi Dicapai' : progressText}</span>
+                <span>{displayTierName === 'PLATINUM' ? 'Tier Tertinggi Dicapai' : progressText}</span>
                 <span>
-                  {displayTierName === 'PRIORITAS' 
-                    ? `${userLifetimeEcoPoints.toLocaleString('id-ID')} XP (Max Tier)`
+                  {displayTierName === 'PLATINUM' 
+                    ? 'Status: Tier Maksimal Tercapai'
                     : `${userLifetimeEcoPoints.toLocaleString('id-ID')} / ${maxPoints.toLocaleString('id-ID')} XP`}
                 </span>
               </div>
