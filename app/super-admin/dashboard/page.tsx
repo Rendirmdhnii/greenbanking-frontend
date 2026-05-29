@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { 
   ShieldCheck, Users, TrendingUp, ArrowLeft, Wallet,
-  Loader2, RefreshCw, Crown, Mail, LogOut, Search, ChevronLeft, ChevronRight
+  Loader2, RefreshCw, Crown, Mail, LogOut, Search, ChevronLeft, ChevronRight, ArrowRight
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
@@ -165,7 +165,23 @@ export default function SuperAdminDashboard() {
       if (res.ok) {
         const data = await res.json();
         const list = Array.isArray(data) ? data : data?.data || data?.transactions || [];
-        setTransactions(Array.isArray(list) ? list : []);
+        
+        const groupedMap = new Map<string, AdminTransaction>();
+        
+        (Array.isArray(list) ? list : []).forEach((t: AdminTransaction) => {
+          const rawId = t.reference || t.transaction_id || String(t.id || "");
+          const baseId = rawId.replace(/-(D|K)$/i, "");
+          
+          if (!groupedMap.has(baseId)) {
+            groupedMap.set(baseId, { ...t, transaction_id: baseId, reference: baseId });
+          } else {
+            const existing = groupedMap.get(baseId)!;
+            if (!existing.sender_name && t.sender_name) existing.sender_name = t.sender_name;
+            if (!existing.receiver_name && t.receiver_name) existing.receiver_name = t.receiver_name;
+          }
+        });
+        
+        setTransactions(Array.from(groupedMap.values()));
       }
     } catch (error) {
       console.error("Gagal memuat transaksi:", error);
@@ -897,10 +913,9 @@ export default function SuperAdminDashboard() {
             <table className="min-w-full divide-y divide-gray-100">
               <thead className="bg-white">
                 <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                  <th className="px-6 py-4">Waktu</th>
+                  <th className="px-6 py-4">Waktu & Trace ID</th>
                   <th className="px-6 py-4">Tipe Transaksi</th>
-                  <th className="px-6 py-4">Pengirim</th>
-                  <th className="px-6 py-4">Penerima / Tujuan</th>
+                  <th className="px-6 py-4">Alur Transaksi</th>
                   <th className="px-6 py-4">Nominal</th>
                   <th className="px-6 py-4">Status</th>
                 </tr>
@@ -917,21 +932,62 @@ export default function SuperAdminDashboard() {
                 {paginatedTransactions.map((t, idx) => {
                   const nama = t.user?.name || t.user_name || "User tidak dikenal";
                   const email = t.user?.email || t.user_email || "";
+                  
+                  let tipe = t.transaction_type_label || String(t.type).toUpperCase();
+                  if (tipe.toLowerCase().includes("transfer")) {
+                    tipe = "Transfer Dana";
+                  } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
+                    tipe = "Top Up Saldo";
+                  }
+
+                  let senderName = t.sender_name || nama;
+                  let senderEmail = email;
+                  let receiverName = t.receiver_name || "—";
+                  let receiverEmail = "";
+
+                  if (tipe === "Top Up Saldo") {
+                    senderName = "Sistem";
+                    senderEmail = "";
+                    receiverName = nama;
+                    receiverEmail = email;
+                  } else if (t.type?.toLowerCase() === 'withdrawal' || t.type?.toLowerCase() === 'tarik tunai') {
+                    senderName = nama;
+                    senderEmail = email;
+                    receiverName = "Sistem";
+                    receiverEmail = "";
+                  } else {
+                    if (!t.receiver_name && !t.sender_name) {
+                      receiverName = "Tujuan Tidak Diketahui";
+                    }
+                  }
+
                   return (
-                    <tr key={String(t.id ?? idx)} className="text-sm">
-                      <td className="px-6 py-4 text-gray-600 whitespace-nowrap">{formatTanggal(t.created_at)}</td>
+                    <tr key={String(t.id ?? idx)} className="text-sm hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                          {t.transaction_type_label || String(t.type).toUpperCase()}
+                        <div className="text-gray-600 font-medium mb-1">{formatTanggal(t.created_at)}</div>
+                        <div className="font-mono text-xs text-gray-500 bg-gray-50 px-2 py-0.5 rounded border border-gray-100 inline-block">
+                          {t.reference || t.transaction_id || "—"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                          {tipe}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="font-bold text-gray-900">{t.sender_name || nama}</div>
-                        <div className="text-xs text-gray-500">{email || "—"}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="font-bold text-gray-900">{t.receiver_name || "—"}</div>
-                        <div className="text-xs text-gray-500">{t.reference || t.transaction_id || "—"}</div>
+                      <td className="px-6 py-4 min-w-[300px]">
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1 text-right">
+                            <div className="font-bold text-gray-900">{senderName}</div>
+                            {senderEmail && <div className="text-xs text-gray-500">{senderEmail}</div>}
+                          </div>
+                          <div className="flex-shrink-0 text-emerald-500">
+                            <ArrowRight size={18} strokeWidth={2.5} />
+                          </div>
+                          <div className="flex-1 text-left">
+                            <div className="font-bold text-gray-900">{receiverName}</div>
+                            {receiverEmail && <div className="text-xs text-gray-500">{receiverEmail}</div>}
+                          </div>
+                        </div>
                       </td>
                       <td className="px-6 py-4 font-black text-gray-900 whitespace-nowrap">{formatRupiah(t.amount)}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
