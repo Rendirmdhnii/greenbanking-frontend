@@ -11,7 +11,7 @@ import { useState } from "react";
 
 export default function AkunPage() {
   const userHook = useUserContext();
-  const { userName, userEmail, avatarUrl, initials, tier, userEcoPoints, phoneNumber, address, accountNumber, isOwner } = userHook;
+  const { userName, userEmail, avatarUrl, initials, tier, userEcoPoints, impactScore, phoneNumber, address, accountNumber, isOwner } = userHook;
   const [showSensitive, setShowSensitive] = useState(false);
 
   // Mask sensitive data for non-owner users
@@ -89,7 +89,7 @@ export default function AkunPage() {
                       </span>
                     </div>
                     <p className="text-gray-500 font-medium mb-6 flex items-center gap-2">
-                      <User size={16} /> Nasabah {tier === 'Basic' ? 'Reguler' : tier}
+                      <User size={16} /> Nasabah {tier}
                     </p>
                     
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -155,7 +155,7 @@ export default function AkunPage() {
                     <div className="flex items-end gap-2">
                       {/* FORMATTING ANGKA DINAMIS SESUAI SPESIFIKASI */}
                       <span className="text-4xl font-bold font-serif">
-                        {Number(userEcoPoints * 0.1).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
+                        {Number(impactScore).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
                       </span>
                       <span className="text-emerald-300 pb-1 font-medium">kg CO2e</span>
                     </div>

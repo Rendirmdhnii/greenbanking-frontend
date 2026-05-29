@@ -254,7 +254,7 @@ export default function DashboardPage() {
           {syncStatus === 'success' && (
             <div className="flex items-center gap-1.5 mt-2 text-emerald-600">
               <CheckCircle size={14} />
-              <span className="text-xs font-medium">Akun Aktif • {tier} Tier</span>
+              <span className="text-xs font-medium">Akun Aktif • {tier.toUpperCase()} Tier</span>
             </div>
           )}
         </div>
