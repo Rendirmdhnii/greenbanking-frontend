@@ -2,10 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { 
-  ShieldCheck, Users, TrendingUp, ArrowLeft, Wallet,
-  Loader2, RefreshCw, Crown, Mail, LogOut, Search, ChevronLeft, ChevronRight, ArrowRight
-} from "lucide-react";
 import Swal from "sweetalert2";
 import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
 
@@ -600,7 +596,7 @@ export default function SuperAdminDashboard() {
     return (
       <div className="flex-1 flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <Loader2 className="animate-spin text-emerald-600 mx-auto mb-4" size={32} />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 animate-spin text-emerald-600 mx-auto mb-4"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
           <p className="text-emerald-700 font-medium">Memverifikasi Akses Admin...</p>
         </div>
       </div>
@@ -612,7 +608,7 @@ export default function SuperAdminDashboard() {
       <div className="flex-1 flex items-center justify-center min-h-screen p-4 bg-gray-50">
         <div className="text-center bg-white p-12 rounded-3xl shadow-xl border border-gray-100 max-w-md w-full">
           <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <ShieldCheck size={32} className="text-red-500" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-red-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Akses Ditolak</h1>
           <p className="text-gray-500 mb-8">Anda tidak memiliki hak akses. Halaman ini hanya untuk Admin.</p>
@@ -650,7 +646,7 @@ export default function SuperAdminDashboard() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
         
         <div className="p-6 flex items-center gap-3 border-b border-emerald-800/50 relative z-10">
-          <ShieldCheck size={32} className="text-emerald-400" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-emerald-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
           <div>
             <h1 className="font-bold text-lg tracking-wide text-white">GreenBanking</h1>
             <p className="text-[10px] uppercase tracking-widest text-emerald-300 font-bold">Super Admin</p>
@@ -659,19 +655,19 @@ export default function SuperAdminDashboard() {
         
         <nav className="flex-1 py-8 flex flex-col gap-2 px-4 relative z-10">
           <div className="px-4 py-3 bg-emerald-800/50 rounded-xl flex items-center gap-3 text-white cursor-pointer border border-emerald-700/50 shadow-inner">
-            <LayoutDashboard size={20} className="text-emerald-400" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-400"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
             <span className="font-bold text-sm">Dashboard Utama</span>
           </div>
           <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
-            <Users size={20} />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             <span className="font-semibold text-sm">Database Nasabah</span>
           </div>
           <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
-            <Package size={20} />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
             <span className="font-semibold text-sm">Katalog Produk</span>
           </div>
           <div className="px-4 py-3 hover:bg-emerald-800/30 rounded-xl flex items-center gap-3 text-emerald-200 cursor-pointer transition-colors">
-            <History size={20} />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
             <span className="font-semibold text-sm">Riwayat Transaksi</span>
           </div>
         </nav>
@@ -685,7 +681,7 @@ export default function SuperAdminDashboard() {
             onClick={handleLogout}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-300 hover:text-red-200 rounded-xl border border-red-500/20 transition-all"
           >
-            <LogOut size={18} />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
             <span className="font-bold text-sm">Logout Sesi</span>
           </button>
         </div>
@@ -705,7 +701,7 @@ export default function SuperAdminDashboard() {
               disabled={statsLoading}
               className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100 hover:bg-emerald-100 transition-colors text-sm font-bold"
             >
-              <RefreshCw size={16} className={statsLoading ? 'animate-spin' : ''} /> 
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${statsLoading ? 'animate-spin' : ''}`}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M21 12a9 9 0 1 0-9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg> 
               <span className="hidden sm:inline">{statsLoading ? 'Menyinkronkan...' : 'Sinkronkan Data'}</span>
             </button>
             <div className="h-8 w-px bg-gray-200"></div>
@@ -728,10 +724,10 @@ export default function SuperAdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
               <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                <Users size={120} />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               </div>
               <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 border border-blue-100">
-                <Users size={24} />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               </div>
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Nasabah</p>
@@ -741,10 +737,10 @@ export default function SuperAdminDashboard() {
 
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
               <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                <Wallet size={120} />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
               </div>
               <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 border border-emerald-100">
-                <Wallet size={24} />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
               </div>
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Beredar</p>
@@ -756,10 +752,10 @@ export default function SuperAdminDashboard() {
 
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(139,92,246,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
               <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                <TrendingUp size={120} />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
               </div>
               <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 mb-6 border border-purple-100">
-                <TrendingUp size={24} />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
               </div>
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Investasi Aktif</p>
@@ -771,10 +767,10 @@ export default function SuperAdminDashboard() {
 
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-3px_rgba(245,158,11,0.1)] hover:shadow-lg transition-all group relative overflow-hidden">
               <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                <Package size={120} />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
               </div>
               <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 mb-6 border border-amber-100">
-                <Package size={24} />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
               </div>
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Produk Hijau</p>
@@ -793,7 +789,7 @@ export default function SuperAdminDashboard() {
                 <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
-                      <Users size={20} className="text-emerald-600" />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-gray-900">Database Nasabah</h2>
@@ -802,7 +798,7 @@ export default function SuperAdminDashboard() {
                   </div>
                   <div className="relative w-full sm:w-64">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Search size={16} className="text-gray-400" />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-gray-400"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
                     </div>
                     <input
                       type="text"
@@ -891,14 +887,14 @@ export default function SuperAdminDashboard() {
                         disabled={currentPageNasabah === 1}
                         className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
-                        <ChevronLeft size={16} />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
                       </button>
                       <button
                         onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, (p || 1) + 1))}
                         disabled={currentPageNasabah === totalPagesNasabah}
                         className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
-                        <ChevronRight size={16} />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
                       </button>
                     </div>
                   </div>
@@ -910,7 +906,7 @@ export default function SuperAdminDashboard() {
                 <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                      <Activity size={20} className="text-indigo-600" />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-gray-900">Riwayat Transaksi Terpadu</h2>
@@ -936,7 +932,7 @@ export default function SuperAdminDashboard() {
                           <td colSpan={5} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
                             {transactionsLoading ? (
                               <div className="flex items-center justify-center gap-2">
-                                <Loader2 className="animate-spin text-indigo-500" size={20} />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 animate-spin text-indigo-500"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
                                 <span>Memuat data...</span>
                               </div>
                             ) : "Belum ada transaksi."}
@@ -1000,7 +996,7 @@ export default function SuperAdminDashboard() {
                                   <div className="text-[10px] text-gray-500 truncate">{senderEmail || '-'}</div>
                                 </div>
                                 <div className="flex-shrink-0 text-gray-300">
-                                  <ArrowRight size={18} strokeWidth={3} className="text-emerald-500" />
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px] text-emerald-500"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                                 </div>
                                 <div className="flex-1 text-left bg-gray-50/50 p-2 rounded-lg border border-gray-100">
                                   <div className="font-bold text-gray-900 truncate" title={receiverName}>{receiverName}</div>
@@ -1034,14 +1030,14 @@ export default function SuperAdminDashboard() {
                         disabled={currentPageTransaksi === 1}
                         className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
-                        <ChevronLeft size={16} />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
                       </button>
                       <button
                         onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, (p || 1) + 1))}
                         disabled={currentPageTransaksi === totalPagesTransaksi}
                         className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                       >
-                        <ChevronRight size={16} />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
                       </button>
                     </div>
                   </div>
@@ -1055,7 +1051,7 @@ export default function SuperAdminDashboard() {
                 <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-                      <Package size={20} className="text-amber-600" />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-amber-600"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-gray-900">Katalog Produk</h2>
