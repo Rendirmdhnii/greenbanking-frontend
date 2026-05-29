@@ -321,6 +321,7 @@ export default function TagihanPage() {
           recipient_name: "EcoBank PPOB Merchant",
           to_account: `${currentCheckout.customer_id} (${currentCheckout.product_name})`,
           amount: currentCheckout.amount,
+          discount: useEcoPointsForDiscount ? Math.min(userEcoPoints, currentCheckout.amount * 0.10) : 0,
           title: "Struk Pembayaran Tagihan",
         });
 
@@ -676,9 +677,16 @@ export default function TagihanPage() {
                         />
                         <div className="flex-1">
                           <p className="text-sm font-bold text-gray-900">Gunakan Eco Poin untuk Diskon</p>
-                          <p className="text-xs text-emerald-700">Tersedia {userEcoPoints} Poin (Potongan hingga {formatIDR(Math.min(userEcoPoints * 100, currentCheckout.amount))})</p>
+                          <p className="text-xs text-emerald-700">Tersedia {userEcoPoints} Poin (Maks. potongan {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))})</p>
                         </div>
                       </label>
+                    </div>
+                  )}
+
+                  {useEcoPointsForDiscount && (
+                    <div className="flex justify-between text-green-600 font-medium pt-2">
+                      <span>Potongan Eco-Points:</span>
+                      <span>- {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))}</span>
                     </div>
                   )}
 
@@ -686,7 +694,7 @@ export default function TagihanPage() {
                     <span className="font-bold text-gray-800">Total Harga</span>
                     <span className="text-xl font-black text-emerald-600">
                       {useEcoPointsForDiscount 
-                        ? formatIDR(Math.max(0, currentCheckout.amount - (userEcoPoints * 100))) 
+                        ? formatIDR(Math.max(0, currentCheckout.amount - Math.min(userEcoPoints, currentCheckout.amount * 0.10))) 
                         : formatIDR(currentCheckout.amount)
                       }
                     </span>

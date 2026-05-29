@@ -63,7 +63,8 @@ export default function PengaturanPage() {
     setEditName(userName || "");
     setEditPhone(phoneNumber || "");
     setEditAddress(address || "");
-    setPreviewImage(avatarUrl ? (avatarUrl.startsWith('http') ? avatarUrl : `http://127.0.0.1:8000${avatarUrl}`) : null);
+    const cacheBuster = `?t=${new Date().getTime()}`;
+    setPreviewImage(avatarUrl ? (avatarUrl.startsWith('http') ? `${avatarUrl}${cacheBuster}` : `http://127.0.0.1:8000${avatarUrl}${cacheBuster}`) : null);
   }, [userName, avatarUrl, phoneNumber, address]);
 
   const handleLogout = async () => {

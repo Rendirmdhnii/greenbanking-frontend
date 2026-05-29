@@ -50,9 +50,10 @@ export default function StrukModal({ isOpen, onClose, data }: { isOpen: boolean,
             ${data.to_account ? `<div class="row"><span class="label">No. Rekening</span><span class="value">${data.to_account}</span></div>` : ''}
           </div>
           <div class="total">
+            ${data.discount ? `<div class="row"><span class="label" style="color:#16a34a;">Potongan Eco-Points</span><span class="value" style="color:#16a34a;">- Rp ${data.discount.toLocaleString('id-ID')}</span></div>` : ''}
             <div class="row">
               <span class="label" style="font-weight:700;">Total Nominal</span>
-              <span class="value">Rp ${data.amount?.toLocaleString('id-ID')}</span>
+              <span class="value">Rp ${((data.amount || 0) - (data.discount || 0)).toLocaleString('id-ID')}</span>
             </div>
           </div>
           <div class="footer">
@@ -128,9 +129,15 @@ export default function StrukModal({ isOpen, onClose, data }: { isOpen: boolean,
           </div>
 
           <div className="p-8 bg-gray-50">
+            {data.discount > 0 && (
+              <div className="flex justify-between items-center mb-2 text-green-600 font-medium">
+                <span>Potongan Eco-Points:</span>
+                <span>- Rp {data.discount?.toLocaleString('id-ID')}</span>
+              </div>
+            )}
             <div className="flex justify-between items-end mb-6">
               <span className="text-gray-500 font-bold">Total Nominal</span>
-              <span className="text-2xl font-bold text-[#064e3b]">Rp {data.amount?.toLocaleString('id-ID')}</span>
+              <span className="text-2xl font-bold text-[#064e3b]">Rp {((data.amount || 0) - (data.discount || 0)).toLocaleString('id-ID')}</span>
             </div>
             
             <div className="flex gap-3">

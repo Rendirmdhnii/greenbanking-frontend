@@ -207,8 +207,9 @@ export default function SuperAdminDashboard() {
     const { value: amountInput } = await Swal.fire({
       title: `Penyesuaian Saldo: ${user.name}`,
       input: 'number',
-      inputLabel: 'Masukkan Nominal (contoh: 50000 atau -10000)',
-      inputPlaceholder: 'Ketik nominal di sini...',
+      inputValue: user.balance,
+      inputLabel: 'Masukkan Nominal Saldo Akhir',
+      inputPlaceholder: 'Ketik nominal saldo di sini...',
       showCancelButton: true,
       background: '#ffffff',
       color: '#111827',
