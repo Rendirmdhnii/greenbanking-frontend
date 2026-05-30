@@ -5,9 +5,10 @@ interface ProductCardProps {
   title: string;
   description: string;
   targetFunding: string | number;
+  progressPercentage?: number;
 }
 
-export default function ProductCard({ imageUrl, title, description, targetFunding }: ProductCardProps) {
+export default function ProductCard({ imageUrl, title, description, targetFunding, progressPercentage = 0 }: ProductCardProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       {/* Gambar Produk */}
@@ -32,6 +33,16 @@ export default function ProductCard({ imageUrl, title, description, targetFundin
           {description}
         </p>
         
+        {/* Progress Bar */}
+        <div className="mb-4">
+          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div 
+              className="bg-green-500 h-full rounded-full transition-all duration-500"
+              style={{ width: `${Math.min(100, Math.max(0, progressPercentage))}%` }}
+            ></div>
+          </div>
+        </div>
+
         {/* Target Pendanaan */}
         <div className="pt-4 border-t border-gray-100">
           <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">
