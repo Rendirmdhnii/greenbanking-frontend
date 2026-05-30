@@ -28,9 +28,10 @@ export default function PeringkatPage() {
   const [loading, setLoading] = useState(true);
   const [totalCollective, setTotalCollective] = useState(0);
 
-  // Dynamic user details - Desbellion (47.654,0 Skor Dampak)
+  // Dynamic user details - diambil dari data leaderboard berdasarkan email user yang login
   const displayUserName = userName || "Desbellion";
-  const displayUserScore = 47654.0;
+  const myRankData = leaderboard.find((u) => u.email === userEmail);
+  const displayUserScore = myRankData?.impact_score ?? 47654.0;
   const displayUserCo2 = displayUserScore * 0.5;
 
   // Conversion calculations
@@ -93,8 +94,8 @@ export default function PeringkatPage() {
     return name.substring(0, 2).toUpperCase();
   };
 
-  // Rank matches exact user rank
-  const displayRank = "#3 Global";
+  // Rank diambil secara dinamis dari data leaderboard berdasarkan email user yang login
+  const displayRank = myRankData ? `#${myRankData.rank} Global` : "—";
 
   return (
     <>
@@ -215,7 +216,7 @@ export default function PeringkatPage() {
               <div className="p-8 text-center text-gray-400">Belum ada data leaderboard</div>
             ) : (
               leaderboard.map((user) => {
-                const isCurrentUser = user.email === userEmail || user.name.toLowerCase().includes("desbellion");
+                const isCurrentUser = user.email === userEmail;
                 
                 let rankColor = "text-gray-400";
                 let rankBadge = "";
@@ -248,7 +249,7 @@ export default function PeringkatPage() {
                           ? 'bg-[#115e59] text-white border border-[#064e3b]'
                           : 'bg-gray-50 text-gray-600 border border-gray-200'
                       }`}>
-                        {isCurrentUser && initials ? initials : getInitialsFromName(user.name)}
+                        {getInitialsFromName(user.name)}
                       </div>
                       <span className={`font-bold text-sm ${isCurrentUser ? 'text-[#064e3b]' : 'text-gray-800'}`}>
                         {user.name}{rankBadge}
