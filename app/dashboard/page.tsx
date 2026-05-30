@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import TransferModal from "@/components/TransferModal";
 import StrukModal from "@/components/StrukModal";
 import WalletBalanceCard from "@/components/WalletBalanceCard";
+import TopUpModal from "@/components/TopUpModal";
 import { useUserContext } from "@/hooks/useUserData";
 import { formatIDR, copyToClipboard, SwalGreenBanking } from "@/utils/format";
 
@@ -42,8 +43,6 @@ export default function DashboardPage() {
     maxPoints = 50000;
     progressText = "Progress Prioritas";
   }
-  
-  const [topUpAmount, setTopUpAmount] = useState('');
   const [showTopUp, setShowTopUp] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [strukData, setStrukData] = useState<any>(null);
@@ -76,14 +75,6 @@ export default function DashboardPage() {
     }
   }, [isLoading, syncStatus, strukData]);
 
-  const handleTopUpAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Hanya ambil angka
-    const rawValue = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
-    setTopUpAmount(rawValue);
-  };
-
-  const displayTopUpAmount = topUpAmount ? parseInt(topUpAmount, 10).toLocaleString('id-ID') : '';
-
   // ═══════════════════════════════════════════════
   //  handleTopUp — nyeluk POST nang /api/checkout
   //  1. Cek duite minimal 10rb
@@ -91,9 +82,7 @@ export default function DashboardPage() {
   //  3. ngetokno popup midtrans
   //  4. nek sukses, tembak api confirm ben saldo nambah
   // ═══════════════════════════════════════════════
-  const handleTopUp = async () => {
-    const amount = parseInt(topUpAmount);
-    
+  const handleTopUp = async (amount: number) => {
     // ── ojo lali minimal 10ewu bossku ──
     if (!amount || amount < 10000) {
       Swal.fire({ icon: 'warning', title: 'Nominal Terlalu Kecil', text: 'Minimal Top Up adalah Rp 10.000', ...SwalGreenBanking.warning });
@@ -179,7 +168,6 @@ export default function DashboardPage() {
               title: 'Struk Top Up Saldo'
             });
             setShowTopUp(false);
-            setTopUpAmount('');
             refreshUserData();
           },
           onPending: () => { 
@@ -203,15 +191,6 @@ export default function DashboardPage() {
       setTopUpLoading(false);
     }
   };
-
-  const quickAmounts = [
-    { value: 10000,   label: '10rb' },
-    { value: 50000,   label: '50rb' },
-    { value: 100000,  label: '100rb' },
-    { value: 250000,  label: '250rb' },
-    { value: 500000,  label: '500rb' },
-    { value: 1000000, label: '1jt' },
-  ];
 
   const getTrxIcon = (type: string) => {
     if (type === 'in' || type === 'admin_addition') return <ArrowDownLeft size={16} className="text-green-500" />;
@@ -314,78 +293,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ═══════════════════════════════════════════════
-             TOP UP PANEL — Grid Nominal Modern
-           ═══════════════════════════════════════════════ */}
-        {showTopUp && (
-          <div className="bg-white border-2 border-emerald-200 rounded-[24px] p-6 md:p-8 mb-8 shadow-lg shadow-emerald-100/50 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-50 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-md">
-                  <Zap size={20} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-serif font-bold text-gray-900">Top Up Saldo via Midtrans</h3>
-                  <p className="text-sm text-gray-500">Pilih nominal atau masukkan sendiri (min. Rp 10.000)</p>
-                </div>
-              </div>
-
-              {/* Grid Nominal — Tombol Besar & Kontras */}
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-6">
-                {quickAmounts.map((item) => (
-                  <button
-                    key={item.value}
-                    onClick={() => setTopUpAmount(item.value.toString())}
-                    className={`relative py-4 px-3 rounded-2xl text-center font-bold transition-all duration-200 hover:scale-105 hover:shadow-lg border-2 ${
-                      topUpAmount === item.value.toString()
-                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-200 scale-105'
-                        : 'bg-white text-gray-800 border-gray-200 hover:border-emerald-400 hover:bg-emerald-50'
-                    }`}
-                  >
-                    {topUpAmount === item.value.toString() && (
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow">
-                        <CheckCircle size={14} className="text-emerald-600" />
-                      </div>
-                    )}
-                    <span className="text-lg">{item.label}</span>
-                    <p className={`text-[10px] mt-0.5 ${topUpAmount === item.value.toString() ? 'text-emerald-100' : 'text-gray-400'}`}>
-                      Rp {item.value.toLocaleString('id-ID')}
-                    </p>
-                  </button>
-                ))}
-              </div>
-
-              {/* Input Custom + Tombol Bayar */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-bold">Rp</span>
-                  <input
-                    type="text"
-                    placeholder="10.000"
-                    value={displayTopUpAmount}
-                    onChange={handleTopUpAmountChange}
-                    className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl text-lg font-bold text-gray-900 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all placeholder:text-gray-300"
-                  />
-                </div>
-                <button
-                  onClick={handleTopUp}
-                  disabled={topUpLoading || !topUpAmount}
-                  className="bg-emerald-600 text-white font-bold px-8 py-4 rounded-2xl text-base hover:bg-emerald-700 transition-all hover:scale-105 hover:shadow-lg shadow-md disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[180px]"
-                >
-                  {topUpLoading ? (
-                    <><Loader2 size={20} className="animate-spin" /> Memproses...</>
-                  ) : (
-                    <><Zap size={20} /> Bayar Sekarang</>
-                  )}
-                </button>
-              </div>
-
-              {/* Removed Info Banner and Snap Status for cleaner UI */}
-            </div>
-          </div>
-        )}
 
         {/* Aksi Cepat */}
         <div className="mb-10">
@@ -484,6 +391,12 @@ export default function DashboardPage() {
         serviceType="transfer"
         serviceLabel="Transfer Dana"
         strukTitle="Struk Transfer Dana"
+      />
+      <TopUpModal
+        isOpen={showTopUp}
+        onClose={() => setShowTopUp(false)}
+        onSubmit={handleTopUp}
+        isLoading={topUpLoading}
       />
       <StrukModal 
         isOpen={!!strukData} 
