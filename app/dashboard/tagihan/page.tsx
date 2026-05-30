@@ -32,12 +32,20 @@ function detectOperator(phone: string): string | null {
 }
 
 export default function TagihanPage() {
-  const { userBalance, userEcoPoints, refreshUserData } = useUserContext();
+  const { userBalance, userEcoPoints, refreshUserData, impactScore: contextImpactScore } = useUserContext();
   const [activeTab, setActiveTab] = useState<"pulsa" | "pln" | "pdam">("pulsa");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [strukData, setStrukData] = useState<any>(null);
   const [mangroveProgress, setMangroveProgress] = useState(0);
   const [useEcoPointsForDiscount, setUseEcoPointsForDiscount] = useState(false);
+  const [impactScore, setImpactScore] = useState(0);
+
+  // Sync impactScore with user context when loaded
+  useEffect(() => {
+    if (contextImpactScore !== undefined) {
+      setImpactScore(contextImpactScore);
+    }
+  }, [contextImpactScore]);
 
   // Load mangrove progress from localStorage on mount
   useEffect(() => {
@@ -640,7 +648,7 @@ export default function TagihanPage() {
           </div>
 
           {/* Payment Summary Sidebar */}
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 space-y-6">
               <h3 className="text-md font-bold text-gray-900">Ringkasan Pembayaran</h3>
 
@@ -726,32 +734,38 @@ export default function TagihanPage() {
             </div>
 
             {/* Tanam Mangrove Widget */}
-            <div className="bg-emerald-950 text-white rounded-[2rem] p-8 shadow-xl relative overflow-hidden">
+            <div className="bg-emerald-950 text-white rounded-[2rem] p-6 pb-8 shadow-xl relative overflow-hidden flex flex-col items-center justify-center gap-4 min-h-[250px] h-auto">
               <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
               
-              <div className="relative mb-6 h-32 flex items-end justify-center">
-                <div className="absolute bottom-0 w-2 h-12 bg-emerald-900 rounded-t-sm"></div>
-                <div className="w-24 h-24 bg-[#a3e635] rounded-full blur-md opacity-80 absolute bottom-6 z-10"></div>
-                <div className="w-16 h-16 bg-emerald-400 rounded-full blur-sm absolute bottom-12 z-20"></div>
-                <div className="w-12 h-12 bg-[#a3e635] rounded-full flex items-center justify-center absolute bottom-14 z-30 shadow-[0_0_15px_rgba(163,230,53,0.8)] animate-pulse">
+              <div className="relative h-24 flex items-end justify-center w-full">
+                <div className="absolute bottom-0 w-2 h-10 bg-emerald-900 rounded-t-sm"></div>
+                <div className="w-20 h-20 bg-[#a3e635] rounded-full blur-md opacity-80 absolute bottom-3 z-10"></div>
+                <div className="w-14 h-14 bg-emerald-400 rounded-full blur-sm absolute bottom-7 z-20"></div>
+                <div className="w-12 h-12 bg-[#a3e635] rounded-full flex items-center justify-center absolute bottom-8 z-30 shadow-[0_0_15px_rgba(163,230,53,0.8)] animate-pulse">
                   <Leaf size={24} className="text-emerald-950 animate-bounce" />
                 </div>
               </div>
               
-              <h2 className="text-xl font-serif font-bold mb-2 text-center relative z-10">Tanam Mangrove</h2>
-              <p className="text-emerald-100/90 text-sm mb-6 leading-relaxed text-center relative z-10">
-                Setiap 5x pembayaran tagihan, Anda menyumbang 1 bibit mangrove ke alam.
-              </p>
+              <div className="text-center relative z-10">
+                <h2 className="text-xl font-serif font-bold mb-1">Tanam Mangrove</h2>
+                <p className="text-emerald-100/90 text-xs leading-relaxed max-w-[280px]">
+                  Setiap 5x pembayaran tagihan, Anda menyumbang 1 bibit mangrove ke alam.
+                </p>
+              </div>
 
-              <div className="bg-white/10 rounded-xl p-4 border border-white/20 backdrop-blur-sm relative z-10">
+              <div className="bg-white/10 rounded-xl p-4 border border-white/20 backdrop-blur-sm relative z-10 w-full">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-bold">Progress</span>
-                  <span className="text-sm font-bold">{mangroveProgress} / 5</span>
+                  <span className="text-xs font-bold text-white">Progress</span>
+                  <span className="text-xs font-bold text-white">{mangroveProgress} / 5</span>
                 </div>
                 <div className="w-full bg-black/20 rounded-full h-2 mb-3">
                   <div className="bg-[#a3e635] h-2 rounded-full transition-all duration-500" style={{width: `${(mangroveProgress / 5) * 100}%`}}></div>
                 </div>
-                <p className="text-[11px] text-emerald-100/90 font-semibold text-center">Bayar tagihan untuk mulai menanam!</p>
+                <p className="text-[10px] text-emerald-100/90 font-semibold text-center">Bayar tagihan untuk mulai menanam!</p>
+              </div>
+
+              <div className="relative z-10 w-full text-center mt-1">
+                <p className="text-sm font-bold text-[#a3e635]">Skor Dampak: {impactScore.toFixed(1)}</p>
               </div>
             </div>
 
