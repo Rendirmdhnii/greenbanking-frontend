@@ -50,7 +50,11 @@ export default function TopUpModal({
     const val = parseInt(rawValue, 10);
     setRawAmount(val);
     setDisplayAmount(new Intl.NumberFormat("id-ID").format(val));
-    if (val >= 10000) {
+    if (val < 10000) {
+      setError("Nominal minimal adalah Rp 10.000");
+    } else if (val > 50000000) {
+      setError("Nominal maksimal adalah Rp 50.000.000");
+    } else {
       setError("");
     }
   };
@@ -58,17 +62,21 @@ export default function TopUpModal({
   const handleQuickAmountSelect = (val: number) => {
     setRawAmount(val);
     setDisplayAmount(new Intl.NumberFormat("id-ID").format(val));
-    setError("");
+    if (val < 10000) {
+      setError("Nominal minimal adalah Rp 10.000");
+    } else {
+      setError("");
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (rawAmount < 10000) {
-      setError("Minimal Top Up adalah Rp 10.000");
+      setError("Nominal minimal adalah Rp 10.000");
       return;
     }
     if (rawAmount > 50000000) {
-      setError("Maksimal Top Up adalah Rp 50.000.000");
+      setError("Nominal maksimal adalah Rp 50.000.000");
       return;
     }
     onSubmit(rawAmount);
@@ -113,12 +121,6 @@ export default function TopUpModal({
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
-              {error && (
-                <div className="p-3 bg-red-50 text-red-600 text-sm font-semibold rounded-xl border border-red-100">
-                  {error}
-                </div>
-              )}
-
               {/* Quick Amount Selectors */}
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
@@ -159,12 +161,16 @@ export default function TopUpModal({
                     placeholder="10.000"
                     className={`w-full pl-12 pr-4 py-3.5 bg-gray-50 border rounded-xl outline-none transition-all font-black text-xl text-gray-900 placeholder:text-gray-300 ${
                       error
-                        ? "border-red-500 focus:ring-2 focus:ring-red-500/20"
+                        ? "border-red-500 focus:ring-2 focus:ring-red-500/20 text-red-600"
                         : "border-gray-200 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                     }`}
                   />
                 </div>
-                <p className="text-[10px] text-gray-400">Minimal top up Rp 10.000</p>
+                {error ? (
+                  <p className="text-red-500 text-xs font-bold mt-1.5">{error}</p>
+                ) : (
+                  <p className="text-[10px] text-gray-400">Minimal top up Rp 10.000</p>
+                )}
               </div>
 
               {/* Buttons */}

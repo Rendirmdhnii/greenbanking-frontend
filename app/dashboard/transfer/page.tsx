@@ -38,6 +38,7 @@ export default function TransferPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState("");
+  const [amountError, setAmountError] = useState("");
   const [strukData, setStrukData] = useState<any>(null);
 
   const [isManualInput, setIsManualInput] = useState(false);
@@ -111,16 +112,31 @@ export default function TransferPage() {
     if (!rawValue) {
       setAmount("");
       setRawAmount(0);
+      setAmountError("");
       return;
     }
     const val = parseInt(rawValue, 10);
     setRawAmount(val);
     setAmount(new Intl.NumberFormat("id-ID").format(val));
+    if (val < 10000) {
+      setAmountError("Nominal transfer minimal adalah Rp 10.000");
+    } else if (val > userBalance) {
+      setAmountError("Saldo Anda tidak mencukupi untuk transfer ini");
+    } else {
+      setAmountError("");
+    }
   };
 
   const handleQuickAmountSelect = (val: number) => {
     setRawAmount(val);
     setAmount(new Intl.NumberFormat("id-ID").format(val));
+    if (val < 10000) {
+      setAmountError("Nominal transfer minimal adalah Rp 10.000");
+    } else if (val > userBalance) {
+      setAmountError("Saldo Anda tidak mencukupi untuk transfer ini");
+    } else {
+      setAmountError("");
+    }
   };
 
   const handleTransferSubmit = async (e: React.FormEvent) => {
@@ -437,7 +453,7 @@ export default function TransferPage() {
                   onChange={handleAmountChange}
                   placeholder="0"
                   className={`w-full pl-12 pr-4 py-3.5 bg-gray-50 border rounded-xl outline-none transition-all font-black text-xl text-gray-900 placeholder:text-gray-300 ${
-                    rawAmount > userBalance
+                    amountError
                       ? "border-red-500 focus:ring-2 focus:ring-red-500/20 text-red-600"
                       : "border-gray-200 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                   }`}
@@ -450,10 +466,10 @@ export default function TransferPage() {
                   Saldo Anda: {formatIDR(userBalance)}
                 </span>
               </div>
-              {rawAmount > userBalance && (
+              {amountError && (
                 <p className="text-red-500 text-xs font-bold mt-1.5 flex items-center gap-1">
                   <AlertCircle size={12} />
-                  Saldo Anda tidak mencukupi untuk nominal transfer ini
+                  {amountError}
                 </p>
               )}
             </div>
