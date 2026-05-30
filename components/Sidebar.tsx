@@ -32,8 +32,8 @@ export default function Sidebar({ userHook, activeMenu }: SidebarProps) {
   ];
 
   return (
-    <aside className="w-66 bg-white border-r border-gray-150 flex flex-col hidden md:flex h-screen sticky top-0 font-sans z-30 shadow-sm shadow-gray-150/20">
-      
+    <aside className="w-66 bg-white border-r border-gray-100 flex flex-col hidden md:flex h-screen sticky top-0 font-sans z-30 shadow-sm shadow-gray-150/20">
+
       {/* Top Part: Logo and Header */}
       <div>
         <div className="h-20 flex items-center px-6 border-b border-gray-100">
@@ -51,26 +51,25 @@ export default function Sidebar({ userHook, activeMenu }: SidebarProps) {
         <nav className="p-4 space-y-1.5">
           {navItems.map((item) => {
             // Determine active menu item by pathname or custom activeMenu prop
-            const isActive = activeMenu 
-              ? activeMenu.toLowerCase() === item.name.toLowerCase() 
+            const isActive = activeMenu
+              ? activeMenu.toLowerCase() === item.name.toLowerCase()
               : pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
 
             return (
-              <Link 
-                key={item.name} 
-                href={item.href} 
-                className={`group flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200 relative ${
-                  isActive 
-                    ? "bg-emerald-50/80 text-[#059669] shadow-sm shadow-emerald-500/5" 
-                    : "text-gray-500 hover:bg-gray-50/80 hover:text-gray-900"
-                }`}
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`group flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200 relative ${isActive
+                  ? "bg-emerald-50/80 text-[#059669] shadow-sm shadow-emerald-500/5"
+                  : "text-gray-500 hover:bg-gray-50/80 hover:text-gray-900"
+                  }`}
               >
                 {/* Active Indicator Accent Line */}
                 {isActive && (
                   <span className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[#059669] rounded-r-full" />
                 )}
-                
-                <item.icon size={19} className={`transition-transform duration-200 group-hover:scale-105 ${isActive ? "text-[#059669]" : "text-gray-400 group-hover:text-gray-600"}`} /> 
+
+                <item.icon size={19} className={`transition-transform duration-200 group-hover:scale-105 ${isActive ? "text-[#059669]" : "text-gray-400 group-hover:text-gray-600"}`} />
                 <span>{item.name}</span>
               </Link>
             );
@@ -78,15 +77,14 @@ export default function Sidebar({ userHook, activeMenu }: SidebarProps) {
 
           {/* Admin Panel Access Link (Preserved safely) */}
           {isAdmin && (
-            <Link 
-              href={adminHref} 
-              className={`group flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200 border border-amber-100 bg-amber-50/50 ${
-                pathname === adminHref 
-                  ? "bg-amber-100/80 text-amber-800 shadow-sm" 
-                  : "text-amber-700 hover:bg-amber-100 hover:text-amber-900"
-              }`}
+            <Link
+              href={adminHref}
+              className={`group flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200 border border-amber-100 bg-amber-50/50 ${pathname === adminHref
+                ? "bg-amber-100/80 text-amber-800 shadow-sm"
+                : "text-amber-700 hover:bg-amber-100 hover:text-amber-900"
+                }`}
             >
-              <ShieldCheck size={19} className="text-amber-500 transition-transform group-hover:scale-105" /> 
+              <ShieldCheck size={19} className="text-amber-500 transition-transform group-hover:scale-105" />
               <span>Admin Panel</span>
             </Link>
           )}
