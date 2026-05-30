@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import Link from "next/link";
 import { useState } from "react";
 import { Loader2, Mail, Lock, User, Eye, EyeOff, CheckCircle } from "lucide-react";
@@ -50,7 +50,6 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        // Laravel validation errors
         if (data.errors) {
           const firstError = Object.values(data.errors)[0];
           setErrorMsg(Array.isArray(firstError) ? (firstError as string[])[0] : String(firstError));
@@ -80,142 +79,154 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center max-w-sm mx-auto p-8">
-          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle size={32} className="text-emerald-600" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50/50 p-4">
+        <div className="w-full max-w-md bg-white border border-gray-100/80 rounded-3xl shadow-xl p-8 sm:p-10 text-center">
+          <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-100 shadow-sm">
+            <CheckCircle size={32} className="text-[#059669]" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Registrasi Berhasil!</h2>
-          <p className="text-gray-500 text-sm mb-4">Akun Anda telah terdaftar di GreenBanking Nusantara. Mengalihkan ke dashboard...</p>
-          <Loader2 size={20} className="animate-spin text-emerald-600 mx-auto" />
+          <h2 className="text-2xl font-serif font-black text-emerald-900 tracking-tight mb-2">Registrasi Berhasil!</h2>
+          <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+            Selamat! Akun Anda telah terdaftar di GreenBanking Nusantara. Mengalihkan ke dashboard...
+          </p>
+          <Loader2 size={24} className="animate-spin text-[#059669] mx-auto" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex bg-white font-sans">
-      {/* Left Panel */}
-      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-green-950 flex-col justify-between p-14">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80"
-            alt="Hutan"
-            className="w-full h-full object-cover opacity-50 mix-blend-overlay"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-green-950 via-green-900/60 to-transparent" />
-        </div>
-        <div className="relative z-10">
-          <Link href="/" className="flex items-center space-x-3 w-max">
-            <div className="w-10 h-10 flex items-center justify-center">
-              <img src="/logo.svg" alt="GreenBanking Logo" className="w-full h-full object-contain drop-shadow-md" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-gray-50 via-white to-emerald-50/30 p-4 relative overflow-hidden font-sans">
+      {/* Background Ornaments */}
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/5 blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-teal-500/5 blur-[120px] pointer-events-none"></div>
+
+      {/* Main Centered Card Container */}
+      <div className="w-full max-w-md bg-white border border-gray-100/80 rounded-3xl shadow-xl shadow-gray-100/40 p-8 sm:p-10 relative z-10 hover:shadow-2xl transition-shadow duration-500">
+        
+        {/* Logo and Header */}
+        <div className="text-center mb-6">
+          <Link href="/" className="inline-block group mb-4">
+            <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105 border border-emerald-100/50 shadow-sm mx-auto">
+              <img src="/logo.svg" alt="GreenBanking Logo" className="w-9 h-9 object-contain" />
             </div>
-            <span className="font-bold text-2xl text-white tracking-tight">GreenBanking Nusantara</span>
           </Link>
-        </div>
-        <div className="relative z-10 max-w-lg">
-          <blockquote className="text-4xl font-serif italic text-white mb-6 leading-tight">
-            &quot;Mulai Langkah Pertama Menuju Perubahan.&quot;
-          </blockquote>
-          <p className="text-lg text-green-100/90 font-light leading-relaxed">
-            Daftarkan akun Anda dan mulai berinvestasi untuk masa depan yang lebih hijau.
+          <h2 className="text-2xl font-serif font-black text-emerald-900 tracking-tight mb-1.5">
+            Mulai Langkah Hijau Anda
+          </h2>
+          <p className="text-xs text-gray-400 font-medium">
+            Daftar sekarang untuk masa depan bumi yang berkelanjutan
           </p>
         </div>
-      </div>
 
-      {/* Right Panel — Register Form */}
-      <div className="w-full lg:w-7/12 flex items-center justify-center p-8 sm:p-12 lg:p-24">
-        <div className="w-full max-w-sm">
-          <div className="mb-8 lg:hidden flex justify-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 flex items-center justify-center">
-                <img src="/logo.svg" alt="GreenBanking Logo" className="w-full h-full object-contain" />
-              </div>
-              <span className="font-bold text-2xl text-green-900 tracking-tight">GreenBanking Nusantara</span>
-            </Link>
+        {/* ─── Error Notification ─── */}
+        {errorMsg && (
+          <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-2xl text-xs mb-5 text-center font-semibold animate-shake">
+            {errorMsg}
           </div>
+        )}
 
-          <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight text-center">Buat Akun Baru</h2>
-          <p className="text-gray-500 text-center mb-8">Isi data di bawah untuk mendaftar.</p>
-
-          {errorMsg && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm mb-6 text-center">
-              {errorMsg}
-            </div>
-          )}
-
-          <form onSubmit={handleRegister} className="space-y-4">
+        {/* ─── Registration Form ─── */}
+        <form onSubmit={handleRegister} className="space-y-4 mb-6">
+          
+          {/* Full Name Input */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Nama Lengkap</label>
             <div className="relative">
               <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Nama Lengkap"
+                placeholder="Masukkan nama lengkap Anda"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full pl-11 pr-4 py-3.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition-all"
+                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
               />
             </div>
+          </div>
+
+          {/* Email Input */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Email</label>
             <div className="relative">
               <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="email"
-                placeholder="Email"
+                placeholder="nama@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full pl-11 pr-4 py-3.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition-all"
+                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
               />
             </div>
+          </div>
+
+          {/* Password Input */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Kata Sandi</label>
             <div className="relative">
               <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Password (min. 6 karakter)"
+                placeholder="Minimal 6 karakter"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full pl-11 pr-12 py-3.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition-all"
+                className="w-full pl-11 pr-12 py-3 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+          </div>
+
+          {/* Confirm Password Input */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Konfirmasi Kata Sandi</label>
             <div className="relative">
               <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Konfirmasi Password"
+                placeholder="Ulangi kata sandi"
                 value={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
                 required
-                className="w-full pl-11 pr-4 py-3.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition-all"
+                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
               />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#064e3b] text-white font-bold py-3.5 rounded-xl text-sm hover:bg-[#065f46] transition-all transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <><Loader2 size={16} className="animate-spin" /> Mendaftar...</>
-              ) : (
-                'Daftar Sekarang'
-              )}
-            </button>
-          </form>
+          </div>
 
-          <p className="mt-6 text-center text-sm text-gray-500">
-            Sudah punya akun?{' '}
-            <Link href="/login" className="text-[#064e3b] font-bold hover:underline">
-              Masuk di sini
-            </Link>
-          </p>
-        </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3.5 rounded-2xl text-sm transition-all duration-150 transform hover:scale-[1.01] active:scale-95 shadow-md shadow-emerald-600/10 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+          >
+            {loading ? (
+              <><Loader2 size={16} className="animate-spin" /> Mendaftar...</>
+            ) : (
+              'Daftar Sekarang'
+            )}
+          </button>
+
+        </form>
+
+        {/* Redirect to Login */}
+        <p className="text-center text-xs text-gray-500">
+          Sudah punya akun?{' '}
+          <Link href="/login" className="text-[#059669] font-extrabold hover:underline ml-1">
+            Login di sini
+          </Link>
+        </p>
+
+        {/* T&C Footer */}
+        <p className="mt-8 text-[10px] text-gray-400 text-center leading-normal px-4">
+          Dengan mendaftar, Anda menyetujui <span className="underline cursor-pointer">Syarat &amp; Ketentuan</span> serta <span className="underline cursor-pointer">Kebijakan Privasi</span> GreenBanking.
+        </p>
+
       </div>
     </div>
   );
