@@ -967,10 +967,11 @@ export default function SuperAdminDashboard() {
                         <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                           <th className="px-6 py-4">Waktu & Trace ID</th>
                           <th className="px-6 py-4">Tipe Transaksi</th>
-                          <th className="px-6 py-4">Alur Uang</th>
+                          <th className="px-6 py-4">PENGGUNA</th>
+                          <th className="px-6 py-4">TUJUAN</th>
                           <th className="px-6 py-4">Nominal</th>
                           <th className="px-6 py-4 pr-10">Status</th>
-                        </tr>
+                        </tr> 
                       </thead>
                       <tbody className="divide-y divide-gray-100 bg-white">
                         {(!transactions || transactions.length === 0) ? (
@@ -1036,20 +1037,20 @@ export default function SuperAdminDashboard() {
                                   {tipe}
                                 </span>
                               </td>
-                              <td className="px-6 py-5 min-w-[420px]">
+                              <td className="px-6 py-5">
+                                <div className="bg-gray-50/50 p-2 rounded-lg border border-gray-100 min-w-[150px]">
+                                  <div className="font-bold text-gray-900 truncate" title={transaction?.sender_name || senderName}>
+                                    {transaction?.sender_name || senderName}
+                                  </div>
+                                  <div className="text-[10px] text-gray-500 truncate">
+                                    {transaction?.sender_email || transaction?.sender?.email || senderEmail || '-'}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-5">
                                 <div className="flex items-center gap-3">
-                                  <div className="flex-1 text-right bg-gray-50/50 p-2 rounded-lg border border-gray-100">
-                                    <div className="font-bold text-gray-900 truncate" title={transaction?.sender_name || senderName}>
-                                      {transaction?.sender_name || senderName}
-                                    </div>
-                                    <div className="text-[10px] text-gray-500 truncate">
-                                      {transaction?.sender_email || transaction?.sender?.email || senderEmail || '-'}
-                                    </div>
-                                  </div>
-                                  <div className="flex-shrink-0 text-gray-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px] text-emerald-500"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                                  </div>
-                                  <div className="flex-1 text-left bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+                                  <div className="flex-shrink-0 text-emerald-500 font-bold text-lg leading-none">→</div>
+                                  <div className="bg-gray-50/50 p-2 rounded-lg border border-gray-100 min-w-[150px]">
                                     <div className="font-bold text-gray-900 truncate" title={transaction?.receiver_name || receiverName}>
                                       {transaction?.receiver_name || receiverName}
                                     </div>
@@ -1159,100 +1160,15 @@ export default function SuperAdminDashboard() {
                     </div>
                   ) : (
                     <div className="p-12 text-center text-sm font-medium text-gray-500">
-                      Katalog kosong.
+                      Katalog kosong.   
                     </div>
-                  )}
+                  )} 
                 </div>
               )}
               
             </div>
           </div>
-<<<<<<< HEAD
-
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-white">
-                <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                  <th className="px-6 py-4">Waktu</th>
-                  <th className="px-6 py-4">Tipe Transaksi</th>
-                  <th className="px-6 py-4">PENGGUNA</th>
-                  <th className="px-6 py-4">TUJUAN</th>
-                  <th className="px-6 py-4">Nominal</th>
-                  <th className="px-6 py-4">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 bg-white">
-                {transactions.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-10 text-center text-sm text-gray-500">
-                      {transactionsLoading ? "Memuat transaksi..." : "Belum ada transaksi."}
-                    </td>
-                  </tr>
-                ) : null}
-
-                {paginatedTransactions.map((t, idx) => {
-                  const nama = t.user?.name || t.user_name || "User tidak dikenal";
-                  const email = t.user?.email || t.user_email || "";
-                  return (
-                    <tr key={String(t.id ?? idx)} className="text-sm">
-                      <td className="px-6 py-4 text-gray-600 whitespace-nowrap">{formatTanggal(t.created_at)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                          {t.transaction_type_label || String(t.type).toUpperCase()}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 w-max">
-                          <div className="font-bold text-gray-900">{t.sender_name || nama}</div>
-                          <div className="text-xs text-gray-500 mt-0.5">{email || "—"}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-emerald-500 font-bold text-lg leading-none">→</span>
-                          <span className="font-bold text-gray-900">{t.receiver_name || t.reference || t.transaction_id || "—"}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 font-black text-gray-900 whitespace-nowrap">{formatRupiah(t.amount)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black border ${getBadgeStatus(t.status)}`}>
-                          {getIndonesianStatus(t.status).toUpperCase()}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {totalPagesTransaksi > 1 && (
-            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white">
-              <span className="text-sm text-gray-500 font-medium">
-                Halaman {currentPageTransaksi} dari {totalPagesTransaksi}
-              </span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setCurrentPageTransaksi(p => Math.max(1, p - 1))}
-                  disabled={currentPageTransaksi === 1}
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <button
-                  onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, p + 1))}
-                  disabled={currentPageTransaksi === totalPagesTransaksi}
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-=======
         </main>
->>>>>>> 579d708d88953eb9a30c8a8b0d8daefecf9e9e46
       </div>
     </div>
   );
