@@ -19,6 +19,10 @@ export default function LoginPage() {
   const [manualLoading, setManualLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Validation States
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   // ─── GUARD: jagani nek wes login, langsung uncalno ae nang Dashboard ───
   useEffect(() => {
     let isMounted = true;
@@ -86,8 +90,28 @@ export default function LoginPage() {
   // ═══════════════════════════════════════════════════
   const handleManualLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setManualLoading(true);
+    setEmailError("");
+    setPasswordError("");
     setErrorMsg("");
+
+    let isValid = true;
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError("Format email tidak valid (contoh: nama@email.com).");
+      isValid = false;
+    }
+
+    // Password length validation
+    if (password.length < 6) {
+      setPasswordError("Password harus terdiri dari minimal 6 karakter.");
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    setManualLoading(true);
 
     try {
       const res = await fetch(`${API_URL}/login`, {
@@ -178,11 +202,20 @@ export default function LoginPage() {
                 type="email"
                 placeholder="nama@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
                 required
-                className="w-full pl-11 pr-4 py-3.5 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
+                className={`w-full pl-11 pr-4 py-3.5 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                  emailError 
+                    ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
+                    : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
+                }`}
               />
             </div>
+            {emailError && (
+              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+                {emailError}
+              </p>
+            )}
           </div>
 
           {/* Password Input */}
@@ -195,9 +228,13 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Masukkan kata sandi"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); setPasswordError(""); }}
                 required
-                className="w-full pl-11 pr-12 py-3.5 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
+                className={`w-full pl-11 pr-12 py-3.5 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                  passwordError 
+                    ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
+                    : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
+                }`}
               />
               <button
                 type="button"
@@ -207,6 +244,11 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {passwordError && (
+              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+                {passwordError}
+              </p>
+            )}
           </div>
           
           {/* Forget Password link */}
