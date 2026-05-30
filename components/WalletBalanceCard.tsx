@@ -29,7 +29,7 @@ export default function WalletBalanceCard({
   };
 
   return (
-    <div className="relative overflow-hidden w-full max-w-md bg-gradient-to-br from-[#064e3b] via-[#115e59] to-[#0f766e] text-white rounded-[24px] p-6 shadow-xl shadow-emerald-950/20 border border-white/10 group transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]">
+    <div className="relative overflow-hidden h-full w-full bg-gradient-to-br from-[#064e3b] via-[#115e59] to-[#0f766e] text-white rounded-[24px] p-6 shadow-xl shadow-emerald-950/20 border border-white/10 group transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]">
       {/* Premium Glassmorphic Decorative Circles */}
       <div className="absolute top-0 right-0 w-44 h-44 bg-white/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-white/15 transition-all duration-500 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-36 h-36 bg-emerald-400/10 rounded-full blur-2xl -ml-8 -mb-8 pointer-events-none"></div>
@@ -56,7 +56,7 @@ export default function WalletBalanceCard({
         {/* Middle Section: Balance Display */}
         <div className="my-5">
           <span className="text-emerald-200 text-xs font-semibold tracking-wide">Saldo Utama</span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold font-serif tracking-tight text-white mt-1 drop-shadow-md">
+          <h2 className="text-3xl sm:text-4xl font-extrabold font-sans tracking-tight text-white mt-1 drop-shadow-md">
             {formatIDR(balance)}
           </h2>
         </div>

@@ -230,31 +230,37 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-serif text-[#064e3b] font-bold">
             Selamat Datang, {userName.split(' ')[0]}! 👋
           </h1>
-          <p className="text-gray-500 text-sm mt-1">{userEmail}</p>
-          {syncStatus === 'success' && (
-            <div className="flex items-center gap-1.5 mt-2 text-emerald-600">
-              <CheckCircle size={14} />
-              <span className="text-xs font-medium">Akun Aktif • {tier.toUpperCase()} Tier</span>
-            </div>
+          {userEmail !== 'muhammadrendiaf06@gmail.com' && (
+            <>
+              <p className="text-gray-500 text-sm mt-1">{userEmail}</p>
+              {syncStatus === 'success' && (
+                <div className="flex items-center gap-1.5 mt-2 text-emerald-600">
+                  <CheckCircle size={14} />
+                  <span className="text-xs font-medium">Akun Aktif • {tier.toUpperCase()} Tier</span>
+                </div>
+              )}
+            </>
           )}
         </div>
 
         {/* ═══════════════════════════════════════════════
              TOP UP SECTION — Besar, Jelas, dan Fungsional
            ═══════════════════════════════════════════════ */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
           
           {/* Card Saldo — Glassmorphism */}
-          <WalletBalanceCard
-            balance={userBalance}
-            accountNumber={accountNumber}
-            userName={userName}
-            onTopUpClick={() => setShowTopUp(!showTopUp)}
-            onTransferClick={() => setShowTransferModal(true)}
-          />
+          <div className="h-full">
+            <WalletBalanceCard
+              balance={userBalance}
+              accountNumber={accountNumber}
+              userName={userName}
+              onTopUpClick={() => setShowTopUp(!showTopUp)}
+              onTransferClick={() => setShowTransferModal(true)}
+            />
+          </div>
 
           {/* Card Karbon */}
-          <div className="bg-[#111827] text-white p-6 rounded-[24px] shadow-lg relative overflow-hidden flex flex-col justify-between border border-gray-800">
+          <div className="bg-[#111827] text-white p-6 rounded-[24px] shadow-lg relative overflow-hidden h-full flex flex-col justify-between border border-gray-800">
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#115e59]/20 rounded-full blur-3xl"></div>
             <div>
               <div className="w-10 h-10 bg-gray-800 text-emerald-400 rounded-xl flex items-center justify-center mb-3">
@@ -269,7 +275,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Card Eco Points */}
-          <div className="bg-white border border-gray-100 p-6 rounded-[24px] shadow-sm flex flex-col justify-between">
+          <div className="bg-white border border-gray-100 p-6 rounded-[24px] shadow-sm h-full flex flex-col justify-between">
             <div>
               <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-3">
                 <Heart size={20} />
