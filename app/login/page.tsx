@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [manualLoading, setManualLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   // Validation States
@@ -111,7 +111,10 @@ export default function LoginPage() {
 
     if (!isValid) return;
 
-    setManualLoading(true);
+    setIsLoading(true);
+
+    // Simulasi loading selama 2 detik sebelum call API
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     try {
       const res = await fetch(`${API_URL}/login`, {
@@ -127,7 +130,7 @@ export default function LoginPage() {
 
       if (!res.ok) {
         setErrorMsg(data.error || data.message || "Email atau password salah.");
-        setManualLoading(false);
+        setIsLoading(false);
         return;
       }
 
@@ -141,7 +144,7 @@ export default function LoginPage() {
     } catch (err) {
       console.error("Manual login error:", err);
       setErrorMsg("Gagal terhubung ke server. Pastikan backend Laravel berjalan.");
-      setManualLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -264,10 +267,10 @@ export default function LoginPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={manualLoading}
+            disabled={isLoading}
             className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3.5 rounded-2xl text-sm transition-all duration-150 transform hover:scale-[1.01] active:scale-95 shadow-md shadow-emerald-600/10 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
           >
-            {manualLoading ? (
+            {isLoading ? (
               <><Loader2 size={16} className="animate-spin" /> Masuk...</>
             ) : (
               'Masuk Akun'
