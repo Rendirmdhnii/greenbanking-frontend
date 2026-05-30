@@ -2,10 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { 
-  ShieldCheck, Users, TrendingUp, ArrowLeft, Wallet,
-  Loader2, RefreshCw, Crown, Mail, LogOut, Search, ChevronLeft, ChevronRight
-} from "lucide-react";
 import Swal from "sweetalert2";
 import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
 
@@ -60,6 +56,10 @@ interface AdminTransaction {
   sender_name?: string;
   receiver_name?: string;
   transaction_id?: string;
+  sender?: any;
+  receiver?: any;
+  sender_email?: string;
+  receiver_email?: string;
 }
 
 export default function SuperAdminDashboard() {
@@ -77,6 +77,9 @@ export default function SuperAdminDashboard() {
   const [currentPageTransaksi, setCurrentPageTransaksi] = useState(1);
   const itemsPerNasabahPage = 5;
   const itemsPerTransaksiPage = 10;
+
+  // Tab Navigation State
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -165,7 +168,44 @@ export default function SuperAdminDashboard() {
       if (res.ok) {
         const data = await res.json();
         const list = Array.isArray(data) ? data : data?.data || data?.transactions || [];
-        setTransactions(Array.isArray(list) ? list : []);
+        
+        const groupedMap = new Map<string, AdminTransaction>();
+        
+        (Array.isArray(list) ? list : []).forEach((t: AdminTransaction) => {
+          const rawId = t.reference || t.transaction_id || String(t.id || "");
+          const baseId = rawId.replace(/-(D|K)$/i, "");
+          const isOut = t.type === 'out' || rawId.endsWith('-D');
+          const isIn = t.type === 'in' || rawId.endsWith('-K');
+          
+          if (!groupedMap.has(baseId)) {
+            const newTx: any = { ...t, transaction_id: baseId, reference: baseId };
+            if (isOut) {
+              newTx.sender_name = t.user?.name;
+              newTx.sender_email = t.user?.email;
+              newTx.sender = t.user;
+            }
+            if (isIn) {
+              newTx.receiver_name = t.user?.name;
+              newTx.receiver_email = t.user?.email;
+              newTx.receiver = t.user;
+            }
+            groupedMap.set(baseId, newTx);
+          } else {
+            const existing: any = groupedMap.get(baseId)!;
+            if (isOut) {
+              existing.sender_name = t.user?.name || existing.sender_name;
+              existing.sender_email = t.user?.email || existing.sender_email;
+              existing.sender = t.user || existing.sender;
+            }
+            if (isIn) {
+              existing.receiver_name = t.user?.name || existing.receiver_name;
+              existing.receiver_email = t.user?.email || existing.receiver_email;
+              existing.receiver = t.user || existing.receiver;
+            }
+          }
+        });
+        
+        setTransactions(Array.from(groupedMap.values()));
       }
     } catch (error) {
       console.error("Gagal memuat transaksi:", error);
@@ -584,7 +624,7 @@ export default function SuperAdminDashboard() {
     return (
       <div className="flex-1 flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <Loader2 className="animate-spin text-emerald-600 mx-auto mb-4" size={32} />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 animate-spin text-emerald-600 mx-auto mb-4"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
           <p className="text-emerald-700 font-medium">Memverifikasi Akses Admin...</p>
         </div>
       </div>
@@ -596,7 +636,7 @@ export default function SuperAdminDashboard() {
       <div className="flex-1 flex items-center justify-center min-h-screen p-4 bg-gray-50">
         <div className="text-center bg-white p-12 rounded-3xl shadow-xl border border-gray-100 max-w-md w-full">
           <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <ShieldCheck size={32} className="text-red-500" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-red-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Akses Ditolak</h1>
           <p className="text-gray-500 mb-8">Anda tidak memiliki hak akses. Halaman ini hanya untuk Admin.</p>
@@ -625,273 +665,509 @@ export default function SuperAdminDashboard() {
     (currentPageTransaksi - 1) * itemsPerTransaksiPage, 
     currentPageTransaksi * itemsPerTransaksiPage
   );
-
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-6 shadow-sm mb-8 w-full sticky top-0 z-50">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
-                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200 tracking-wider">SUPER ADMIN</span>
-              </div>
-              <p className="text-sm text-gray-500">Pusat Kendali GreenBanking Nusantara</p>
-            </div>
+    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+      {/* Sidebar */}
+      <aside className="w-64 bg-emerald-900 text-emerald-50 flex-col hidden md:flex flex-shrink-0 relative overflow-hidden">
+        {/* Background Accent */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+        
+        <div className="p-6 flex items-center gap-3 border-b border-emerald-800/50 relative z-10">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-emerald-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+          <div>
+            <h1 className="font-bold text-lg tracking-wide text-white">GreenBanking</h1>
+            <p className="text-[10px] uppercase tracking-widest text-emerald-300 font-bold">Super Admin</p>
           </div>
-          <div className="flex gap-3">
+        </div>
+        
+        <nav className="flex-1 py-8 flex flex-col gap-2 px-4 relative z-10">
+          <div 
+            onClick={() => setActiveTab('dashboard')}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'dashboard' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'dashboard' ? 'text-emerald-400' : ''}`}><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+            <span className={`text-sm ${activeTab === 'dashboard' ? 'font-bold' : 'font-semibold'}`}>Dashboard Utama</span>
+          </div>
+          <div 
+            onClick={() => setActiveTab('nasabah')}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'nasabah' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'nasabah' ? 'text-emerald-400' : ''}`}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span className={`text-sm ${activeTab === 'nasabah' ? 'font-bold' : 'font-semibold'}`}>Database Nasabah</span>
+          </div>
+          <div 
+            onClick={() => setActiveTab('produk')}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'produk' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'produk' ? 'text-emerald-400' : ''}`}><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+            <span className={`text-sm ${activeTab === 'produk' ? 'font-bold' : 'font-semibold'}`}>Katalog Produk</span>
+          </div>
+          <div 
+            onClick={() => setActiveTab('transaksi')}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'transaksi' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'transaksi' ? 'text-emerald-400' : ''}`}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
+            <span className={`text-sm ${activeTab === 'transaksi' ? 'font-bold' : 'font-semibold'}`}>Riwayat Transaksi</span>
+          </div>
+        </nav>
+        
+        <div className="p-6 border-t border-emerald-800/50 relative z-10">
+          <div className="bg-emerald-950/50 p-4 rounded-xl mb-4 border border-emerald-800/50">
+            <p className="text-xs text-emerald-300 mb-1">Akses Saat Ini</p>
+            <p className="text-sm font-bold text-white truncate">{adminUser?.email || 'admin@greenbanking.com'}</p>
+          </div>
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-300 hover:text-red-200 rounded-xl border border-red-500/20 transition-all"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+            <span className="font-bold text-sm">Logout Sesi</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden relative">
+        {/* Top Header */}
+        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-200 px-8 flex items-center justify-between sticky top-0 z-50">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Ikhtisar Platform</h2>
+            <p className="text-sm text-gray-500 font-medium">Pusat kendali operasional dan transaksi</p>
+          </div>
+          <div className="flex items-center gap-6">
             <button 
               onClick={() => { fetchStats(); fetchTransactions(); }}
               disabled={statsLoading}
-              className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100 hover:bg-emerald-100 transition-colors text-sm font-bold"
             >
-              <RefreshCw size={16} className={statsLoading ? 'animate-spin text-emerald-600' : 'text-emerald-600'} /> Sinkronkan Data
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${statsLoading ? 'animate-spin' : ''}`}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M21 12a9 9 0 1 0-9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg> 
+              <span className="hidden sm:inline">{statsLoading ? 'Menyinkronkan...' : 'Sinkronkan Data'}</span>
             </button>
-            <button 
-              onClick={handleLogout}
-              className="flex items-center gap-2 bg-red-50 text-red-600 border border-red-100 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-100 transition-colors"
-            >
-              <LogOut size={16} /> Logout
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="max-w-7xl mx-auto px-8">
-        {/* Welcome Banner */}
-        <div className="bg-gradient-to-r from-emerald-700 to-emerald-900 border border-emerald-600 rounded-2xl p-8 text-white mb-8 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
-          <div className="flex items-center gap-3 mb-4 relative z-10">
-            <ShieldCheck size={28} className="text-emerald-300" />
-            <h2 className="text-2xl font-bold tracking-tight">Selamat Datang, {adminUser?.name || 'Admin'}!</h2>
-          </div>
-          <p className="text-emerald-100 leading-relaxed max-w-2xl text-sm relative z-10">
-            Login sebagai <strong>{adminUser?.email}</strong>.
-            Anda memiliki akses penuh untuk mengelola pengguna, memantau statistik platform, dan mengelola katalog produk investasi/donasi.
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full blur-[60px] opacity-50 group-hover:opacity-100 transition-opacity"></div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center">
-                <Users size={20} className="text-emerald-600" />
-              </div>
-              <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Nasabah</span>
-            </div>
-            <p className="text-4xl font-black text-gray-900">
-              {stats ? stats.total_users : '—'}
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-[60px] opacity-50 group-hover:opacity-100 transition-opacity"></div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center">
-                <Wallet size={20} className="text-blue-600" />
-              </div>
-              <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Saldo Beredar</span>
-            </div>
-            <p className="text-4xl font-black text-gray-900 tracking-tight">
-              {stats ? `Rp ${Number(stats.total_balance).toLocaleString('id-ID')}` : '—'}
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-[60px] opacity-50 group-hover:opacity-100 transition-opacity"></div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-purple-50 border border-purple-100 rounded-xl flex items-center justify-center">
-                <TrendingUp size={20} className="text-purple-600" />
-              </div>
-              <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Investasi Aktif</span>
-            </div>
-            <p className="text-4xl font-black text-gray-900 tracking-tight">
-              {stats ? `Rp ${Number(stats.total_investments).toLocaleString('id-ID')}` : '—'}
-            </p>
-          </div>
-        </div>
-
-        {/* Daftar Nasabah */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50/50 gap-4">
+            <div className="h-8 w-px bg-gray-200"></div>
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Database Nasabah</h2>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-full">
-                {filteredNasabah.length} PENGGUNA
-              </span>
-            </div>
-            <div className="relative w-full sm:w-64">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={16} className="text-gray-400" />
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-bold text-gray-900">{adminUser?.name || 'Super Admin'}</p>
+                <p className="text-xs text-emerald-600 font-medium uppercase tracking-wider">Otoritas Penuh</p>
               </div>
-              <input
-                type="text"
-                placeholder="Cari nama atau email..."
-                value={searchQueryNasabah}
-                onChange={(e) => {
-                  setSearchQueryNasabah(e.target.value);
-                  setCurrentPageNasabah(1);
-                }}
-                className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white"
-              />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-md">
+                {(adminUser?.name || 'A').charAt(0).toUpperCase()}
+              </div>
             </div>
           </div>
-          {filteredNasabah.length > 0 ? (
-            <div className="divide-y divide-gray-100">
-              {paginatedNasabah.map((u) => (
-                <div key={u.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-2 ${u.is_admin ? 'bg-emerald-100 border-emerald-300 text-emerald-700' : 'bg-gray-100 border-gray-200 text-gray-600'}`}>
-                      {u.name.charAt(0).toUpperCase()}
+        </header>
+
+        {/* Scrollable Content */}
+        <main className="flex-1 overflow-y-auto w-full">
+          {/* Centered Main Container */}
+          <div className="max-w-7xl mx-auto p-6 md:p-8 space-y-6">
+            
+            {/* Conditional Rendering: SUMMARY CARDS (Dashboard Only) */}
+            {activeTab === 'dashboard' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-5 border border-blue-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Nasabah</p>
+                    <h3 className="text-xl font-black text-gray-900 truncate" title={String(stats?.total_users || 0)}>{stats?.total_users || 0}</h3>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                  </div>
+                  <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 mb-5 border border-emerald-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Beredar</p>
+                    <h3 className="text-xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_balance || 0).toLocaleString('id-ID')}`}>
+                      Rp {Number(stats?.total_balance || 0).toLocaleString('id-ID')}
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                  </div>
+                  <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 mb-5 border border-purple-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Investasi Aktif</p>
+                    <h3 className="text-xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_investments || 0).toLocaleString('id-ID')}`}>
+                      Rp {Number(stats?.total_investments || 0).toLocaleString('id-ID')}
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                  <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                  </div>
+                  <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 mb-5 border border-amber-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Produk Hijau</p>
+                    <h3 className="text-xl font-black text-gray-900 truncate">
+                      {stats?.products?.length || 0}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Main Grid for Tables / Catalog */}
+            <div className={`grid grid-cols-1 ${(activeTab === 'dashboard') ? 'lg:grid-cols-3' : ''} gap-6`}>
+              
+              {/* Database Nasabah Section */}
+              {(activeTab === 'dashboard' || activeTab === 'nasabah') && (
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+                  <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-bold text-gray-900">Database Nasabah</h2>
+                        <p className="text-xs text-gray-500 font-medium">Manajemen akun pengguna</p>
+                      </div>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-gray-900 text-lg tracking-tight">{u.name}</p>
-                        {u.is_admin && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded border border-emerald-200 tracking-wider">
-                            <Crown size={12} /> ADMIN
-                          </span>
+                    <div className="relative w-full sm:w-64">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-gray-400"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Cari nama atau email..."
+                        value={searchQueryNasabah}
+                        onChange={(e) => {
+                          setSearchQueryNasabah(e.target.value);
+                          setCurrentPageNasabah(1);
+                        }}
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="overflow-x-auto overflow-y-auto max-h-[600px] w-full">
+                    <table className="min-w-full divide-y divide-gray-100 relative">
+                      <thead className="bg-gray-50/50 sticky top-0 z-10 shadow-sm">
+                        <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                          <th className="px-6 py-4">Nasabah</th>
+                          <th className="px-6 py-4">Saldo</th>
+                          <th className="px-6 py-4 text-right">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 bg-white">
+                        {(!filteredNasabah || filteredNasabah.length === 0) ? (
+                          <tr>
+                            <td colSpan={3} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                              Tidak ada nasabah ditemukan.
+                            </td>
+                          </tr>
+                        ) : (
+                          paginatedNasabah?.map((u) => (
+                            <tr key={u?.id || Math.random()} className="hover:bg-gray-50/50 transition-colors group">
+                              <td className="px-6 py-5">
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0 ${u?.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                                    {(u?.name || 'U').charAt(0).toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-bold text-gray-900">{u?.name || 'Unknown'}</span>
+                                      {u?.is_admin && (
+                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black rounded border border-emerald-200 tracking-wider">
+                                          ADMIN
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-0.5">{u?.email || 'Tidak ada email'}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-5">
+                                <span className="font-black text-gray-900">Rp {Number(u?.balance || 0).toLocaleString('id-ID')}</span>
+                              </td>
+                              <td className="px-6 py-5">
+                                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button 
+                                    onClick={() => u && handleAdjustBalance(u)}
+                                    className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+                                  >
+                                    EDIT SALDO
+                                  </button>
+                                  <button 
+                                    onClick={() => u && handleToggleBan(u)}
+                                    className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 rounded-lg border border-red-200 transition-colors"
+                                  >
+                                    SUSPEND
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
                         )}
-                      </div>
-                      <div className="flex items-center gap-1.5 text-sm text-gray-500 mt-0.5">
-                        <Mail size={14} />
-                        {u.email} <span className="text-gray-300 mx-1">•</span> ID: {u.id}
-                      </div>
-                    </div>
+                      </tbody>
+                    </table>
                   </div>
-                  <div className="text-right flex items-center gap-6">
-                    <div>
-                      <p className="font-black text-emerald-600 text-lg">Rp {Number(u.balance).toLocaleString('id-ID')}</p>
-                      <p className="text-xs text-gray-400 font-medium mt-0.5 uppercase tracking-wide">Bergabung {u.joined}</p>
+
+                  {totalPagesNasabah > 1 && (
+                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                      <span className="text-xs font-medium text-gray-500">
+                        Hal {currentPageNasabah || 1} / {totalPagesNasabah || 1}
+                      </span>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setCurrentPageNasabah(p => Math.max(1, (p || 1) - 1))}
+                          disabled={currentPageNasabah === 1}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
+                        </button>
+                        <button
+                          onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, (p || 1) + 1))}
+                          disabled={currentPageNasabah === totalPagesNasabah}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
+                        </button>
+                      </div>
                     </div>
-                    {/* Edit actions */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                      <button 
-                        onClick={() => handleAdjustBalance(u)}
-                        className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200 shadow-sm transition-all hover:shadow"
-                      >
-                        UBAH SALDO
-                      </button>
-                      <button 
-                        onClick={() => handleToggleBan(u)}
-                        className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg border border-red-200 shadow-sm transition-all hover:shadow"
-                      >
-                        SUSPEND
-                      </button>
-                    </div>
-                  </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="px-6 py-16 text-center text-gray-500">
-              {statsLoading ? (
-                <div className="flex flex-col items-center justify-center gap-3">
-                  <Loader2 className="animate-spin text-emerald-500" size={32} />
-                  <span className="font-bold uppercase tracking-widest text-sm">Memuat Database...</span>
-                </div>
-              ) : (
-                <span className="font-bold uppercase tracking-widest">Tidak ada pengguna</span>
               )}
-            </div>
-          )}
-          
-          {totalPagesNasabah > 1 && (
-            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white">
-              <span className="text-sm text-gray-500 font-medium">
-                Halaman {currentPageNasabah} dari {totalPagesNasabah}
-              </span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setCurrentPageNasabah(p => Math.max(1, p - 1))}
-                  disabled={currentPageNasabah === 1}
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <button
-                  onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, p + 1))}
-                  disabled={currentPageNasabah === totalPagesNasabah}
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
 
-        {/* Daftar Produk */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Katalog Produk Hijau</h2>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleTambahProduk}
-                className="text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl border border-emerald-700 shadow-sm transition-all"
-              >
-                TAMBAH PRODUK
-              </button>
-              <span className="text-xs font-bold text-blue-700 bg-blue-100 border border-blue-200 px-3 py-1 rounded-full">
-                {stats?.products?.length || 0} PRODUK
-              </span>
-            </div>
-          </div>
-          {stats?.products && stats.products.length > 0 ? (
-            <div className="divide-y divide-gray-100">
-              {stats.products.map((p) => (
-                <div key={p.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                      <img src={globalProjectImages[p.title] || fallbackImage} alt={p.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900 text-md tracking-tight">{p.title}</p>
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
-                        <span className="uppercase text-blue-600 font-bold">{p.category}</span> • ID: {p.product_id}
+              {/* Riwayat Transaksi Section */}
+              {(activeTab === 'dashboard' || activeTab === 'transaksi') && (
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+                  <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-bold text-gray-900">Riwayat Transaksi Terpadu</h2>
+                        <p className="text-xs text-gray-500 font-medium">Monitoring pergerakan dana real-time</p>
                       </div>
                     </div>
                   </div>
-                  <div className="text-right flex items-center gap-6">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                      <button 
-                        onClick={() => handleEditProduct(p)}
-                        className="text-xs font-bold bg-white hover:bg-blue-50 text-blue-700 px-4 py-2 rounded-lg border border-gray-200 shadow-sm transition-all hover:shadow hover:border-blue-200"
-                      >
-                        EDIT PRODUK
-                      </button>
-                      <button
-                        onClick={() => handleHapusProduk(p)}
-                        className="text-xs font-bold bg-white hover:bg-red-50 text-red-600 px-4 py-2 rounded-lg border border-gray-200 shadow-sm transition-all hover:shadow hover:border-red-200"
-                      >
-                        HAPUS
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="px-6 py-12 text-center text-gray-500">
-              <span className="font-bold uppercase tracking-widest">Tidak Ada Produk</span>
-            </div>
-          )}
-        </div>
 
-        {/* Riwayat Transaksi */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Riwayat Transaksi</h2>
-            <button
-              onClick={() => fetchTransactions()}
-              disabled={transactionsLoading}
-              className="text-xs font-bold bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl border border-gray-200 shadow-sm transition-all disabled:opacity-50"
-            >
-              {transactionsLoading ? "MEMUAT..." : "MUAT ULANG"}
-            </button>
+                  <div className="overflow-x-auto w-full overflow-y-auto max-h-[600px]">
+                    <table className="min-w-full divide-y divide-gray-100 relative">
+                      <thead className="bg-gray-50/50 sticky top-0 z-10 shadow-sm">
+                        <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                          <th className="px-6 py-4">Waktu & Trace ID</th>
+                          <th className="px-6 py-4">Tipe Transaksi</th>
+                          <th className="px-6 py-4">Alur Uang</th>
+                          <th className="px-6 py-4">Nominal</th>
+                          <th className="px-6 py-4 pr-10">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 bg-white">
+                        {(!transactions || transactions.length === 0) ? (
+                          <tr>
+                            <td colSpan={5} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                              {transactionsLoading ? (
+                                <div className="flex items-center justify-center gap-2">
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 animate-spin text-indigo-500"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                                  <span>Memuat data...</span>
+                                </div>
+                              ) : "Belum ada transaksi."}
+                            </td>
+                          </tr>
+                        ) : null}
+
+                        {paginatedTransactions?.map((t, idx) => {
+                          const transaction = t;
+                          const nama = t?.user?.name || t?.user_name || "User";
+                          const email = t?.user?.email || t?.user_email || "";
+                          
+                          let tipe = t?.transaction_type_label || String(t?.type || "Transaksi").toUpperCase();
+                          let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
+                          
+                          if (tipe.toLowerCase().includes("transfer")) {
+                            tipe = "Transfer Dana";
+                            badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+                          } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
+                            tipe = "Top Up Saldo";
+                            badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                          }
+
+                          let senderName = t?.sender_name || nama;
+                          let senderEmail = t?.sender_email || email;
+                          let receiverName = t?.receiver_name || "-";
+                          let receiverEmail = t?.receiver_email || "";
+
+                          if (tipe === "Top Up Saldo") {
+                            senderName = "Sistem Bank";
+                            senderEmail = "Otomatis";
+                            receiverName = nama;
+                            receiverEmail = email;
+                          } else if (t?.type?.toLowerCase() === 'withdrawal' || t?.type?.toLowerCase() === 'tarik tunai') {
+                            senderName = nama;
+                            senderEmail = email;
+                            receiverName = "Sistem Bank";
+                            receiverEmail = "Otomatis";
+                          } else {
+                            if (!t?.receiver_name && !t?.sender_name) {
+                              receiverName = "Tujuan Tidak Diketahui";
+                            }
+                          }
+
+                          return (
+                            <tr key={String(t?.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
+                              <td className="px-6 py-5 whitespace-nowrap">
+                                <div className="text-gray-900 font-bold mb-1">{formatTanggal(t?.created_at)}</div>
+                                <div className="font-mono text-xs text-gray-500 bg-gray-100/80 px-2 py-0.5 rounded border border-gray-200 inline-block tracking-tight">
+                                  {t?.reference || t?.transaction_id || "-"}
+                                </div>
+                              </td>
+                              <td className="px-6 py-5 whitespace-nowrap">
+                                <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-black border uppercase tracking-wider ${badgeColor}`}>
+                                  {tipe}
+                                </span>
+                              </td>
+                              <td className="px-6 py-5 min-w-[420px]">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex-1 text-right bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+                                    <div className="font-bold text-gray-900 truncate" title={transaction?.sender_name || senderName}>
+                                      {transaction?.sender_name || senderName}
+                                    </div>
+                                    <div className="text-[10px] text-gray-500 truncate">
+                                      {transaction?.sender_email || transaction?.sender?.email || senderEmail || '-'}
+                                    </div>
+                                  </div>
+                                  <div className="flex-shrink-0 text-gray-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px] text-emerald-500"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                                  </div>
+                                  <div className="flex-1 text-left bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+                                    <div className="font-bold text-gray-900 truncate" title={transaction?.receiver_name || receiverName}>
+                                      {transaction?.receiver_name || receiverName}
+                                    </div>
+                                    <div className="text-[10px] text-gray-500 truncate">
+                                      {transaction?.receiver_email || transaction?.receiver?.email || receiverEmail || '-'}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-5 whitespace-nowrap">
+                                <span className="font-black text-gray-900 text-base">{formatRupiah(t?.amount || 0)}</span>
+                              </td>
+                              <td className="px-6 py-5 whitespace-nowrap pr-10">
+                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t?.status)}`}>
+                                  {getIndonesianStatus(t?.status)}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {totalPagesTransaksi > 1 && (
+                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                      <span className="text-xs font-medium text-gray-500">
+                        Hal {currentPageTransaksi || 1} / {totalPagesTransaksi || 1}
+                      </span>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setCurrentPageTransaksi(p => Math.max(1, (p || 1) - 1))}
+                          disabled={currentPageTransaksi === 1}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
+                        </button>
+                        <button
+                          onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, (p || 1) + 1))}
+                          disabled={currentPageTransaksi === totalPagesTransaksi}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Katalog Produk Section */}
+              {(activeTab === 'dashboard' || activeTab === 'produk') && (
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-1' : ''}`}>
+                  <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-amber-600"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-bold text-gray-900">Katalog Produk</h2>
+                        <p className="text-xs text-gray-500 font-medium">Investasi & Donasi Hijau</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleTambahProduk}
+                      className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100"
+                      title="Tambah Produk"
+                    >
+                      <span className="font-bold text-lg leading-none">+</span>
+                    </button>
+                  </div>
+                  
+                  {(stats?.products && stats.products.length > 0) ? (
+                    <div className="divide-y divide-gray-100 max-h-[700px] overflow-y-auto">
+                      {stats.products.map((p) => (
+                        <div key={p?.id || Math.random()} className="p-6 hover:bg-gray-50/50 transition-colors group">
+                          <div className="flex gap-4">
+                            <div className="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0">
+                              <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold text-gray-900 text-sm leading-tight truncate mb-1" title={p?.title || 'Tanpa Judul'}>{p?.title || 'Tanpa Judul'}</h3>
+                              <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-black uppercase tracking-wider mb-2">
+                                {p?.category || 'Umum'}
+                              </span>
+                              <div className="text-xs font-bold text-emerald-600">
+                                Target: {formatRupiah(p?.target_funding || 0)}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-4 flex gap-2">
+                            <button 
+                              onClick={() => p && handleEditProduct(p)}
+                              className="flex-1 text-[11px] font-bold bg-white hover:bg-gray-50 text-gray-700 py-2.5 rounded-lg border border-gray-200 transition-colors"
+                            >
+                              EDIT
+                            </button>
+                            <button
+                              onClick={() => p && handleHapusProduk(p)}
+                              className="flex-1 text-[11px] font-bold bg-red-50 hover:bg-red-100 text-red-600 py-2.5 rounded-lg border border-red-100 transition-colors"
+                            >
+                              HAPUS
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-12 text-center text-sm font-medium text-gray-500">
+                      Katalog kosong.
+                    </div>
+                  )}
+                </div>
+              )}
+              
+            </div>
           </div>
+<<<<<<< HEAD
 
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-100">
@@ -974,6 +1250,9 @@ export default function SuperAdminDashboard() {
             </div>
           )}
         </div>
+=======
+        </main>
+>>>>>>> 579d708d88953eb9a30c8a8b0d8daefecf9e9e46
       </div>
     </div>
   );
