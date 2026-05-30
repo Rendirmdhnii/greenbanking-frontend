@@ -56,6 +56,10 @@ interface AdminTransaction {
   sender_name?: string;
   receiver_name?: string;
   transaction_id?: string;
+  sender?: any;
+  receiver?: any;
+  sender_email?: string;
+  receiver_email?: string;
 }
 
 export default function SuperAdminDashboard() {
@@ -170,13 +174,34 @@ export default function SuperAdminDashboard() {
         (Array.isArray(list) ? list : []).forEach((t: AdminTransaction) => {
           const rawId = t.reference || t.transaction_id || String(t.id || "");
           const baseId = rawId.replace(/-(D|K)$/i, "");
+          const isOut = t.type === 'out' || rawId.endsWith('-D');
+          const isIn = t.type === 'in' || rawId.endsWith('-K');
           
           if (!groupedMap.has(baseId)) {
-            groupedMap.set(baseId, { ...t, transaction_id: baseId, reference: baseId });
+            const newTx: any = { ...t, transaction_id: baseId, reference: baseId };
+            if (isOut) {
+              newTx.sender_name = t.user?.name;
+              newTx.sender_email = t.user?.email;
+              newTx.sender = t.user;
+            }
+            if (isIn) {
+              newTx.receiver_name = t.user?.name;
+              newTx.receiver_email = t.user?.email;
+              newTx.receiver = t.user;
+            }
+            groupedMap.set(baseId, newTx);
           } else {
-            const existing = groupedMap.get(baseId)!;
-            if (!existing.sender_name && t.sender_name) existing.sender_name = t.sender_name;
-            if (!existing.receiver_name && t.receiver_name) existing.receiver_name = t.receiver_name;
+            const existing: any = groupedMap.get(baseId)!;
+            if (isOut) {
+              existing.sender_name = t.user?.name || existing.sender_name;
+              existing.sender_email = t.user?.email || existing.sender_email;
+              existing.sender = t.user || existing.sender;
+            }
+            if (isIn) {
+              existing.receiver_name = t.user?.name || existing.receiver_name;
+              existing.receiver_email = t.user?.email || existing.receiver_email;
+              existing.receiver = t.user || existing.receiver;
+            }
           }
         });
         
@@ -936,7 +961,7 @@ export default function SuperAdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="overflow-x-auto overflow-y-auto max-h-[600px] w-full">
+                  <div className="overflow-x-auto w-full overflow-y-auto max-h-[600px]">
                     <table className="min-w-full divide-y divide-gray-100 relative">
                       <thead className="bg-gray-50/50 sticky top-0 z-10 shadow-sm">
                         <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -944,7 +969,7 @@ export default function SuperAdminDashboard() {
                           <th className="px-6 py-4">Tipe Transaksi</th>
                           <th className="px-6 py-4">Alur Uang</th>
                           <th className="px-6 py-4">Nominal</th>
-                          <th className="px-6 py-4">Status</th>
+                          <th className="px-6 py-4 pr-10">Status</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 bg-white">
@@ -962,6 +987,7 @@ export default function SuperAdminDashboard() {
                         ) : null}
 
                         {paginatedTransactions?.map((t, idx) => {
+                          const transaction = t;
                           const nama = t?.user?.name || t?.user_name || "User";
                           const email = t?.user?.email || t?.user_email || "";
                           
@@ -977,9 +1003,9 @@ export default function SuperAdminDashboard() {
                           }
 
                           let senderName = t?.sender_name || nama;
-                          let senderEmail = email;
+                          let senderEmail = t?.sender_email || email;
                           let receiverName = t?.receiver_name || "-";
-                          let receiverEmail = "";
+                          let receiverEmail = t?.receiver_email || "";
 
                           if (tipe === "Top Up Saldo") {
                             senderName = "Sistem Bank";
@@ -1013,22 +1039,30 @@ export default function SuperAdminDashboard() {
                               <td className="px-6 py-5 min-w-[420px]">
                                 <div className="flex items-center gap-3">
                                   <div className="flex-1 text-right bg-gray-50/50 p-2 rounded-lg border border-gray-100">
-                                    <div className="font-bold text-gray-900 truncate" title={senderName}>{senderName}</div>
-                                    <div className="text-[10px] text-gray-500 truncate">{senderEmail || '-'}</div>
+                                    <div className="font-bold text-gray-900 truncate" title={transaction?.sender_name || senderName}>
+                                      {transaction?.sender_name || senderName}
+                                    </div>
+                                    <div className="text-[10px] text-gray-500 truncate">
+                                      {transaction?.sender_email || transaction?.sender?.email || senderEmail || '-'}
+                                    </div>
                                   </div>
                                   <div className="flex-shrink-0 text-gray-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px] text-emerald-500"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                                   </div>
                                   <div className="flex-1 text-left bg-gray-50/50 p-2 rounded-lg border border-gray-100">
-                                    <div className="font-bold text-gray-900 truncate" title={receiverName}>{receiverName}</div>
-                                    <div className="text-[10px] text-gray-500 truncate">{receiverEmail || '-'}</div>
+                                    <div className="font-bold text-gray-900 truncate" title={transaction?.receiver_name || receiverName}>
+                                      {transaction?.receiver_name || receiverName}
+                                    </div>
+                                    <div className="text-[10px] text-gray-500 truncate">
+                                      {transaction?.receiver_email || transaction?.receiver?.email || receiverEmail || '-'}
+                                    </div>
                                   </div>
                                 </div>
                               </td>
                               <td className="px-6 py-5 whitespace-nowrap">
                                 <span className="font-black text-gray-900 text-base">{formatRupiah(t?.amount || 0)}</span>
                               </td>
-                              <td className="px-6 py-5 whitespace-nowrap">
+                              <td className="px-6 py-5 whitespace-nowrap pr-10">
                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t?.status)}`}>
                                   {getIndonesianStatus(t?.status)}
                                 </span>
