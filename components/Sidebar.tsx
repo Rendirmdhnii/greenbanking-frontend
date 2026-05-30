@@ -3,10 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, TrendingUp, Leaf, User, Settings, ShieldCheck, LogOut, Receipt } from "lucide-react";
-import { supabase } from "@/utils/supabase";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+import { Home, TrendingUp, Leaf, User, Settings, ShieldCheck, Receipt } from "lucide-react";
 
 interface SidebarProps {
   userHook?: any;
@@ -24,29 +21,6 @@ export default function Sidebar({ userHook, activeMenu }: SidebarProps) {
     userHook?.userData?.is_admin;
   const adminHref = isSuperAdmin ? "/super-admin/dashboard" : "/dashboard/admin";
 
-  const handleLogout = async () => {
-    try {
-      // 1. Revoke Sanctum token di server
-      const token = localStorage.getItem('token');
-      if (token) {
-        await fetch(`${API_URL}/logout`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' },
-        });
-      }
-    } catch (e) {
-      console.error('Server logout error:', e);
-    } finally {
-      // 2. Hapus token di client
-      localStorage.removeItem('token');
-      localStorage.removeItem('admin_token');
-      // 3. Logout Supabase (Google)
-      await supabase.auth.signOut();
-      // 4. Redirect ke login
-      window.location.href = "/login";
-    }
-  };
-
   // Middle menu items specified by user
   const navItems = [
     { name: "Beranda", icon: Home, href: "/dashboard" },
@@ -58,7 +32,7 @@ export default function Sidebar({ userHook, activeMenu }: SidebarProps) {
   ];
 
   return (
-    <aside className="w-66 bg-white border-r border-gray-150 flex flex-col justify-between hidden md:flex h-screen sticky top-0 font-sans z-30 shadow-sm shadow-gray-150/20">
+    <aside className="w-66 bg-white border-r border-gray-150 flex flex-col hidden md:flex h-screen sticky top-0 font-sans z-30 shadow-sm shadow-gray-150/20">
       
       {/* Top Part: Logo and Header */}
       <div>
@@ -117,17 +91,6 @@ export default function Sidebar({ userHook, activeMenu }: SidebarProps) {
             </Link>
           )}
         </nav>
-      </div>
-
-      {/* Bottom Part: Logout Button */}
-      <div className="p-4 border-t border-gray-100 bg-gray-50/30">
-        <button
-          onClick={handleLogout}
-          className="group w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm text-red-600 hover:bg-red-50/80 hover:text-red-700 transition-all duration-200 cursor-pointer"
-        >
-          <LogOut size={19} className="text-red-500 transition-transform group-hover:translate-x-0.5" />
-          <span>Keluar Akun</span>
-        </button>
       </div>
 
     </aside>
