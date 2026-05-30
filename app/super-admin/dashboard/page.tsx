@@ -899,8 +899,8 @@ export default function SuperAdminDashboard() {
                 <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
                   <th className="px-6 py-4">Waktu</th>
                   <th className="px-6 py-4">Tipe Transaksi</th>
-                  <th className="px-6 py-4">Pengirim</th>
-                  <th className="px-6 py-4">Penerima / Tujuan</th>
+                  <th className="px-6 py-4">PENGGUNA</th>
+                  <th className="px-6 py-4">TUJUAN</th>
                   <th className="px-6 py-4">Nominal</th>
                   <th className="px-6 py-4">Status</th>
                 </tr>
@@ -926,12 +926,16 @@ export default function SuperAdminDashboard() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-bold text-gray-900">{t.sender_name || nama}</div>
-                        <div className="text-xs text-gray-500">{email || "—"}</div>
+                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 w-max">
+                          <div className="font-bold text-gray-900">{t.sender_name || nama}</div>
+                          <div className="text-xs text-gray-500 mt-0.5">{email || "—"}</div>
+                        </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-bold text-gray-900">{t.receiver_name || "—"}</div>
-                        <div className="text-xs text-gray-500">{t.reference || t.transaction_id || "—"}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-emerald-500 font-bold text-lg leading-none">→</span>
+                          <span className="font-bold text-gray-900">{t.receiver_name || t.reference || t.transaction_id || "—"}</span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 font-black text-gray-900 whitespace-nowrap">{formatRupiah(t.amount)}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
