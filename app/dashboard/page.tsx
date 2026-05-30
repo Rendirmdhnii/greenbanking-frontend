@@ -213,6 +213,51 @@ export default function DashboardPage() {
     );
   }
 
+  const dummyTransactions = [
+    {
+      id: "TX-987654",
+      title: "Top Up Eco-Wallet via Midtrans",
+      created_at: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45 menit lalu
+      status: "BERHASIL",
+      type: "in",
+      amount: 250000
+    },
+    {
+      id: "TX-123456",
+      title: "Transfer ke BNI Green Account",
+      created_at: new Date(Date.now() - 1000 * 60 * 120).toISOString(), // 2 jam lalu
+      status: "BERHASIL",
+      type: "out",
+      amount: 75000
+    },
+    {
+      id: "TX-654321",
+      title: "Pembayaran Tagihan PLN Eco-Energy",
+      created_at: new Date(Date.now() - 1000 * 60 * 360).toISOString(), // 6 jam lalu
+      status: "BERHASIL",
+      type: "out",
+      amount: 125000
+    },
+    {
+      id: "TX-789012",
+      title: "Investasi Solar Panel Project",
+      created_at: new Date(Date.now() - 1000 * 60 * 1440).toISOString(), // 1 hari lalu
+      status: "BERHASIL",
+      type: "out",
+      amount: 500000
+    },
+    {
+      id: "TX-345678",
+      title: "Refund Reward Donasi Penanaman Mangrove",
+      created_at: new Date(Date.now() - 1000 * 60 * 2880).toISOString(), // 2 hari lalu
+      status: "BERHASIL",
+      type: "in",
+      amount: 50000
+    }
+  ];
+
+  const transactionsToRender = recentTrx.length > 0 ? recentTrx : dummyTransactions;
+
   return (
     <>
       {/* Midtrans Snap.js */}
@@ -314,17 +359,16 @@ export default function DashboardPage() {
           </div>
         </div>
 
-
         {/* Aksi Cepat */}
         <div className="mb-10">
-          <h3 className="text-xl font-serif text-[#064e3b] font-bold mb-4">Aksi Cepat</h3>
+          <h3 className="text-2xl font-serif font-bold text-[#064e3b] mb-4">Aksi Cepat</h3>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-            {/* Top Up (Active State) */}
+            {/* Top Up — Active State */}
             <button 
               onClick={() => setShowTopUp(true)} 
-              className="flex flex-col items-center justify-between gap-3 p-4 bg-white rounded-2xl border-2 border-emerald-500 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
+              className="flex flex-col items-center gap-3 p-4 bg-white rounded-3xl border border-emerald-200 shadow-[0_4px_16px_-4px_rgba(16,185,129,0.15)] hover:shadow-[0_6px_20px_-4px_rgba(16,185,129,0.25)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
             >
-              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-emerald-600 text-white shadow-md">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
                 <Wallet size={20}/>
               </div>
               <span className="text-xs font-bold text-emerald-600 text-center">Top Up</span>
@@ -333,75 +377,53 @@ export default function DashboardPage() {
             {/* Transfer */}
             <button 
               onClick={() => setShowTransferModal(true)} 
-              className="flex flex-col items-center justify-between gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
+              className="flex flex-col items-center gap-3 p-4 bg-white rounded-3xl border border-gray-100 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:border-emerald-100 hover:shadow-[0_4px_12px_-4px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
             >
-              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-purple-50 text-purple-600 border border-purple-100">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-purple-50 text-purple-600">
                 <ArrowRightLeft size={20}/>
               </div>
               <span className="text-xs font-semibold text-gray-700 text-center">Transfer</span>
             </button>
 
-            {/* Tagihan */}
-            <Link 
-              href="/dashboard/tagihan" 
-              className="flex flex-col items-center justify-between gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
-            >
-              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-orange-50 text-orange-600 border border-orange-100">
-                <CreditCard size={20}/>
-              </div>
-              <span className="text-xs font-semibold text-gray-700 text-center">Tagihan</span>
-            </Link>
-
-            {/* Investasi */}
-            <Link 
-              href="/dashboard/investasi" 
-              className="flex flex-col items-center justify-between gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
-            >
-              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100">
-                <PieChart size={20}/>
-              </div>
-              <span className="text-xs font-semibold text-gray-700 text-center">Investasi</span>
-            </Link>
-
-            {/* QRIS */}
-            <Link 
-              href="/dashboard/qris" 
-              className="flex flex-col items-center justify-between gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
-            >
-              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-emerald-50 text-emerald-600 border border-emerald-100">
-                <QrCode size={20}/>
-              </div>
-              <span className="text-xs font-semibold text-gray-700 text-center">QRIS</span>
-            </Link>
-
-            {/* Donasi */}
-            <Link 
-              href="/dashboard/donasi" 
-              className="flex flex-col items-center justify-between gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
-            >
-              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-100">
-                <Heart size={20}/>
-              </div>
-              <span className="text-xs font-semibold text-gray-700 text-center">Donasi</span>
-            </Link>
+            {/* Tagihan, Investasi, QRIS, Donasi */}
+            {[
+              { label: "Tagihan", icon: <CreditCard size={20}/>, color: "bg-orange-50 text-orange-600", href: "/dashboard/tagihan" },
+              { label: "Investasi", icon: <PieChart size={20}/>, color: "bg-blue-50 text-blue-600", href: "/dashboard/investasi" },
+              { label: "QRIS", icon: <QrCode size={20}/>, color: "bg-emerald-50 text-emerald-600", href: "/dashboard/qris" },
+              { label: "Donasi", icon: <Heart size={20}/>, color: "bg-rose-50 text-rose-600", href: "/dashboard/donasi" },
+            ].map((action, i) => (
+              <Link 
+                key={i} 
+                href={action.href} 
+                className="flex flex-col items-center gap-3 p-4 bg-white rounded-3xl border border-gray-100 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:border-emerald-100 hover:shadow-[0_4px_12px_-4px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${action.color}`}>
+                  {action.icon}
+                </div>
+                <span className="text-xs font-semibold text-gray-700 text-center">{action.label}</span>
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* Riwayat Transaksi */}
+        {/* Riwayat Transaksi Terakhir */}
         <div className="mt-12">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-serif text-[#064e3b] font-bold">Riwayat Transaksi Terakhir</h3>
-            <Link href="/dashboard/riwayat" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
-              Lihat Semua &rarr;
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-2xl font-serif font-bold text-[#064e3b]">Riwayat Transaksi Terakhir</h3>
+            <Link 
+              href="/dashboard/riwayat" 
+              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors hover:underline"
+            >
+              Lihat Semua
             </Link>
           </div>
 
-          <div className="bg-white rounded-[24px] border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-100">
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-100">
             {trxLoading ? (
               <div className="p-4 space-y-4">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="flex items-center gap-4 p-2 animate-pulse">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                    <div className="w-12 h-12 bg-gray-200 rounded-2xl" />
                     <div className="flex-1 space-y-2">
                       <div className="h-4 bg-gray-200 rounded-lg w-3/4" />
                       <div className="h-3 bg-gray-100 rounded-lg w-1/2" />
@@ -411,34 +433,51 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              (recentTrx && recentTrx.length > 0 ? recentTrx : [
-                { title: "Top Up Wallet", created_at: new Date().toISOString(), type: "in", status: "BERHASIL", amount: 15000000 },
-                { title: "Transfer ke Rendi", created_at: new Date(Date.now() - 3600000).toISOString(), type: "out", status: "BERHASIL", amount: 250000 },
-                { title: "Pembayaran Tagihan Listrik", created_at: new Date(Date.now() - 86400000).toISOString(), type: "out", status: "BERHASIL", amount: 120000 },
-              ]).map((tx, i) => {
-                const isIncoming = tx.type === 'in' || tx.type === 'admin_addition';
-                return (
-                  <div key={i} className="flex items-center justify-between p-4 px-6 hover:bg-gray-50/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isIncoming ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-500 border border-gray-100'}`}>
-                        {getTrxIcon(tx.type)}
-                      </div>
-                      <div>
-                        <p className="font-bold text-gray-900 text-sm">{tx.title}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{new Date(tx.created_at).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}</p>
-                      </div>
+              transactionsToRender.map((tx, i) => (
+                <div 
+                  key={i} 
+                  className="flex items-center justify-between p-5 hover:bg-gray-50/50 transition-colors duration-200"
+                >
+                  {/* Left: Arrow icon & Middle: Title & Date */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0">
+                      {tx.type === 'in' || tx.type === 'admin_addition' ? (
+                        <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-100/50">
+                          <ArrowDownLeft size={22} />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center border border-rose-100/50">
+                          <ArrowUpRight size={22} />
+                        </div>
+                      )}
                     </div>
-                    <div className="flex items-center gap-6">
-                      <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${isIncoming ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
-                        {tx.status || 'BERHASIL'}
-                      </span>
-                      <span className={`font-black text-sm ${isIncoming ? 'text-gray-900' : 'text-red-500'}`}>
-                        {isIncoming ? '+' : '-'}{formatIDR(tx.amount)}
-                      </span>
+                    <div>
+                      <p className="font-bold text-gray-900 text-sm md:text-base leading-tight">{tx.title}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {new Date(tx.created_at).toLocaleString("id-ID", {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
                     </div>
                   </div>
-                );
-              })
+
+                  {/* Right: Status & Amount */}
+                  <div className="flex items-center gap-4 md:gap-6">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                      {tx.status || 'BERHASIL'}
+                    </span>
+                    <span className={`font-bold text-base md:text-lg tabular-nums ${
+                      (tx.type === 'in' || tx.type === 'admin_addition') ? 'text-gray-900' : 'text-red-500'
+                    }`}>
+                      {(tx.type === 'in' || tx.type === 'admin_addition') ? '+' : '-'}{formatIDR(tx.amount)}
+                    </span>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         </div>
