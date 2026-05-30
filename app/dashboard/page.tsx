@@ -11,6 +11,7 @@ import {
 import Swal from "sweetalert2";
 import TransferModal from "@/components/TransferModal";
 import StrukModal from "@/components/StrukModal";
+import WalletBalanceCard from "@/components/WalletBalanceCard";
 import { useUserContext } from "@/hooks/useUserData";
 import { formatIDR, copyToClipboard, SwalGreenBanking } from "@/utils/format";
 
@@ -265,33 +266,13 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           
           {/* Card Saldo — Glassmorphism */}
-          <div className="bg-gradient-to-br from-[#064e3b] via-[#115e59] to-[#0f766e] text-white p-6 rounded-[24px] shadow-xl relative overflow-hidden border border-white/10">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-400/10 rounded-full blur-2xl -ml-8 -mb-8"></div>
-            <div className="absolute top-1/2 right-1/4 w-20 h-20 bg-white/5 rounded-full blur-xl"></div>
-            <div className="relative z-10">
-              <p className="text-emerald-200 text-sm font-medium mb-1">Saldo Eco-Wallet</p>
-              <h2 className="text-3xl font-bold font-serif mb-1 tracking-tight">
-                {formatIDR(userBalance)}
-              </h2>
-              {accountNumber && (
-                <button
-                  onClick={async () => { await copyToClipboard(accountNumber); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-                  className="flex items-center gap-1.5 text-emerald-300/80 text-xs font-mono mb-3 hover:text-white transition-colors group"
-                >
-                  <span>Rek: {accountNumber}</span>
-                  {copied ? <Check size={12} className="text-emerald-300" /> : <Copy size={12} className="opacity-50 group-hover:opacity-100" />}
-                </button>
-              )}
-              <button 
-                onClick={() => setShowTopUp(!showTopUp)} 
-                className="flex items-center gap-2 bg-white/95 backdrop-blur-sm text-[#064e3b] font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-white transition-all hover:scale-105 shadow-lg"
-              >
-                {showTopUp ? <X size={16} /> : <Plus size={16} />}
-                {showTopUp ? 'Tutup Top Up' : 'Top Up Saldo'}
-              </button>
-            </div>
-          </div>
+          <WalletBalanceCard
+            balance={userBalance}
+            accountNumber={accountNumber}
+            userName={userName}
+            onTopUpClick={() => setShowTopUp(!showTopUp)}
+            onTransferClick={() => setShowTransferModal(true)}
+          />
 
           {/* Card Karbon */}
           <div className="bg-[#111827] text-white p-6 rounded-[24px] shadow-lg relative overflow-hidden flex flex-col justify-between border border-gray-800">
