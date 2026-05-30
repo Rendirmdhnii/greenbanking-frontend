@@ -200,13 +200,13 @@ export default function PeringkatPage() {
         <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between w-full">
           
           {/* Leaderboard Header (Clean - No small sparkles/icons) */}
-          <div className="p-6 border-b border-gray-50 flex items-center justify-between">
+          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
             <h3 className="font-serif font-bold text-gray-900 text-lg">Leaderboard Eco-Champion</h3>
             <span className="text-[10px] font-bold tracking-widest text-[#115e59] bg-emerald-50 px-2.5 py-1 rounded-full uppercase">Global</span>
           </div>
 
           {/* Leaderboard Scrollable List */}
-          <div className="divide-y divide-gray-50 max-h-[380px] overflow-y-auto">
+          <div className="divide-y divide-gray-50 max-h-[380px] overflow-y-auto overflow-x-hidden w-full pb-4">
             {loading ? (
               <div className="p-8 text-center flex items-center justify-center gap-2 text-gray-400">
                 <Loader2 size={16} className="animate-spin" /> Memuat leaderboard...
@@ -268,7 +268,7 @@ export default function PeringkatPage() {
           </div>
 
           {/* User's Highlighted Card Rank (Sticky at bottom of leaderboard box) */}
-          <div className="p-4 border-t border-gray-100 bg-gray-50/40">
+          <div className="p-4 border-t border-gray-100 bg-gray-50/40 mt-2">
             <div className="bg-gradient-to-br from-[#064e3b] via-[#0f766e] to-[#115e59] text-white p-5 rounded-2xl shadow-md border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full overflow-hidden shadow-sm border border-emerald-300/40 bg-white text-[#115e59] font-bold flex items-center justify-center text-sm">
