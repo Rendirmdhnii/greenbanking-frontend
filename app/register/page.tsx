@@ -22,6 +22,10 @@ export default function RegisterPage() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
 
+  // Modal Error States
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalErrorMessage, setModalErrorMessage] = useState("");
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setNameError("");
@@ -81,10 +85,11 @@ export default function RegisterPage() {
       if (!res.ok) {
         if (data.errors) {
           const firstError = Object.values(data.errors)[0];
-          setErrorMsg(Array.isArray(firstError) ? (firstError as string[])[0] : String(firstError));
+          setModalErrorMessage(Array.isArray(firstError) ? (firstError as string[])[0] : String(firstError));
         } else {
-          setErrorMsg(data.error || data.message || "Registrasi gagal.");
+          setModalErrorMessage(data.error || data.message || "Registrasi gagal.");
         }
+        setShowErrorModal(true);
         setLoading(false);
         return;
       }
@@ -101,7 +106,8 @@ export default function RegisterPage() {
       }, 2000);
     } catch (err) {
       console.error("Register error:", err);
-      setErrorMsg("Gagal terhubung ke server. Pastikan Laravel berjalan.");
+      setModalErrorMessage("Gagal terhubung ke server. Pastikan backend Laravel berjalan.");
+      setShowErrorModal(true);
       setLoading(false);
     }
   };
@@ -293,6 +299,49 @@ export default function RegisterPage() {
         </p>
 
       </div>
+
+      {/* ─── Custom SweetAlert-like Error Modal ─── */}
+      {showErrorModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          {/* Overlay backdrop */}
+          <div 
+            className="absolute inset-0 bg-gray-950/60 backdrop-blur-sm transition-opacity duration-300"
+            onClick={() => setShowErrorModal(false)}
+          ></div>
+          
+          {/* Modal Container */}
+          <div className="bg-white border border-gray-100 rounded-[2rem] shadow-2xl max-w-sm w-full p-6 sm:p-8 text-center relative z-10 animate-in fade-in zoom-in-95 duration-200">
+            {/* Silang / Exclamation Red Icon Container */}
+            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-red-100 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-red-500 animate-bounce">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" x2="12" y1="8" y2="12"></line>
+                <line x1="12" x2="12.01" y1="16" y2="16"></line>
+              </svg>
+            </div>
+            
+            {/* Modal Title */}
+            <h3 className="text-xl font-serif font-black text-gray-900 tracking-tight mb-2">
+              Autentikasi Gagal
+            </h3>
+            
+            {/* Modal Description */}
+            <p className="text-xs text-gray-500 leading-relaxed mb-6 px-2">
+              {modalErrorMessage}
+            </p>
+            
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setShowErrorModal(false)}
+              className="w-full bg-red-500 hover:bg-red-600 active:scale-95 text-white font-bold py-3.5 rounded-2xl text-sm transition-all duration-150 shadow-md shadow-red-500/10 hover:shadow-lg"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
