@@ -28,16 +28,18 @@ export default function PeringkatPage() {
   const [loading, setLoading] = useState(true);
   const [totalCollective, setTotalCollective] = useState(0);
 
-  // Dynamic user details - diambil dari data leaderboard berdasarkan email user yang login
-  const displayUserName = userName || "Desbellion";
-  const myRankData = leaderboard.find((u) => u.email === userEmail);
-  const displayUserScore = myRankData?.impact_score ?? 47654.0;
+  // Dynamic user details - diambil dari data leaderboard berdasarkan nama user yang login
+  const displayUserName = userName || "Krisna Aji";
+  const currentUserData = leaderboard.find((item) => item.name === userName || (userName && item.name.toLowerCase().includes(userName.toLowerCase())));
+  const currentUserRank = leaderboard.findIndex((item) => item.name === userName || (userName && item.name.toLowerCase().includes(userName.toLowerCase()))) + 1;
+
+  const displayUserScore = currentUserData?.impact_score ?? 75366.0;
   const displayUserCo2 = displayUserScore * 0.5;
 
   // Conversion calculations
-  const treesCount = Math.round(displayUserCo2 / 22) || 1083;
-  const electricityHours = Math.round(displayUserCo2 / 0.04) || 595675;
-  const drivingAvoidedKm = Math.round(displayUserCo2 / 0.12) || 198558;
+  const treesCount = Math.round(displayUserCo2 / 22) || 1713;
+  const electricityHours = Math.round(displayUserCo2 / 0.04) || 942075;
+  const drivingAvoidedKm = Math.round(displayUserCo2 / 0.12) || 314025;
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -59,7 +61,7 @@ export default function PeringkatPage() {
           const top3 = [
             { id: 10001, name: "Krisna Aji", email: "krisna@greenbanking.com", impact_score: 75366.0, rank: 1, tier: "Platinum" },
             { id: 10002, name: "Muhammad Rendi", email: "rendi@greenbanking.com", impact_score: 53261.0, rank: 2, tier: "Platinum" },
-            { id: 10003, name: "Desbellion", email: userEmail || "desbellion@greenbanking.com", impact_score: 47654.0, rank: 3, tier: "Platinum" }
+            { id: 10003, name: "Desbellion", email: "desbellion@greenbanking.com", impact_score: 47654.0, rank: 3, tier: "Platinum" }
           ];
           
           // Merge top 3 with the rest of the leaderboard list
@@ -94,8 +96,8 @@ export default function PeringkatPage() {
     return name.substring(0, 2).toUpperCase();
   };
 
-  // Rank diambil secara dinamis dari data leaderboard berdasarkan email user yang login
-  const displayRank = myRankData ? `#${myRankData.rank} Global` : "—";
+  // Rank diambil secara dinamis dari data leaderboard berdasarkan nama user yang login
+  const displayRank = currentUserRank > 0 ? `#${currentUserRank} Global` : "—";
 
   return (
     <>
@@ -216,7 +218,7 @@ export default function PeringkatPage() {
               <div className="p-8 text-center text-gray-400">Belum ada data leaderboard</div>
             ) : (
               leaderboard.map((user) => {
-                const isCurrentUser = user.email === userEmail;
+                const isCurrentUser = user.name === userName || (userName && user.name.toLowerCase().includes(userName.toLowerCase()));
                 
                 let rankColor = "text-gray-400";
                 let rankBadge = "";
