@@ -27,6 +27,8 @@ interface GreenProduct {
   description?: string;
   interest_rate?: number | null;
   days_left?: number | null;
+  tipe_investasi?: string;
+  tenor_bulan?: number;
 }
 
 interface AdminStats {
@@ -417,8 +419,19 @@ export default function SuperAdminDashboard() {
             <input id="swal-target" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
           </div>
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Bunga / ROI (%) (opsional)</div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori Investasi</div>
+            <select id="swal-tipe-investasi" class="swal2-select !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900">
+              <option value="liquid">Liquid (Fleksibel)</option>
+              <option value="tenor">Tenor (Dikunci)</option>
+            </select>
+          </div>
+          <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Persentase Bunga/ROI (% p.a.)</div>
             <input id="swal-roi" type="number" step="0.1" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+          </div>
+          <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Lama Tenor (Bulan) <span class="text-xs text-gray-400 font-normal">(Isi 0 jika Liquid)</span></div>
+            <input id="swal-tenor-bulan" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
           </div>
           <div>
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Hari Tersisa (opsional)</div>
@@ -450,6 +463,8 @@ export default function SuperAdminDashboard() {
           min_amount: Number((document.getElementById("swal-min") as HTMLInputElement).value),
           interest_rate: Number((document.getElementById("swal-roi") as HTMLInputElement).value),
           days_left: Number((document.getElementById("swal-days") as HTMLInputElement).value),
+          tipe_investasi: (document.getElementById("swal-tipe-investasi") as HTMLSelectElement).value,
+          tenor_bulan: Number((document.getElementById("swal-tenor-bulan") as HTMLInputElement).value),
         };
       },
     });
@@ -554,8 +569,19 @@ export default function SuperAdminDashboard() {
             <input id="swal-min" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.min_amount || 0}">
           </div>
           <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori Investasi</div>
+            <select id="swal-tipe-investasi" class="swal2-select !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900">
+              <option value="liquid" ${product.tipe_investasi === 'liquid' ? 'selected' : ''}>Liquid (Fleksibel)</option>
+              <option value="tenor" ${product.tipe_investasi === 'tenor' ? 'selected' : ''}>Tenor (Dikunci)</option>
+            </select>
+          </div>
+          <div>
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Bunga / ROI (%)</div>
             <input id="swal-roi" type="number" step="0.1" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.interest_rate || 0}">
+          </div>
+          <div>
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Lama Tenor (Bulan) <span class="text-xs text-gray-400 font-normal">(Isi 0 jika Liquid)</span></div>
+            <input id="swal-tenor-bulan" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.tenor_bulan || 0}">
           </div>
           <div>
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Hari Tersisa</div>
@@ -581,6 +607,8 @@ export default function SuperAdminDashboard() {
           min_amount: Number((document.getElementById('swal-min') as HTMLInputElement).value),
           interest_rate: Number((document.getElementById('swal-roi') as HTMLInputElement).value),
           days_left: Number((document.getElementById('swal-days') as HTMLInputElement).value),
+          tipe_investasi: (document.getElementById('swal-tipe-investasi') as HTMLSelectElement).value,
+          tenor_bulan: Number((document.getElementById('swal-tenor-bulan') as HTMLInputElement).value),
         };
       }
     });

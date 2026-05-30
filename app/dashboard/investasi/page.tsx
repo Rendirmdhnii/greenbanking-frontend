@@ -17,11 +17,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 // --- LOGIKA GAMBAR ANTI-GAGAL (DIPERBARUI & DISTERILKAN) ---
 import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
 
-// --- VISUAL DIVERSITY: VARIASI AGAR TIDAK KEMBAR ---
-
-
-
-
 const tagColors: Record<string, string> = {
   "Energi Surya": "bg-amber-100 text-amber-700",
   "Reboisasi Mangrove": "bg-emerald-100 text-emerald-700",
@@ -33,6 +28,7 @@ const tagColors: Record<string, string> = {
 
 export default function InvestasiPage() {
   const { userBalance, refreshUserData } = useUserContext();
+  
   type GreenProduct = {
     id: string;
     product_id?: string;
@@ -49,6 +45,8 @@ export default function InvestasiPage() {
     status_badge?: string | null;
     impact_co2e?: number | null;
     carbon_impact?: number | null;
+    tipe_investasi?: string;
+    tenor_bulan?: number;
   };
 
   type StrukData = {
@@ -60,57 +58,108 @@ export default function InvestasiPage() {
   };
 
   const [products, setProducts] = useState<GreenProduct[]>([]);
+  const [portfolios, setPortfolios] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [portLoading, setPortLoading] = useState(false);
   const [investLoading, setInvestLoading] = useState<string | null>(null);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
   const [strukData, setStrukData] = useState<StrukData | null>(null);
   const [activeFilter, setActiveFilter] = useState("Semua");
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [activeSubTab, setActiveSubTab] = useState<'katalog' | 'portofolio'>('katalog');
+
+  // Load Katalog Produk
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(`${API_URL}/green-products?category=investment`);
+      const d = await res.json();
+      setProducts(d.products || []);
+    } catch (e) {
+      console.error("Error fetching green products:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load Portofolio User
+  const fetchPortfolios = async () => {
+    setPortLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/investments`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+      if (res.ok) {
+        const d = await res.json();
+        setPortfolios(d.investments || []);
+      }
+    } catch (e) {
+      console.error("Error fetching portfolios:", e);
+    } finally {
+      setPortLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch(`${API_URL}/green-products?category=investment`)
-      .then(r => r.json())
-      .then(d => setProducts(d.products || []))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    fetchProducts();
+    fetchPortfolios();
   }, []);
 
   const handleInvest = async (p: GreenProduct) => {
     const amt = parseInt(amounts[p.id] || "") || p.min_amount;
-    if (amt < p.min_amount) { Swal.fire({ icon: 'warning', title: 'Nominal Kurang', text: `Minimal investasi ${formatIDR(p.min_amount)}`, ...SwalGreenBanking.warning }); return; }
-    if (amt > userBalance) { Swal.fire({ icon: 'warning', title: 'Saldo Tidak Mencukupi', text: 'Silakan Top Up terlebih dahulu.', ...SwalGreenBanking.warning }); return; }
+    if (amt < p.min_amount) { 
+      Swal.fire({ 
+        icon: 'warning', 
+        title: 'Nominal Kurang', 
+        text: `Minimal investasi ${formatIDR(p.min_amount)}`, 
+        ...SwalGreenBanking.warning 
+      }); 
+      return; 
+    }
+    if (amt > userBalance) { 
+      Swal.fire({ 
+        icon: 'warning', 
+        title: 'Saldo Tidak Mencukupi', 
+        text: 'Silakan Top Up terlebih dahulu.', 
+        ...SwalGreenBanking.warning 
+      }); 
+      return; 
+    }
 
     setInvestLoading(p.id);
 
     // Tampilkan SweetAlert2 untuk minta PIN Transaksi
     const { value: pin, isDismissed } = await Swal.fire({
-        title: 'Masukkan PIN Transaksi',
-        input: 'password',
-        inputLabel: 'Masukkan 6-Digit PIN Transaksi GreenBanking Anda',
-        inputPlaceholder: '••••••',
-        inputAttributes: {
-            maxlength: '6',
-            autocapitalize: 'off',
-            autocorrect: 'off'
-        },
-        showCancelButton: true,
-        confirmButtonText: 'Verifikasi',
-        cancelButtonText: 'Batal',
-        confirmButtonColor: '#059669',
-        cancelButtonColor: '#d33',
-        inputValidator: (value) => {
-            if (!value) {
-                return 'PIN tidak boleh kosong!';
-            }
-            if (value.length !== 6) {
-                return 'PIN harus 6 digit!';
-            }
+      title: 'Masukkan PIN Transaksi',
+      input: 'password',
+      inputLabel: 'Masukkan 6-Digit PIN Transaksi GreenBanking Anda',
+      inputPlaceholder: '••••••',
+      inputAttributes: {
+        maxlength: '6',
+        autocapitalize: 'off',
+        autocorrect: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Verifikasi',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#059669',
+      cancelButtonColor: '#d33',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'PIN tidak boleh kosong!';
         }
+        if (value.length !== 6) {
+          return 'PIN harus 6 digit!';
+        }
+      }
     });
 
     if (isDismissed || !pin) {
-        setInvestLoading(null);
-        return;
+      setInvestLoading(null);
+      return;
     }
 
     Swal.fire({
@@ -121,6 +170,7 @@ export default function InvestasiPage() {
         Swal.showLoading();
       }
     });
+
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${API_URL}/invest`, {
@@ -154,8 +204,80 @@ export default function InvestasiPage() {
       setAmounts(prev => ({ ...prev, [p.id]: "" }));
       setExpandedCard(null);
       refreshUserData();
-    } catch { Swal.fire({ icon: 'error', title: 'Koneksi Gagal', text: 'Gagal terhubung ke server.', ...SwalGreenBanking.error }); }
-    finally { setInvestLoading(null); }
+      fetchPortfolios(); // Muat ulang portofolio setelah berhasil investasi
+    } catch { 
+      Swal.fire({ icon: 'error', title: 'Koneksi Gagal', text: 'Gagal terhubung ke server.', ...SwalGreenBanking.error }); 
+    } finally { 
+      setInvestLoading(null); 
+    }
+  };
+
+  // Fungsi Pencairan Portofolio (Tarik Uang)
+  const onWithdraw = async (portfolioId: number) => {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Konfirmasi Pencairan',
+      text: 'Apakah Anda yakin ingin mencairkan investasi ini kembali ke saldo utama?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Cairkan',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#059669',
+      cancelButtonColor: '#d33',
+      background: '#ffffff',
+      color: '#111827',
+    });
+
+    if (!isConfirmed) return;
+
+    Swal.fire({
+      title: 'Memproses Pencairan...',
+      text: 'Mohon tunggu sebentar...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/invest/withdraw`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ portofolio_id: portfolioId }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: data.message || 'Gagal mencairkan investasi.',
+          confirmButtonColor: '#dc2626',
+        });
+        return;
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Pencairan Berhasil!',
+        text: 'Dana investasi dan imbal hasil telah sukses dikirim ke saldo utama.',
+        confirmButtonColor: '#059669',
+      });
+
+      refreshUserData();
+      fetchPortfolios();
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Koneksi Gagal',
+        text: 'Gagal menghubungkan ke server.',
+        confirmButtonColor: '#dc2626',
+      });
+    }
   };
 
   const tags = ["Semua", ...Array.from(new Set(products.map(p => p.tag).filter(Boolean)))];
@@ -184,7 +306,7 @@ export default function InvestasiPage() {
             <p className="text-emerald-100/70 max-w-xl text-sm">{products.length} produk investasi terverifikasi. Setiap rupiah Anda mendanai proyek hijau dan menghasilkan return kompetitif.</p>
             <div className="mt-5 flex items-center gap-3 flex-wrap">
               <div className="bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-white/10">
-                <p className="text-emerald-200 text-[10px] font-semibold uppercase tracking-wider">Saldo</p>
+                <p className="text-emerald-200 text-[10px] font-semibold uppercase tracking-wider">Saldo Utama</p>
                 <p className="font-bold text-lg">{formatIDR(userBalance)}</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-white/10">
@@ -195,153 +317,298 @@ export default function InvestasiPage() {
           </div>
         </div>
 
-        {/* === FILTER TAGS === */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {tags.map(tag => (
-            <button key={tag} onClick={() => setActiveFilter(tag)}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${activeFilter === tag
-                ? "bg-[#064e3b] text-white shadow-md"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
-                }`}
-            >{tag}</button>
-          ))}
+        {/* === SUB-TAB NAVIGATION === */}
+        <div className="flex gap-6 border-b border-gray-200 mb-8 pb-0.5">
+          <button
+            onClick={() => setActiveSubTab('katalog')}
+            className={`pb-3 text-sm font-bold transition-all relative ${
+              activeSubTab === 'katalog' ? 'text-emerald-700 font-black' : 'text-gray-400 hover:text-gray-600'
+            }`}
+          >
+            Pilihan Investasi (Katalog)
+            {activeSubTab === 'katalog' && (
+              <motion.div layoutId="subtab-line" className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveSubTab('portofolio')}
+            className={`pb-3 text-sm font-bold transition-all relative flex items-center gap-2 ${
+              activeSubTab === 'portofolio' ? 'text-emerald-700 font-black' : 'text-gray-400 hover:text-gray-600'
+            }`}
+          >
+            Portofolio Aktif Saya
+            {portfolios.filter(p => p.status === 'active').length > 0 && (
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">
+                {portfolios.filter(p => p.status === 'active').length}
+              </span>
+            )}
+            {activeSubTab === 'portofolio' && (
+              <motion.div layoutId="subtab-line" className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600" />
+            )}
+          </button>
         </div>
 
-        {/* === GRID PRODUK DINAMIS === */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((p, i) => {
-            const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
-            const isExpanded = expandedCard === p.id;
-            const currentImg = globalProjectImages[p.title] || fallbackImage;
-            return (
-              <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
-                className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
-              >
-                {/* --- IMAGE HEADER --- */}
-                <div className="relative h-44 overflow-hidden">
-                  <img
-                    src={currentImg}
-                    alt={p.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        {/* === VIEW 1: KATALOG PRODUK === */}
+        {activeSubTab === 'katalog' && (
+          <>
+            {/* === FILTER TAGS === */}
+            <div className="flex flex-wrap gap-2 mb-8">
+              {tags.map(tag => (
+                <button key={tag} onClick={() => setActiveFilter(tag)}
+                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${activeFilter === tag
+                    ? "bg-[#064e3b] text-white shadow-md"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
+                    }`}
+                >{tag}</button>
+              ))}
+            </div>
 
-                  {/* Badge: Terverifikasi / Hasil Premium */}
-                  {p.status_badge && (
-                    <div className={`absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 ${p.status_badge === "Hasil Premium"
-                      ? "bg-amber-400 text-amber-900"
-                      : "bg-white text-emerald-700"
-                      }`}>
-                      {p.status_badge === "Hasil Premium" ? <Crown size={10} /> : <ShieldCheck size={10} />}
-                      {p.status_badge}
-                    </div>
-                  )}
-
-                  {/* Tag kategori */}
-                  {p.tag && (
-                    <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full ${tagColors[p.tag] || "bg-gray-100 text-gray-600"}`}>
-                      {p.tag}
-                    </div>
-                  )}
-
-                  {/* ROI besar */}
-                  <div className="absolute bottom-3 left-4">
-                    <p className="text-emerald-300 text-[10px] font-bold uppercase tracking-wider">ROI</p>
-                    <p className="text-white text-2xl font-bold drop-shadow-lg">{p.interest_rate}%<span className="text-sm text-white/60 ml-1">p.a.</span></p>
-                  </div>
-                </div>
-
-                {/* --- BODY --- */}
-                <div className="p-5">
-                  <h3 className="font-bold text-gray-900 text-base mb-1 leading-snug">{p.title}</h3>
-                  {p.location && (
-                    <p className="text-xs text-gray-400 flex items-center gap-1 mb-3"><MapPin size={12} />{p.location}</p>
-                  )}
-                  <p className="text-gray-500 text-sm leading-relaxed mb-4">{p.description}</p>
-
-                  {/* --- PROGRESS BAR --- */}
-                  <div className="mb-4">
-                    <div className="flex justify-between text-[11px] font-bold mb-1.5">
-                      <span className="text-gray-500">Terkumpul: {formatIDR(p.current_funding)}</span>
-                      <span className="text-gray-400">Target Dana: {formatIDR(p.target_funding)}</span>
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }} animate={{ width: `${Math.min(progress, 100)}%` }}
-                        transition={{ duration: 1, delay: i * 0.1 }}
-                        className={`h-2 rounded-full ${progress >= 80 ? "bg-emerald-500" : progress >= 50 ? "bg-emerald-400" : "bg-emerald-300"}`}
-                      />
-                    </div>
-                    <p className="text-[10px] text-emerald-600 font-bold mt-1">{Math.min(progress, 100).toFixed(1)}% Terdanai</p>
-                  </div>
-
-                  {/* --- FOOTER STATS --- */}
-                  <div className="flex items-center justify-between text-xs text-gray-400 mb-4 pb-4 border-b border-gray-50">
-                    <span className="flex items-center gap-1"><Clock size={12} />{p.days_left} Hari Lagi</span>
-                    <span className="flex items-center gap-1"><CloudRain size={12} />{p.impact_co2e} Ton CO2e</span>
-                  </div>
-
-                  {/* --- EXPAND / INVEST --- */}
-                  <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
-                    disabled={progress >= 100}
-                    className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
+            {/* === GRID PRODUK DINAMIS === */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filtered.map((p, i) => {
+                const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
+                const isExpanded = expandedCard === p.id;
+                const currentImg = globalProjectImages[p.title] || fallbackImage;
+                return (
+                  <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
+                    className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
                   >
-                    {progress >= 100 ? "🔒 Pendanaan Selesai" : (
-                      <>
-                        <Zap size={14} /> Investasi Sekarang
-                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                      </>
-                    )}
-                  </button>
+                    {/* --- IMAGE HEADER --- */}
+                    <div className="relative h-44 overflow-hidden">
+                      <img
+                        src={currentImg}
+                        alt={p.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                  {isExpanded && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="mt-3 space-y-2 overflow-hidden">
-                      <div className="flex gap-2">
-                        <div className="flex-1 relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">Rp</span>
-                          <input type="text" placeholder={formatIDR(p.min_amount).replace('Rp ', '')}
-                            value={amounts[p.id] ? parseInt(amounts[p.id], 10).toLocaleString('id-ID') : ""}
-                            onChange={e => {
-                              const rawValue = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
-                              setAmounts(prev => ({ ...prev, [p.id]: rawValue }));
-                            }}
-                            className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                      {/* Badge: Terverifikasi / Hasil Premium */}
+                      {p.status_badge && (
+                        <div className={`absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 ${p.status_badge === "Hasil Premium"
+                          ? "bg-amber-400 text-amber-900"
+                          : "bg-white text-emerald-700"
+                          }`}>
+                          {p.status_badge === "Hasil Premium" ? <Crown size={10} /> : <ShieldCheck size={10} />}
+                          {p.status_badge}
+                        </div>
+                      )}
+
+                      {/* Tag kategori */}
+                      {p.tag && (
+                        <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full ${tagColors[p.tag] || "bg-gray-100 text-gray-600"}`}>
+                          {p.tag}
+                        </div>
+                      )}
+
+                      {/* ROI besar */}
+                      <div className="absolute bottom-3 left-4">
+                        <p className="text-emerald-300 text-[10px] font-bold uppercase tracking-wider">ROI</p>
+                        <p className="text-white text-2xl font-bold drop-shadow-lg">{p.interest_rate}%<span className="text-sm text-white/60 ml-1">p.a.</span></p>
+                      </div>
+                    </div>
+
+                    {/* --- BODY --- */}
+                    <div className="p-5">
+                      <h3 className="font-bold text-gray-900 text-base mb-1 leading-snug">{p.title}</h3>
+                      {p.location && (
+                        <p className="text-xs text-gray-400 flex items-center gap-1 mb-3"><MapPin size={12} />{p.location}</p>
+                      )}
+                      <p className="text-gray-500 text-sm leading-relaxed mb-4">{p.description}</p>
+
+                      {/* --- PROGRESS BAR --- */}
+                      <div className="mb-4">
+                        <div className="flex justify-between text-[11px] font-bold mb-1.5">
+                          <span className="text-gray-500">Terkumpul: {formatIDR(p.current_funding)}</span>
+                          <span className="text-gray-400">Target: {formatIDR(p.target_funding)}</span>
+                        </div>
+                        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }} animate={{ width: `${Math.min(progress, 100)}%` }}
+                            transition={{ duration: 1, delay: i * 0.1 }}
+                            className={`h-2 rounded-full ${progress >= 80 ? "bg-emerald-500" : progress >= 50 ? "bg-emerald-400" : "bg-emerald-300"}`}
                           />
                         </div>
-                        <button onClick={() => handleInvest(p)} disabled={investLoading === p.id}
-                          className="bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-all disabled:opacity-50 flex items-center gap-1"
-                        >
-                          {investLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle size={14} />}
-                          {investLoading === p.id ? "..." : "Bayar"}
-                        </button>
+                        <p className="text-[10px] text-emerald-600 font-bold mt-1">{Math.min(progress, 100).toFixed(1)}% Terdanai</p>
                       </div>
-                      <p className="text-[10px] text-gray-400">Min. {formatIDR(p.min_amount)} | Potong langsung dari saldo utama</p>
 
-                      {(() => {
-                        const investmentAmount = parseInt(amounts[p.id] || "0", 10) || 0;
-                        const carbonImpact = (p.carbon_impact ?? p.impact_co2e ?? 25) || 25;
-                        const estimatedImpact = (investmentAmount / 1000000) * carbonImpact;
-                        const estimatedTrees = Math.round(estimatedImpact / 12);
-                        if (investmentAmount <= 0) return null;
+                      {/* --- FOOTER STATS --- */}
+                      <div className="flex items-center justify-between text-xs text-gray-400 mb-4 pb-4 border-b border-gray-50">
+                        <span className="flex items-center gap-1"><Clock size={12} />{p.days_left} Hari Lagi</span>
+                        <span className="flex items-center gap-1"><CloudRain size={12} />{p.impact_co2e} Ton CO2e</span>
+                      </div>
 
-                        return (
-                          <div className="mt-3 p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1.5">
-                            <p className="text-xs font-bold text-[#064e3b]">Kalkulator Dampak Karbon</p>
-                            <p className="text-xs text-emerald-700">
-                              Estimasi Dampak:{" "}
-                              <span className="font-bold">{estimatedImpact.toFixed(2)} kg CO2e</span> / setara{" "}
-                              <span className="font-bold">{estimatedTrees}</span> pohon
+                      {/* --- EXPAND / INVEST --- */}
+                      <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
+                        disabled={progress >= 100}
+                        className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
+                      >
+                        {progress >= 100 ? "🔒 Pendanaan Selesai" : (
+                          <>
+                            <Zap size={14} /> Investasi Sekarang
+                            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          </>
+                        )}
+                      </button>
+
+                      {isExpanded && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="mt-3 space-y-2 overflow-hidden">
+                          <div className="flex gap-2">
+                            <div className="flex-1 relative">
+                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">Rp</span>
+                              <input type="text" placeholder={formatIDR(p.min_amount).replace('Rp ', '')}
+                                value={amounts[p.id] ? parseInt(amounts[p.id], 10).toLocaleString('id-ID') : ""}
+                                onChange={e => {
+                                  const rawValue = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+                                  setAmounts(prev => ({ ...prev, [p.id]: rawValue }));
+                                }}
+                                className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                              />
+                            </div>
+                            <button onClick={() => handleInvest(p)} disabled={investLoading === p.id}
+                              className="bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-all disabled:opacity-50 flex items-center gap-1"
+                            >
+                              {investLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle size={14} />}
+                              {investLoading === p.id ? "..." : "Bayar"}
+                            </button>
+                          </div>
+                          <p className="text-[10px] text-gray-400">Min. {formatIDR(p.min_amount)} | Potong langsung dari saldo utama</p>
+
+                          {(() => {
+                            const investmentAmount = parseInt(amounts[p.id] || "0", 10) || 0;
+                            const carbonImpact = (p.carbon_impact ?? p.impact_co2e ?? 25) || 25;
+                            const estimatedImpact = (investmentAmount / 1000000) * carbonImpact;
+                            const estimatedTrees = Math.round(estimatedImpact / 12);
+                            if (investmentAmount <= 0) return null;
+
+                            return (
+                              <div className="mt-3 p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1.5">
+                                <p className="text-xs font-bold text-[#064e3b]">Kalkulator Dampak Karbon</p>
+                                <p className="text-xs text-emerald-700">
+                                  Estimasi Dampak:{" "}
+                                  <span className="font-bold">{estimatedImpact.toFixed(2)} kg CO2e</span> / setara{" "}
+                                  <span className="font-bold">{estimatedTrees}</span> pohon
+                                </p>
+                              </div>
+                            );
+                          })()}</motion.div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {/* === VIEW 2: PORTOFOLIO AKTIF === */}
+        {activeSubTab === 'portofolio' && (
+          <div className="w-full">
+            {portLoading ? (
+              <div className="p-12 flex items-center justify-center min-h-[40vh]">
+                <Loader2 className="animate-spin text-emerald-600" size={32} />
+              </div>
+            ) : portfolios.filter(p => p.status === 'active').length === 0 ? (
+              <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto">
+                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <ShieldCheck className="text-gray-300" size={28} />
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg mb-2">Belum Ada Investasi Aktif</h3>
+                <p className="text-gray-500 text-sm mb-6 leading-relaxed">Anda tidak memiliki dana di portofolio investasi saat ini. Silakan buka katalog produk untuk menanamkan modal dan menyokong proyek hijau.</p>
+                <button
+                  onClick={() => setActiveSubTab('katalog')}
+                  className="px-6 py-3 bg-[#064e3b] text-white hover:bg-[#065f46] rounded-xl font-bold text-sm transition-all"
+                >
+                  Jelajahi Katalog
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {portfolios.filter(p => p.status === 'active').map((item, i) => {
+                  const isLiquid = item.tipe_investasi === 'liquid' || item.tenor_bulan === 0;
+                  const canWithdraw = isLiquid || !item.is_locked;
+
+                  return (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all group"
+                    >
+                      <div>
+                        {/* Header Kartu */}
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                              isLiquid ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'
+                            }`}>
+                              {isLiquid ? 'Liquid (Fleksibel)' : 'Tenor (Berjangka)'}
+                            </span>
+                            <h3 className="font-bold text-gray-900 text-base mt-2 leading-snug">{item.name}</h3>
+                          </div>
+                          <span className="text-xs font-bold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg">
+                            ROI {item.return_rate}% p.a.
+                          </span>
+                        </div>
+
+                        {/* Statistik Finansial */}
+                        <div className="space-y-3 my-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100/50">
+                          <div className="flex justify-between text-xs font-semibold">
+                            <span className="text-gray-500">Nominal Pokok</span>
+                            <span className="font-bold text-gray-900">{formatIDR(item.amount)}</span>
+                          </div>
+                          <div className="flex justify-between text-xs font-semibold">
+                            <span className="text-gray-500">Estimasi Keuntungan ({item.selisih_hari} Hari)</span>
+                            <span className="font-bold text-emerald-600">+{formatIDR(item.estimasi_profit)}</span>
+                          </div>
+                          {item.tgl_jatuh_tempo && (
+                            <div className="flex justify-between text-xs font-semibold">
+                              <span className="text-gray-500">Tanggal Jatuh Tempo</span>
+                              <span className="font-bold text-gray-900">
+                                {new Date(item.tgl_jatuh_tempo).toLocaleDateString('id-ID', { dateStyle: 'medium' })}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Tombol Tarik Uang */}
+                      <div className="mt-4">
+                        {canWithdraw ? (
+                          <div className="space-y-2">
+                            <button
+                              onClick={() => onWithdraw(item.id)}
+                              className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-100"
+                            >
+                              Tarik Uang
+                            </button>
+                            <p className="text-[10px] text-center text-emerald-600 font-bold">
+                              Bunga {item.return_rate}% p.a. - Bisa ditarik kapanpun
                             </p>
                           </div>
-                        );
-                      })()}</motion.div>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <button
+                              disabled
+                              className="w-full py-3.5 bg-gray-100 text-gray-400 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-1.5 cursor-not-allowed border border-gray-200/50"
+                            >
+                              <span>🔒 Tarik Uang (Terkunci)</span>
+                            </button>
+                            <p className="text-[10px] text-center text-gray-400 font-bold">
+                              Bunga {item.return_rate}% p.a. - Terkunci {item.tenor_bulan} bulan
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
       </motion.div>
 
       <StrukModal isOpen={!!strukData} onClose={() => setStrukData(null)} data={strukData} />
