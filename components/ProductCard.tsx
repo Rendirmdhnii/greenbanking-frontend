@@ -54,6 +54,16 @@ export default function ProductCard({ imageUrl, title, description, targetFundin
               : targetFunding}
           </p>
         </div>
+
+        {/* Tombol Aksi */}
+        <div className="flex gap-4 mt-5">
+          <button className="flex-1 px-4 py-2.5 text-sm font-bold text-emerald-600 border border-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors">
+            Investasi
+          </button>
+          <button className="flex-1 px-4 py-2.5 text-sm font-bold text-white bg-emerald-600 border border-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors">
+            Donasi
+          </button>
+        </div>
       </div>
     </div>
   );
