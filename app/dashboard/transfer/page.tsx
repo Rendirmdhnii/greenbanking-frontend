@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { useUserContext } from "@/hooks/useUserData";
 import { formatIDR, SwalGreenBanking } from "@/utils/format";
 import StrukModal from "@/components/StrukModal";
+import RecipientDropdown from "@/components/RecipientDropdown";
 import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
@@ -26,7 +27,7 @@ const QUICK_AMOUNTS = [
 
 export default function TransferPage() {
   const userHook = useUserContext();
-  const { userBalance, refreshUserData } = userHook;
+  const { userBalance, refreshUserData, userEmail } = userHook;
 
   const [rekening, setRekening] = useState("");
   const [recipientName, setRecipientName] = useState("");
@@ -38,6 +39,33 @@ export default function TransferPage() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState("");
   const [strukData, setStrukData] = useState<any>(null);
+
+  const [isManualInput, setIsManualInput] = useState(false);
+  const [frequentRecipients, setFrequentRecipients] = useState<any[]>([]);
+
+  // Fetch contact list dynamically from leaderboard data
+  useEffect(() => {
+    const fetchRecipients = async () => {
+      try {
+        const res = await fetch(`${API_URL}/leaderboard`);
+        if (res.ok) {
+          const data = await res.json();
+          const list = data.leaderboard || [];
+          const formatted = list
+            .filter((u: any) => u.email !== userEmail && u.account_number)
+            .map((u: any) => ({
+              name: u.name,
+              accountNumber: u.account_number,
+              email: u.email
+            }));
+          setFrequentRecipients(formatted);
+        }
+      } catch (e) {
+        console.error("Gagal memuat daftar kontak:", e);
+      }
+    };
+    fetchRecipients();
+  }, [userEmail]);
 
   // Verify Account Number dynamically
   useEffect(() => {
@@ -297,32 +325,63 @@ export default function TransferPage() {
             
             {/* Target Account Field */}
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Nomor Rekening Tujuan
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  maxLength={10}
-                  required
-                  value={rekening}
-                  onChange={(e) => setRekening(e.target.value.replace(/[^0-9]/g, ""))}
-                  placeholder="Masukkan 10 digit nomor rekening"
-                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
-                />
-                {isVerifying && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs text-blue-500 font-bold bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200 select-none">
-                    <Loader2 size={12} className="animate-spin" />
-                    <span>Verifikasi...</span>
-                  </div>
-                )}
-                {!isVerifying && recipientName && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-emerald-700 font-black bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 select-none">
-                    <CheckCircle2 size={12} />
-                    <span>Valid</span>
-                  </div>
-                )}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-2">
+                <label className="block text-sm font-bold text-gray-700">
+                  Nomor Rekening Tujuan
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsManualInput(!isManualInput);
+                    setRekening("");
+                    setRecipientName("");
+                    setError("");
+                  }}
+                  className="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors underline text-left"
+                >
+                  {isManualInput ? "Pilih dari Kontak" : "Masukkan Rekening Manual"}
+                </button>
               </div>
+
+              {!isManualInput ? (
+                <RecipientDropdown
+                  recipients={frequentRecipients.length > 0 ? frequentRecipients : [
+                    { name: "Krisna Aji", accountNumber: "1000200030", email: "krisna@greenbanking.com" },
+                    { name: "Muhammad Rendi", accountNumber: "1000200045", email: "rendi@greenbanking.com" },
+                  ]}
+                  selectedValue={rekening}
+                  onSelect={(recipient) => {
+                    setRekening(recipient.accountNumber);
+                    setRecipientName(recipient.name);
+                    setError("");
+                  }}
+                  error={error}
+                />
+              ) : (
+                <div className="relative">
+                  <input
+                    type="text"
+                    maxLength={10}
+                    required
+                    value={rekening}
+                    onChange={(e) => setRekening(e.target.value.replace(/[^0-9]/g, ""))}
+                    placeholder="Masukkan 10 digit nomor rekening"
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                  />
+                  {isVerifying && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs text-blue-500 font-bold bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200 select-none">
+                      <Loader2 size={12} className="animate-spin" />
+                      <span>Verifikasi...</span>
+                    </div>
+                  )}
+                  {!isVerifying && recipientName && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-emerald-700 font-black bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 select-none">
+                      <CheckCircle2 size={12} />
+                      <span>Valid</span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Account verify state feedback */}
               {!isVerifying && recipientName && (
@@ -384,7 +443,7 @@ export default function TransferPage() {
                   }`}
                 />
               </div>
-              <div className="flex justify-between items-center mt-1.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mt-1.5">
                 <span className="text-[10px] text-gray-400">Pastikan nominal transfer sudah benar</span>
                 <span className="text-[10px] font-bold text-gray-500 flex items-center gap-1">
                   <Wallet size={10} />
