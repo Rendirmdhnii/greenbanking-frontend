@@ -764,59 +764,59 @@ export default function SuperAdminDashboard() {
             {/* Conditional Rendering: SUMMARY CARDS (Dashboard Only) */}
             {activeTab === 'dashboard' && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden flex items-center gap-4">
                   <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[80px] h-[80px]"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                   </div>
-                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-5 border border-blue-100">
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 border border-blue-100 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Nasabah</p>
-                    <h3 className="text-xl font-black text-gray-900 truncate" title={String(stats?.total_users || 0)}>{stats?.total_users || 0}</h3>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Total Nasabah</p>
+                    <h3 className="text-lg font-black text-gray-900 truncate" title={String(stats?.total_users || 0)}>{stats?.total_users || 0}</h3>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden flex items-center gap-4">
                   <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[80px] h-[80px]"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
                   </div>
-                  <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 mb-5 border border-emerald-100">
+                  <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 border border-emerald-100 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Beredar</p>
-                    <h3 className="text-xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_balance || 0).toLocaleString('id-ID')}`}>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Saldo Beredar</p>
+                    <h3 className="text-lg font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_balance || 0).toLocaleString('id-ID')}`}>
                       Rp {Number(stats?.total_balance || 0).toLocaleString('id-ID')}
                     </h3>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden flex items-center gap-4">
                   <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[80px] h-[80px]"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
                   </div>
-                  <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 mb-5 border border-purple-100">
+                  <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 border border-purple-100 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Investasi Aktif</p>
-                    <h3 className="text-xl font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_investments || 0).toLocaleString('id-ID')}`}>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Investasi Aktif</p>
+                    <h3 className="text-lg font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_investments || 0).toLocaleString('id-ID')}`}>
                       Rp {Number(stats?.total_investments || 0).toLocaleString('id-ID')}
                     </h3>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden">
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all group relative overflow-hidden flex items-center gap-4">
                   <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[120px] h-[120px]"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[80px] h-[80px]"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
                   </div>
-                  <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 mb-5 border border-amber-100">
+                  <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 border border-amber-100 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Produk Hijau</p>
-                    <h3 className="text-xl font-black text-gray-900 truncate">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Produk Hijau</p>
+                    <h3 className="text-lg font-black text-gray-900 truncate">
                       {stats?.products?.length || 0}
                     </h3>
                   </div>
@@ -824,90 +824,80 @@ export default function SuperAdminDashboard() {
               </div>
             )}
 
-            {/* Main Grid for Tables / Catalog */}
-            <div className={`grid grid-cols-1 ${(activeTab === 'dashboard') ? 'lg:grid-cols-3' : ''} gap-6`}>
-              
-              {/* Database Nasabah Section */}
-              {(activeTab === 'dashboard' || activeTab === 'nasabah') && (
-                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
-                  <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            {/* Main Content Sections */}
+            {activeTab === 'dashboard' ? (
+              <>
+                {/* Database Nasabah (Dashboard View: Full Width, 5 items, no scrollbar, has "Lihat Semua") */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                       </div>
                       <div>
-                        <h2 className="text-lg font-bold text-gray-900">Database Nasabah</h2>
-                        <p className="text-xs text-gray-500 font-medium">Manajemen akun pengguna</p>
+                        <h2 className="text-base font-bold text-gray-900">Database Nasabah</h2>
+                        <p className="text-xs text-gray-500 font-medium font-sans">Manajemen akun pengguna</p>
                       </div>
                     </div>
-                    <div className="relative w-full sm:w-64">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-gray-400"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Cari nama atau email..."
-                        value={searchQueryNasabah}
-                        onChange={(e) => {
-                          setSearchQueryNasabah(e.target.value);
-                          setCurrentPageNasabah(1);
-                        }}
-                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900"
-                      />
-                    </div>
+                    <button 
+                      onClick={() => setActiveTab('nasabah')}
+                      className="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-1"
+                    >
+                      Lihat Semua &rarr;
+                    </button>
                   </div>
                   
-                  <div className="overflow-x-auto overflow-y-auto max-h-[600px] w-full">
-                    <table className="min-w-full divide-y divide-gray-100 relative">
-                      <thead className="bg-gray-50/50 sticky top-0 z-10 shadow-sm">
+                  <div className="overflow-x-auto w-full">
+                    <table className="min-w-full divide-y divide-gray-100">
+                      <thead className="bg-gray-50/50">
                         <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                          <th className="px-6 py-4">Nasabah</th>
-                          <th className="px-6 py-4">Saldo</th>
-                          <th className="px-6 py-4 text-right">Aksi</th>
+                          <th className="px-6 py-3">Nasabah</th>
+                          <th className="px-6 py-3">Saldo</th>
+                          <th className="px-6 py-3 text-right">Aksi</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 bg-white">
-                        {(!filteredNasabah || filteredNasabah.length === 0) ? (
+                        {(!stats?.users || stats.users.length === 0) ? (
                           <tr>
-                            <td colSpan={3} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                            <td colSpan={3} className="px-6 py-6 text-center text-sm font-medium text-gray-500">
                               Tidak ada nasabah ditemukan.
                             </td>
                           </tr>
                         ) : (
-                          paginatedNasabah?.map((u) => (
+                          stats.users.slice(0, 5).map((u) => (
                             <tr key={u?.id || Math.random()} className="hover:bg-gray-50/50 transition-colors group">
-                              <td className="px-6 py-5">
+                              <td className="px-6 py-3">
                                 <div className="flex items-center gap-3">
-                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0 ${u?.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                                  <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs border flex-shrink-0 ${u?.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
                                     {(u?.name || 'U').charAt(0).toUpperCase()}
                                   </div>
-                                  <div>
+                                  <div className="min-w-0">
                                     <div className="flex items-center gap-2">
-                                      <span className="font-bold text-gray-900">{u?.name || 'Unknown'}</span>
+                                      <span className="font-bold text-gray-900 text-sm truncate max-w-[150px]" title={u?.name || 'Unknown'}>{u?.name || 'Unknown'}</span>
                                       {u?.is_admin && (
-                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black rounded border border-emerald-200 tracking-wider">
+                                        <span className="inline-flex items-center gap-1 px-1 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded border border-emerald-200 tracking-wider">
                                           ADMIN
                                         </span>
                                       )}
                                     </div>
-                                    <div className="text-xs text-gray-500 mt-0.5">{u?.email || 'Tidak ada email'}</div>
+                                    <div className="text-xs text-gray-500 mt-0.5 truncate max-w-[150px]" title={u?.email || 'Tidak ada email'}>{u?.email || 'Tidak ada email'}</div>
                                   </div>
                                 </div>
                               </td>
-                              <td className="px-6 py-5">
-                                <span className="font-black text-gray-900">Rp {Number(u?.balance || 0).toLocaleString('id-ID')}</span>
+                              <td className="px-6 py-3 whitespace-nowrap">
+                                <span className="font-black text-gray-900 text-sm">Rp {Number(u?.balance || 0).toLocaleString('id-ID')}</span>
                               </td>
-                              <td className="px-6 py-5">
+                              <td className="px-6 py-3">
                                 <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                   <button 
                                     onClick={() => u && handleAdjustBalance(u)}
-                                    className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+                                    className="text-[10px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2 py-1 rounded border border-emerald-200 transition-colors"
                                   >
                                     EDIT SALDO
                                   </button>
                                   <button 
                                     onClick={() => u && handleToggleBan(u)}
-                                    className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 rounded-lg border border-red-200 transition-colors"
+                                    className="text-[10px] font-bold bg-red-50 hover:bg-red-100 text-red-700 px-2 py-1 rounded border border-red-200 transition-colors"
                                   >
                                     SUSPEND
                                   </button>
@@ -919,254 +909,564 @@ export default function SuperAdminDashboard() {
                       </tbody>
                     </table>
                   </div>
-
-                  {totalPagesNasabah > 1 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-                      <span className="text-xs font-medium text-gray-500">
-                        Hal {currentPageNasabah || 1} / {totalPagesNasabah || 1}
-                      </span>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => setCurrentPageNasabah(p => Math.max(1, (p || 1) - 1))}
-                          disabled={currentPageNasabah === 1}
-                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
-                        </button>
-                        <button
-                          onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, (p || 1) + 1))}
-                          disabled={currentPageNasabah === totalPagesNasabah}
-                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
-              )}
 
-              {/* Riwayat Transaksi Section */}
-              {(activeTab === 'dashboard' || activeTab === 'transaksi') && (
-                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
-                  <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                {/* Bottom Grid: Riwayat Transaksi (2 Cols) & Katalog Produk (1 Col) */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Riwayat Transaksi Widget (col-span-2) */}
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-2">
+                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        </div>
+                        <div>
+                          <h2 className="text-base font-bold text-gray-900">Riwayat Transaksi Terpadu</h2>
+                          <p className="text-xs text-gray-500 font-medium">Monitoring pergerakan dana real-time</p>
+                        </div>
                       </div>
-                      <div>
-                        <h2 className="text-lg font-bold text-gray-900">Riwayat Transaksi Terpadu</h2>
-                        <p className="text-xs text-gray-500 font-medium">Monitoring pergerakan dana real-time</p>
-                      </div>
+                      <button 
+                        onClick={() => setActiveTab('transaksi')}
+                        className="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-1"
+                      >
+                        Lihat Semua &rarr;
+                      </button>
                     </div>
-                  </div>
 
-                  <div className="overflow-x-auto w-full overflow-y-auto max-h-[600px]">
-                    <table className="min-w-full divide-y divide-gray-100 relative">
-                      <thead className="bg-gray-50/50 sticky top-0 z-10 shadow-sm">
-                        <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                          <th className="px-6 py-4">Waktu & Trace ID</th>
-                          <th className="px-6 py-4">Tipe Transaksi</th>
-                          <th className="px-6 py-4">PENGGUNA</th>
-                          <th className="px-6 py-4">TUJUAN</th>
-                          <th className="px-6 py-4">Nominal</th>
-                          <th className="px-6 py-4 pr-10">Status</th>
-                        </tr> 
-                      </thead>
-                      <tbody className="divide-y divide-gray-100 bg-white">
-                        {(!transactions || transactions.length === 0) ? (
-                          <tr>
-                            <td colSpan={5} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
-                              {transactionsLoading ? (
-                                <div className="flex items-center justify-center gap-2">
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 animate-spin text-indigo-500"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
-                                  <span>Memuat data...</span>
-                                </div>
-                              ) : "Belum ada transaksi."}
-                            </td>
-                          </tr>
-                        ) : null}
-
-                        {paginatedTransactions?.map((t, idx) => {
-                          const transaction = t;
-                          const nama = t?.user?.name || t?.user_name || "User";
-                          const email = t?.user?.email || t?.user_email || "";
-                          
-                          let tipe = t?.transaction_type_label || String(t?.type || "Transaksi").toUpperCase();
-                          let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
-                          
-                          if (tipe.toLowerCase().includes("transfer")) {
-                            tipe = "Transfer Dana";
-                            badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
-                          } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
-                            tipe = "Top Up Saldo";
-                            badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                          }
-
-                          let senderName = t?.sender_name || nama;
-                          let senderEmail = t?.sender_email || email;
-                          let receiverName = t?.receiver_name || "-";
-                          let receiverEmail = t?.receiver_email || "";
-
-                          if (tipe === "Top Up Saldo") {
-                            senderName = "Sistem Bank";
-                            senderEmail = "Otomatis";
-                            receiverName = nama;
-                            receiverEmail = email;
-                          } else if (t?.type?.toLowerCase() === 'withdrawal' || t?.type?.toLowerCase() === 'tarik tunai') {
-                            senderName = nama;
-                            senderEmail = email;
-                            receiverName = "Sistem Bank";
-                            receiverEmail = "Otomatis";
-                          } else {
-                            if (!t?.receiver_name && !t?.sender_name) {
-                              receiverName = "Tujuan Tidak Diketahui";
-                            }
-                          }
-
-                          return (
-                            <tr key={String(t?.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
-                              <td className="px-6 py-5 whitespace-nowrap">
-                                <div className="text-gray-900 font-bold mb-1">{formatTanggal(t?.created_at)}</div>
-                                <div className="font-mono text-xs text-gray-500 bg-gray-100/80 px-2 py-0.5 rounded border border-gray-200 inline-block tracking-tight">
-                                  {t?.reference || t?.transaction_id || "-"}
-                                </div>
-                              </td>
-                              <td className="px-6 py-5 whitespace-nowrap">
-                                <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-black border uppercase tracking-wider ${badgeColor}`}>
-                                  {tipe}
-                                </span>
-                              </td>
-                              <td className="px-6 py-5">
-                                <div className="bg-gray-50/50 p-2 rounded-lg border border-gray-100 min-w-[150px]">
-                                  <div className="font-bold text-gray-900 truncate" title={transaction?.sender_name || senderName}>
-                                    {transaction?.sender_name || senderName}
+                    <div className="overflow-x-auto w-full">
+                      <table className="min-w-full divide-y divide-gray-100">
+                        <thead className="bg-gray-50/50">
+                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                            <th className="px-6 py-3">Waktu & Trace ID</th>
+                            <th className="px-6 py-3">Tipe</th>
+                            <th className="px-6 py-3">Pengirim</th>
+                            <th className="px-6 py-3">Penerima</th>
+                            <th className="px-6 py-3">Nominal</th>
+                            <th className="px-6 py-3 pr-10">Status</th>
+                          </tr> 
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 bg-white">
+                          {(!transactions || transactions.length === 0) ? (
+                            <tr>
+                              <td colSpan={6} className="px-6 py-6 text-center text-sm font-medium text-gray-500">
+                                {transactionsLoading ? (
+                                  <div className="flex items-center justify-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 animate-spin text-indigo-500"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                                    <span>Memuat data...</span>
                                   </div>
-                                  <div className="text-[10px] text-gray-500 truncate">
-                                    {transaction?.sender_email || transaction?.sender?.email || senderEmail || '-'}
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-5">
-                                <div className="flex items-center gap-3">
-                                  <div className="flex-shrink-0 text-emerald-500 font-bold text-lg leading-none">→</div>
-                                  <div className="bg-gray-50/50 p-2 rounded-lg border border-gray-100 min-w-[150px]">
-                                    <div className="font-bold text-gray-900 truncate" title={transaction?.receiver_name || receiverName}>
-                                      {transaction?.receiver_name || receiverName}
-                                    </div>
-                                    <div className="text-[10px] text-gray-500 truncate">
-                                      {transaction?.receiver_email || transaction?.receiver?.email || receiverEmail || '-'}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-5 whitespace-nowrap">
-                                <span className="font-black text-gray-900 text-base">{formatRupiah(t?.amount || 0)}</span>
-                              </td>
-                              <td className="px-6 py-5 whitespace-nowrap pr-10">
-                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t?.status)}`}>
-                                  {getIndonesianStatus(t?.status)}
-                                </span>
+                                ) : "Belum ada transaksi."}
                               </td>
                             </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                          ) : (
+                            transactions.slice(0, 5).map((t, idx) => {
+                              const nama = t?.user?.name || t?.user_name || "User";
+                              const email = t?.user?.email || t?.user_email || "";
+                              
+                              let tipe = t?.transaction_type_label || String(t?.type || "Transaksi").toUpperCase();
+                              let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
+                              
+                              if (tipe.toLowerCase().includes("transfer")) {
+                                tipe = "Transfer Dana";
+                                badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+                              } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
+                                tipe = "Top Up Saldo";
+                                badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                              }
+
+                              let senderName = t?.sender_name || nama;
+                              let senderEmail = t?.sender_email || email;
+                              let receiverName = t?.receiver_name || "-";
+                              let receiverEmail = t?.receiver_email || "";
+
+                              if (tipe === "Top Up Saldo") {
+                                senderName = "Sistem Bank";
+                                senderEmail = "Otomatis";
+                                receiverName = nama;
+                                receiverEmail = email;
+                              } else if (t?.type?.toLowerCase() === 'withdrawal' || t?.type?.toLowerCase() === 'tarik tunai') {
+                                senderName = nama;
+                                senderEmail = email;
+                                receiverName = "Sistem Bank";
+                                receiverEmail = "Otomatis";
+                              } else {
+                                if (!t?.receiver_name && !t?.sender_name) {
+                                  receiverName = "Tujuan Tidak Diketahui";
+                                }
+                              }
+
+                              return (
+                                <tr key={String(t?.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
+                                  <td className="px-6 py-3 whitespace-nowrap">
+                                    <div className="text-gray-900 font-bold mb-0.5 text-xs">{formatTanggal(t?.created_at)}</div>
+                                    <div className="font-mono text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.2 rounded border border-gray-200 inline-block tracking-tight truncate max-w-[120px]" title={t?.reference || t?.transaction_id || "-"}>
+                                      {t?.reference || t?.transaction_id || "-"}
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-3 whitespace-nowrap">
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black border uppercase tracking-wider ${badgeColor}`}>
+                                      {tipe}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-3">
+                                    <div className="bg-gray-50/50 p-1.5 rounded border border-gray-100 max-w-[150px]">
+                                      <div className="font-bold text-gray-900 text-xs truncate" title={senderName}>
+                                        {senderName}
+                                      </div>
+                                      <div className="text-[9px] text-gray-500 truncate" title={senderEmail || '-'}>
+                                        {senderEmail || '-'}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-3">
+                                    <div className="flex items-center gap-2">
+                                      <div className="text-emerald-500 font-bold text-sm flex-shrink-0">→</div>
+                                      <div className="bg-gray-50/50 p-1.5 rounded border border-gray-100 max-w-[150px] flex-1 min-w-0">
+                                        <div className="font-bold text-gray-900 text-xs truncate" title={receiverName}>
+                                          {receiverName}
+                                        </div>
+                                        <div className="text-[9px] text-gray-500 truncate" title={receiverEmail || '-'}>
+                                          {receiverEmail || '-'}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-3 whitespace-nowrap">
+                                    <span className="font-black text-gray-900 text-xs">{formatRupiah(t?.amount || 0)}</span>
+                                  </td>
+                                  <td className="px-6 py-3 whitespace-nowrap pr-10">
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black border uppercase tracking-wider ${getBadgeStatus(t?.status)}`}>
+                                      {getIndonesianStatus(t?.status)}
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
 
-                  {totalPagesTransaksi > 1 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-                      <span className="text-xs font-medium text-gray-500">
-                        Hal {currentPageTransaksi || 1} / {totalPagesTransaksi || 1}
-                      </span>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => setCurrentPageTransaksi(p => Math.max(1, (p || 1) - 1))}
-                          disabled={currentPageTransaksi === 1}
-                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
-                        </button>
-                        <button
-                          onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, (p || 1) + 1))}
-                          disabled={currentPageTransaksi === totalPagesTransaksi}
-                          className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
-                        </button>
+                  {/* Katalog Produk Widget (col-span-1) */}
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-amber-600"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                        </div>
+                        <div>
+                          <h2 className="text-base font-bold text-gray-900">Katalog Produk</h2>
+                          <p className="text-xs text-gray-500 font-medium">Investasi & Donasi Hijau</p>
+                        </div>
                       </div>
+                      <button 
+                        onClick={() => setActiveTab('produk')}
+                        className="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-1"
+                      >
+                        Lihat Semua &rarr;
+                      </button>
                     </div>
-                  )}
-                </div>
-              )}
 
-              {/* Katalog Produk Section */}
-              {(activeTab === 'dashboard' || activeTab === 'produk') && (
-                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden ${activeTab === 'dashboard' ? 'lg:col-span-1' : ''}`}>
-                  <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-amber-600"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                    {(!stats?.products || stats.products.length === 0) ? (
+                      <div className="p-6 text-center text-sm font-medium text-gray-500">
+                        Katalog kosong.   
                       </div>
-                      <div>
-                        <h2 className="text-lg font-bold text-gray-900">Katalog Produk</h2>
-                        <p className="text-xs text-gray-500 font-medium">Investasi & Donasi Hijau</p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={handleTambahProduk}
-                      className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100"
-                      title="Tambah Produk"
-                    >
-                      <span className="font-bold text-lg leading-none">+</span>
-                    </button>
-                  </div>
-                  
-                  {(stats?.products && stats.products.length > 0) ? (
-                    <div className="divide-y divide-gray-100 max-h-[700px] overflow-y-auto">
-                      {stats.products.map((p) => (
-                        <div key={p?.id || Math.random()} className="p-6 hover:bg-gray-50/50 transition-colors group">
-                          <div className="flex gap-4">
-                            <div className="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0">
-                              <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-bold text-gray-900 text-sm leading-tight truncate mb-1" title={p?.title || 'Tanpa Judul'}>{p?.title || 'Tanpa Judul'}</h3>
-                              <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-black uppercase tracking-wider mb-2">
-                                {p?.category || 'Umum'}
-                              </span>
-                              <div className="text-xs font-bold text-emerald-600">
-                                Target: {formatRupiah(p?.target_funding || 0)}
+                    ) : (
+                      <div className="divide-y divide-gray-100">
+                        {stats.products.slice(0, 5).map((p) => (
+                          <div key={p?.id || Math.random()} className="p-4 hover:bg-gray-50/50 transition-colors group flex items-center justify-between gap-3">
+                            <div className="flex gap-3 min-w-0 items-center">
+                              <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
+                                <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
+                              </div>
+                              <div className="min-w-0">
+                                <h3 className="font-bold text-gray-900 text-xs leading-tight truncate mb-0.5" title={p?.title || 'Tanpa Judul'}>
+                                  {p?.title || 'Tanpa Judul'}
+                                </h3>
+                                <span className="inline-block px-1.5 py-0.2 bg-gray-100 text-gray-600 rounded text-[9px] font-black uppercase tracking-wider mb-1">
+                                  {p?.category || 'Umum'}
+                                </span>
+                                <div className="text-[10px] font-bold text-emerald-600">
+                                  Target: {formatRupiah(p?.target_funding || 0)}
+                                </div>
                               </div>
                             </div>
+                            <div className="flex gap-1.5 flex-shrink-0">
+                              <button 
+                                onClick={() => p && handleEditProduct(p)}
+                                className="text-[10px] font-bold bg-white hover:bg-gray-50 text-gray-700 px-2 py-1 rounded border border-gray-200 transition-colors"
+                              >
+                                EDIT
+                              </button>
+                              <button
+                                onClick={() => p && handleHapusProduk(p)}
+                                className="text-[10px] font-bold bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded border border-red-100 transition-colors"
+                              >
+                                HAPUS
+                              </button>
+                            </div>
                           </div>
-                          <div className="mt-4 flex gap-2">
-                            <button 
-                              onClick={() => p && handleEditProduct(p)}
-                              className="flex-1 text-[11px] font-bold bg-white hover:bg-gray-50 text-gray-700 py-2.5 rounded-lg border border-gray-200 transition-colors"
-                            >
-                              EDIT
-                            </button>
-                            <button
-                              onClick={() => p && handleHapusProduk(p)}
-                              className="flex-1 text-[11px] font-bold bg-red-50 hover:bg-red-100 text-red-600 py-2.5 rounded-lg border border-red-100 transition-colors"
-                            >
-                              HAPUS
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="p-12 text-center text-sm font-medium text-gray-500">
-                      Katalog kosong.   
-                    </div>
-                  )} 
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-              
-            </div>
+              </>
+            ) : (
+              // Dedicated Tabs (Nasabah, Transaksi, Produk)
+              <div className="grid grid-cols-1 gap-6">
+                {activeTab === 'nasabah' && (
+                  // Full Database Nasabah View
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
+                    <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-bold text-gray-900">Database Nasabah</h2>
+                          <p className="text-xs text-gray-500 font-medium">Manajemen akun pengguna ({filteredNasabah.length} Total)</p>
+                        </div>
+                      </div>
+                      <div className="relative w-full sm:w-64">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-gray-400"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Cari nama atau email..."
+                          value={searchQueryNasabah}
+                          onChange={(e) => {
+                            setSearchQueryNasabah(e.target.value);
+                            setCurrentPageNasabah(1);
+                          }}
+                          className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="overflow-x-auto w-full">
+                      <table className="min-w-full divide-y divide-gray-100">
+                        <thead className="bg-gray-50/50">
+                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                            <th className="px-6 py-4">Nasabah</th>
+                            <th className="px-6 py-4">Saldo</th>
+                            <th className="px-6 py-4 text-right">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 bg-white">
+                          {(!filteredNasabah || filteredNasabah.length === 0) ? (
+                            <tr>
+                              <td colSpan={3} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                                Tidak ada nasabah ditemukan.
+                              </td>
+                            </tr>
+                          ) : (
+                            paginatedNasabah?.map((u) => (
+                              <tr key={u?.id || Math.random()} className="hover:bg-gray-50/50 transition-colors group">
+                                <td className="px-6 py-5">
+                                  <div className="flex items-center gap-3">
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 flex-shrink-0 ${u?.is_admin ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                                      {(u?.name || 'U').charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="min-w-0">
+                                      <div className="flex items-center gap-2">
+                                        <span className="font-bold text-gray-900 truncate max-w-[200px]" title={u?.name || 'Unknown'}>{u?.name || 'Unknown'}</span>
+                                        {u?.is_admin && (
+                                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black rounded border border-emerald-200 tracking-wider">
+                                            ADMIN
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div className="text-xs text-gray-500 mt-0.5 truncate max-w-[200px]" title={u?.email || 'Tidak ada email'}>{u?.email || 'Tidak ada email'}</div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-5 whitespace-nowrap">
+                                  <span className="font-black text-gray-900 text-base">Rp {Number(u?.balance || 0).toLocaleString('id-ID')}</span>
+                                </td>
+                                <td className="px-6 py-5">
+                                  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button 
+                                      onClick={() => u && handleAdjustBalance(u)}
+                                      className="text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+                                    >
+                                      EDIT SALDO
+                                    </button>
+                                    <button 
+                                      onClick={() => u && handleToggleBan(u)}
+                                      className="text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 rounded-lg border border-red-200 transition-colors"
+                                    >
+                                      SUSPEND
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {totalPagesNasabah > 1 && (
+                      <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                        <span className="text-xs font-medium text-gray-500">
+                          Hal {currentPageNasabah || 1} / {totalPagesNasabah || 1}
+                        </span>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => setCurrentPageNasabah(p => Math.max(1, (p || 1) - 1))}
+                            disabled={currentPageNasabah === 1}
+                            className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
+                          </button>
+                          <button
+                            onClick={() => setCurrentPageNasabah(p => Math.min(totalPagesNasabah, (p || 1) + 1))}
+                            disabled={currentPageNasabah === totalPagesNasabah}
+                            className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'transaksi' && (
+                  // Full Riwayat Transaksi View
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
+                    <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-bold text-gray-900">Riwayat Transaksi Terpadu</h2>
+                          <p className="text-xs text-gray-500 font-medium">Monitoring pergerakan dana real-time ({transactions.length} Total)</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="overflow-x-auto w-full">
+                      <table className="min-w-full divide-y divide-gray-100">
+                        <thead className="bg-gray-50/50">
+                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                            <th className="px-6 py-4">Waktu & Trace ID</th>
+                            <th className="px-6 py-4">Tipe Transaksi</th>
+                            <th className="px-6 py-4">Pengirim</th>
+                            <th className="px-6 py-4">Penerima</th>
+                            <th className="px-6 py-4">Nominal</th>
+                            <th className="px-6 py-4 pr-10">Status</th>
+                          </tr> 
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 bg-white">
+                          {(!transactions || transactions.length === 0) ? (
+                            <tr>
+                              <td colSpan={6} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                                {transactionsLoading ? (
+                                  <div className="flex items-center justify-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 animate-spin text-indigo-500"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                                    <span>Memuat data...</span>
+                                  </div>
+                                ) : "Belum ada transaksi."}
+                              </td>
+                            </tr>
+                          ) : (
+                            paginatedTransactions?.map((t, idx) => {
+                              const nama = t?.user?.name || t?.user_name || "User";
+                              const email = t?.user?.email || t?.user_email || "";
+                              
+                              let tipe = t?.transaction_type_label || String(t?.type || "Transaksi").toUpperCase();
+                              let badgeColor = "bg-gray-100 text-gray-700 border-gray-200";
+                              
+                              if (tipe.toLowerCase().includes("transfer")) {
+                                tipe = "Transfer Dana";
+                                badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+                              } else if (tipe.toLowerCase().includes("topup") || tipe.toLowerCase().includes("top up") || tipe.toLowerCase().includes("deposit")) {
+                                tipe = "Top Up Saldo";
+                                badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                              }
+
+                              let senderName = t?.sender_name || nama;
+                              let senderEmail = t?.sender_email || email;
+                              let receiverName = t?.receiver_name || "-";
+                              let receiverEmail = t?.receiver_email || "";
+
+                              if (tipe === "Top Up Saldo") {
+                                senderName = "Sistem Bank";
+                                senderEmail = "Otomatis";
+                                receiverName = nama;
+                                receiverEmail = email;
+                              } else if (t?.type?.toLowerCase() === 'withdrawal' || t?.type?.toLowerCase() === 'tarik tunai') {
+                                senderName = nama;
+                                senderEmail = email;
+                                receiverName = "Sistem Bank";
+                                receiverEmail = "Otomatis";
+                              } else {
+                                if (!t?.receiver_name && !t?.sender_name) {
+                                  receiverName = "Tujuan Tidak Diketahui";
+                                }
+                              }
+
+                              return (
+                                <tr key={String(t?.id ?? idx)} className="text-sm hover:bg-gray-50/80 transition-colors">
+                                  <td className="px-6 py-5 whitespace-nowrap">
+                                    <div className="text-gray-900 font-bold mb-1">{formatTanggal(t?.created_at)}</div>
+                                    <div className="font-mono text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200 inline-block tracking-tight truncate max-w-[150px]" title={t?.reference || t?.transaction_id || "-"}>
+                                      {t?.reference || t?.transaction_id || "-"}
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-5 whitespace-nowrap">
+                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-black border uppercase tracking-wider ${badgeColor}`}>
+                                      {tipe}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-5">
+                                    <div className="bg-gray-50/50 p-2 rounded-lg border border-gray-100 min-w-[150px] max-w-[200px]">
+                                      <div className="font-bold text-gray-900 truncate" title={senderName}>
+                                        {senderName}
+                                      </div>
+                                      <div className="text-[10px] text-gray-500 truncate" title={senderEmail || '-'}>
+                                        {senderEmail || '-'}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-5">
+                                    <div className="flex items-center gap-3">
+                                      <div className="flex-shrink-0 text-emerald-500 font-bold text-lg leading-none">→</div>
+                                      <div className="bg-gray-50/50 p-2 rounded-lg border border-gray-100 min-w-[150px] max-w-[200px] flex-1 min-w-0">
+                                        <div className="font-bold text-gray-900 truncate" title={receiverName}>
+                                          {receiverName}
+                                        </div>
+                                        <div className="text-[10px] text-gray-500 truncate" title={receiverEmail || '-'}>
+                                          {receiverEmail || '-'}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-5 whitespace-nowrap">
+                                    <span className="font-black text-gray-900 text-base">{formatRupiah(t?.amount || 0)}</span>
+                                  </td>
+                                  <td className="px-6 py-5 whitespace-nowrap pr-10">
+                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border uppercase tracking-wider ${getBadgeStatus(t?.status)}`}>
+                                      {getIndonesianStatus(t?.status)}
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {totalPagesTransaksi > 1 && (
+                      <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                        <span className="text-xs font-medium text-gray-500">
+                          Hal {currentPageTransaksi || 1} / {totalPagesTransaksi || 1}
+                        </span>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => setCurrentPageTransaksi(p => Math.max(1, (p || 1) - 1))}
+                            disabled={currentPageTransaksi === 1}
+                            className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
+                          </button>
+                          <button
+                            onClick={() => setCurrentPageTransaksi(p => Math.min(totalPagesTransaksi, (p || 1) + 1))}
+                            disabled={currentPageTransaksi === totalPagesTransaksi}
+                            className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'produk' && (
+                  // Full Katalog Produk View
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
+                    <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-amber-600"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-bold text-gray-900">Katalog Produk</h2>
+                          <p className="text-xs text-gray-500 font-medium">Investasi & Donasi Hijau ({stats?.products?.length || 0} Total)</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleTambahProduk}
+                        className="px-4 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-xl transition-colors border border-emerald-100 font-bold text-sm flex items-center gap-2"
+                      >
+                        <span>+ Tambah Produk</span>
+                      </button>
+                    </div>
+                    
+                    {(!stats?.products || stats.products.length === 0) ? (
+                      <div className="p-12 text-center text-sm font-medium text-gray-500">
+                        Katalog kosong.   
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                        {stats.products.map((p) => (
+                          <div key={p?.id || Math.random()} className="bg-gray-50 rounded-2xl p-5 border border-gray-100 hover:shadow-md transition-all flex flex-col justify-between">
+                            <div>
+                              <div className="w-full h-40 bg-gray-200 rounded-xl overflow-hidden border border-gray-200 mb-4">
+                                <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
+                              </div>
+                              <span className="inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-black uppercase tracking-wider mb-2">
+                                {p?.category || 'Umum'}
+                              </span>
+                              <h3 className="font-bold text-gray-900 text-base mb-2">{p?.title || 'Tanpa Judul'}</h3>
+                              <p className="text-xs text-gray-500 mb-4 line-clamp-3">{p?.description || 'Tidak ada deskripsi.'}</p>
+                              
+                              <div className="space-y-2 mb-4 bg-white p-3 rounded-xl border border-gray-100">
+                                <div className="flex justify-between text-xs font-semibold text-gray-600">
+                                  <span>Target Dana</span>
+                                  <span className="font-bold text-emerald-600">{formatRupiah(p?.target_funding || 0)}</span>
+                                </div>
+                                <div className="flex justify-between text-xs font-semibold text-gray-600">
+                                  <span>Minimal Donasi</span>
+                                  <span className="font-bold text-gray-900">{formatRupiah(p?.min_amount || 0)}</span>
+                                </div>
+                                {p?.interest_rate ? (
+                                  <div className="flex justify-between text-xs font-semibold text-gray-600">
+                                    <span>Imbal Hasil/ROI</span>
+                                    <span className="font-bold text-indigo-600">{p.interest_rate}%</span>
+                                  </div>
+                                ) : null}
+                              </div>
+                            </div>
+
+                            <div className="flex gap-2">
+                              <button 
+                                onClick={() => p && handleEditProduct(p)}
+                                className="flex-1 text-xs font-bold bg-white hover:bg-gray-100 text-gray-700 py-2.5 rounded-xl border border-gray-200 transition-colors"
+                              >
+                                EDIT
+                              </button>
+                              <button
+                                onClick={() => p && handleHapusProduk(p)}
+                                className="flex-1 text-xs font-bold bg-red-50 hover:bg-red-100 text-red-600 py-2.5 rounded-xl border border-red-100 transition-colors"
+                              >
+                                HAPUS
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </main>
       </div>
