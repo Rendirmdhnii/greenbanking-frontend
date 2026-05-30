@@ -16,19 +16,48 @@ export default function RegisterPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
+  // Validation States
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordConfirmError, setPasswordConfirmError] = useState("");
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setNameError("");
+    setEmailError("");
+    setPasswordError("");
+    setPasswordConfirmError("");
     setErrorMsg("");
 
-    if (password !== passwordConfirm) {
-      setErrorMsg("Password dan konfirmasi tidak cocok.");
-      return;
+    let isValid = true;
+
+    // Name Validation
+    if (!name.trim()) {
+      setNameError("Nama lengkap wajib diisi.");
+      isValid = false;
     }
 
-    if (password.length < 6) {
-      setErrorMsg("Password minimal 6 karakter.");
-      return;
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError("Format email tidak valid (contoh: nama@email.com).");
+      isValid = false;
     }
+
+    // Password length validation
+    if (password.length < 6) {
+      setPasswordError("Password harus terdiri dari minimal 6 karakter.");
+      isValid = false;
+    }
+
+    // Password confirmation match validation
+    if (password !== passwordConfirm) {
+      setPasswordConfirmError("Konfirmasi kata sandi tidak cocok.");
+      isValid = false;
+    }
+
+    if (!isValid) return;
 
     setLoading(true);
 
@@ -137,11 +166,20 @@ export default function RegisterPage() {
                 type="text"
                 placeholder="Masukkan nama lengkap Anda"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => { setName(e.target.value); setNameError(""); }}
                 required
-                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
+                className={`w-full pl-11 pr-4 py-3 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                  nameError 
+                    ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
+                    : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
+                }`}
               />
             </div>
+            {nameError && (
+              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+                {nameError}
+              </p>
+            )}
           </div>
 
           {/* Email Input */}
@@ -153,11 +191,20 @@ export default function RegisterPage() {
                 type="email"
                 placeholder="nama@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
                 required
-                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
+                className={`w-full pl-11 pr-4 py-3 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                  emailError 
+                    ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
+                    : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
+                }`}
               />
             </div>
+            {emailError && (
+              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+                {emailError}
+              </p>
+            )}
           </div>
 
           {/* Password Input */}
@@ -169,9 +216,13 @@ export default function RegisterPage() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Minimal 6 karakter"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); setPasswordError(""); }}
                 required
-                className="w-full pl-11 pr-12 py-3 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
+                className={`w-full pl-11 pr-12 py-3 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                  passwordError 
+                    ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
+                    : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
+                }`}
               />
               <button
                 type="button"
@@ -181,6 +232,11 @@ export default function RegisterPage() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {passwordError && (
+              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+                {passwordError}
+              </p>
+            )}
           </div>
 
           {/* Confirm Password Input */}
@@ -192,11 +248,20 @@ export default function RegisterPage() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Ulangi kata sandi"
                 value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
+                onChange={(e) => { setPasswordConfirm(e.target.value); setPasswordConfirmError(""); }}
                 required
-                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-100/50 focus:border-[#059669] transition-all bg-gray-50/30"
+                className={`w-full pl-11 pr-4 py-3 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                  passwordConfirmError 
+                    ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
+                    : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
+                }`}
               />
             </div>
+            {passwordConfirmError && (
+              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+                {passwordConfirmError}
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}
