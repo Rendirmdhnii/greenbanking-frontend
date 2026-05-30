@@ -771,9 +771,9 @@ export default function SuperAdminDashboard() {
                   <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 border border-blue-100 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Total Nasabah</p>
-                    <h3 className="text-lg font-black text-gray-900 truncate" title={String(stats?.total_users || 0)}>{stats?.total_users || 0}</h3>
+                    <h3 className="text-base font-black text-gray-900 break-words whitespace-normal" title={String(stats?.total_users || 0)}>{stats?.total_users || 0}</h3>
                   </div>
                 </div>
 
@@ -784,9 +784,9 @@ export default function SuperAdminDashboard() {
                   <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 border border-emerald-100 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Saldo Beredar</p>
-                    <h3 className="text-lg font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_balance || 0).toLocaleString('id-ID')}`}>
+                    <h3 className="text-base font-black text-gray-900 break-words whitespace-normal" title={`Rp ${Number(stats?.total_balance || 0).toLocaleString('id-ID')}`}>
                       Rp {Number(stats?.total_balance || 0).toLocaleString('id-ID')}
                     </h3>
                   </div>
@@ -799,9 +799,9 @@ export default function SuperAdminDashboard() {
                   <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 border border-purple-100 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Investasi Aktif</p>
-                    <h3 className="text-lg font-black text-gray-900 tracking-tight truncate" title={`Rp ${Number(stats?.total_investments || 0).toLocaleString('id-ID')}`}>
+                    <h3 className="text-base font-black text-gray-900 break-words whitespace-normal" title={`Rp ${Number(stats?.total_investments || 0).toLocaleString('id-ID')}`}>
                       Rp {Number(stats?.total_investments || 0).toLocaleString('id-ID')}
                     </h3>
                   </div>
@@ -814,15 +814,16 @@ export default function SuperAdminDashboard() {
                   <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 border border-amber-100 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Produk Hijau</p>
-                    <h3 className="text-lg font-black text-gray-900 truncate">
+                    <h3 className="text-base font-black text-gray-900 break-words whitespace-normal">
                       {stats?.products?.length || 0}
                     </h3>
                   </div>
                 </div>
               </div>
             )}
+
 
             {/* Main Content Sections */}
             {activeTab === 'dashboard' ? (
