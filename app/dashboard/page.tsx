@@ -340,7 +340,7 @@ export default function DashboardPage() {
                   <h4 className="font-serif font-black text-sm text-gray-900 mt-1">Eco-Points</h4>
                 </div>
               </div>
-              <span className="text-gray-500 text-xs font-semibold tracking-wide block mb-1">Poin Eco - Tier {displayTierName}</span>
+              <span className="text-gray-500 text-xs font-semibold tracking-wide block mb-1">Poin Eco - Tier {tier.toUpperCase()}</span>
               <h2 className="text-2xl font-bold font-sans text-gray-900 tracking-tight">{userEcoPoints} Poin</h2>
             </div>
             <div className="pt-3 border-t border-gray-100 mt-4">
@@ -366,7 +366,7 @@ export default function DashboardPage() {
             {/* Top Up — Active State */}
             <button 
               onClick={() => setShowTopUp(true)} 
-              className="flex flex-col items-center gap-3 p-4 bg-white rounded-3xl border border-emerald-200 shadow-[0_4px_16px_-4px_rgba(16,185,129,0.15)] hover:shadow-[0_6px_20px_-4px_rgba(16,185,129,0.25)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
+              className="flex flex-col items-center gap-3 p-4 bg-white rounded-2xl border border-emerald-200 shadow-[0_4px_16px_-4px_rgba(16,185,129,0.15)] hover:shadow-[0_6px_20px_-4px_rgba(16,185,129,0.25)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
             >
               <div className="w-12 h-12 rounded-full flex items-center justify-center bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
                 <Wallet size={20}/>
@@ -377,7 +377,7 @@ export default function DashboardPage() {
             {/* Transfer */}
             <button 
               onClick={() => setShowTransferModal(true)} 
-              className="flex flex-col items-center gap-3 p-4 bg-white rounded-3xl border border-gray-100 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:border-emerald-100 hover:shadow-[0_4px_12px_-4px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
+              className="flex flex-col items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:border-emerald-100 hover:shadow-[0_4px_12px_-4px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
             >
               <div className="w-12 h-12 rounded-full flex items-center justify-center bg-purple-50 text-purple-600">
                 <ArrowRightLeft size={20}/>
@@ -395,7 +395,7 @@ export default function DashboardPage() {
               <Link 
                 key={i} 
                 href={action.href} 
-                className="flex flex-col items-center gap-3 p-4 bg-white rounded-3xl border border-gray-100 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:border-emerald-100 hover:shadow-[0_4px_12px_-4px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
+                className="flex flex-col items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:border-emerald-100 hover:shadow-[0_4px_12px_-4px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${action.color}`}>
                   {action.icon}
@@ -418,7 +418,7 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-100">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-100">
             {trxLoading ? (
               <div className="p-4 space-y-4">
                 {[1, 2, 3].map(i => (
