@@ -357,430 +357,415 @@ export default function TagihanPage() {
 
   return (
     <>
-      <div className="p-6 md:p-8 max-w-4xl mx-auto w-full">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 text-emerald-700 mb-2">
-            <Receipt className="w-5 h-5" />
-            <span className="text-xs font-bold tracking-widest uppercase">PPOB EcoBank</span>
+      {/* ═══════════════════════════════════════════════════════════════
+          OUTER WRAPPER — locks to viewport height minus topbar (5rem/80px)
+          Uses overflow-y-auto to internally scroll if content overflows
+          ═══════════════════════════════════════════════════════════════ */}
+      <div className="h-[calc(100vh-5rem)] overflow-y-auto">
+        <div className="p-5 md:p-7 w-full">
+
+          {/* ── Page Header ── */}
+          <div className="mb-5">
+            <div className="flex items-center gap-2 text-emerald-700 mb-1">
+              <Receipt className="w-4 h-4" />
+              <span className="text-[10px] font-bold tracking-widest uppercase">PPOB EcoBank</span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">
+              Tagihan &amp; Layanan Digital
+            </h1>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Pembayaran pulsa, listrik, dan air bersih secara praktis, terintegrasi, dan ramah lingkungan.
+            </p>
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
-            Tagihan & Layanan Digital
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Pembayaran pulsa, listrik, dan air bersih secara praktis, terintegrasi, dan ramah lingkungan.
-          </p>
-        </div>
 
-        {/* Categories Tab Layout */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 flex gap-1 mb-6">
-          <button
-            onClick={() => handleTabChange("pulsa")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition-all ${
-              activeTab === "pulsa"
-                ? "bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-sm"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-transparent"
-            }`}
-          >
-            <Smartphone className="w-4 h-4 md:w-5 h-5" />
-            Pulsa & Paket Data
-          </button>
-          <button
-            onClick={() => handleTabChange("pln")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition-all ${
-              activeTab === "pln"
-                ? "bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-sm"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-transparent"
-            }`}
-          >
-            <Zap className="w-4 h-4 md:w-5 h-5" />
-            Listrik PLN
-          </button>
-          <button
-            onClick={() => handleTabChange("pdam")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition-all ${
-              activeTab === "pdam"
-                ? "bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-sm"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-transparent"
-            }`}
-          >
-            <Droplets className="w-4 h-4 md:w-5 h-5" />
-            Air PDAM
-          </button>
-        </div>
+          {/* ── Category Tabs ── */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-1.5 flex gap-1 mb-5">
+            <button
+              onClick={() => handleTabChange("pulsa")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl font-bold text-xs transition-all ${
+                activeTab === "pulsa"
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-sm"
+                  : "text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-transparent"
+              }`}
+            >
+              <Smartphone className="w-4 h-4" />
+              Pulsa &amp; Paket Data
+            </button>
+            <button
+              onClick={() => handleTabChange("pln")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl font-bold text-xs transition-all ${
+                activeTab === "pln"
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-sm"
+                  : "text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-transparent"
+              }`}
+            >
+              <Zap className="w-4 h-4" />
+              Listrik PLN
+            </button>
+            <button
+              onClick={() => handleTabChange("pdam")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl font-bold text-xs transition-all ${
+                activeTab === "pdam"
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-sm"
+                  : "text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-transparent"
+              }`}
+            >
+              <Droplets className="w-4 h-4" />
+              Air PDAM
+            </button>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          {/* Main Form Area */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8">
-              
-              {/* FORM PULSA */}
-              {activeTab === "pulsa" && (
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Nomor Handphone
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="tel"
-                        maxLength={12}
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ""))}
-                        placeholder="Contoh: 08123456789"
-                        className="w-full pl-4 pr-24 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
-                      />
-                      {detectedOperator && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-black px-3 py-1.5 rounded-lg select-none">
-                          {detectedOperator}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+          {/* ═══════════════════════════════════════════════════════════
+              2-COLUMN DESKTOP GRID
+              Left  62% → Form + Mangrove horizontal card
+              Right 38% → Payment Summary (tall) + Security footer
+              ═══════════════════════════════════════════════════════════ */}
+          <div className="grid grid-cols-1 lg:grid-cols-[62%_38%] gap-5 items-start">
 
-                  {detectedOperator ? (
-                    <div className="space-y-4">
-                      <label className="block text-sm font-bold text-gray-700">
-                        Pilih Nominal (Rp)
-                      </label>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        {pulsaOptions.map((opt) => (
-                          <button
-                            key={opt}
-                            onClick={() => setPulsaManualAmount(opt.toString())}
-                            className={`py-3 px-2 rounded-xl font-bold text-xs border transition-all ${
-                              pulsaManualAmount === opt.toString()
-                                ? "bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm ring-1 ring-emerald-500"
-                                : "bg-white border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50"
-                            }`}
-                          >
-                            {formatIDR(opt)}
-                          </button>
-                        ))}
-                      </div>
+            {/* ────────────────────────────────────
+                KOLOM KIRI: Form Area + Mangrove
+                ──────────────────────────────────── */}
+            <div className="flex flex-col gap-4">
 
-                      <div className="mt-4">
-                        <label className="block text-sm font-bold text-gray-700 mb-2">
-                          Atau Masukkan Nominal Manual
-                        </label>
+              {/* Form Card */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
+
+                {/* FORM PULSA */}
+                {activeTab === "pulsa" && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Nomor Handphone</label>
+                      <div className="relative">
                         <input
-                          type="number"
-                          min={5000}
-                          value={pulsaManualAmount}
-                          onChange={(e) => setPulsaManualAmount(e.target.value)}
-                          placeholder="Ketik nominal bebas, cth: 75000"
+                          type="tel"
+                          maxLength={12}
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ""))}
+                          placeholder="Contoh: 08123456789"
+                          className="w-full pl-4 pr-24 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                        />
+                        {detectedOperator && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-black px-3 py-1.5 rounded-lg select-none">
+                            {detectedOperator}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {detectedOperator ? (
+                      <div className="space-y-4">
+                        <label className="block text-sm font-bold text-gray-700">Pilih Nominal (Rp)</label>
+                        <div className="grid grid-cols-4 gap-2">
+                          {pulsaOptions.map((opt) => (
+                            <button
+                              key={opt}
+                              onClick={() => setPulsaManualAmount(opt.toString())}
+                              className={`py-2.5 px-2 rounded-xl font-bold text-xs border transition-all ${
+                                pulsaManualAmount === opt.toString()
+                                  ? "bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm ring-1 ring-emerald-500"
+                                  : "bg-white border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50"
+                              }`}
+                            >
+                              {formatIDR(opt)}
+                            </button>
+                          ))}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-2">Atau Masukkan Nominal Manual</label>
+                          <input
+                            type="number"
+                            min={5000}
+                            value={pulsaManualAmount}
+                            onChange={(e) => setPulsaManualAmount(e.target.value)}
+                            placeholder="Ketik nominal bebas, cth: 75000"
+                            className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
+                        <Smartphone className="w-9 h-9 mx-auto mb-2 text-gray-300 animate-pulse" />
+                        <p className="text-xs font-medium">Masukkan nomor HP di atas (maks 12 angka) untuk menampilkan pilihan nominal</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* FORM PLN */}
+                {activeTab === "pln" && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Jenis Layanan Listrik</label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          onClick={() => { setPlnServiceType("token"); setPlnInquiry(null); setPlnCustomerId(""); }}
+                          className={`py-3 px-4 rounded-xl font-bold text-xs transition-all border ${
+                            plnServiceType === "token"
+                              ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
+                              : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+                          }`}
+                        >
+                          Token Listrik
+                        </button>
+                        <button
+                          onClick={() => { setPlnServiceType("tagihan"); setPlnInquiry(null); setPlnCustomerId(""); }}
+                          className={`py-3 px-4 rounded-xl font-bold text-xs transition-all border ${
+                            plnServiceType === "tagihan"
+                              ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
+                              : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+                          }`}
+                        >
+                          Tagihan Listrik
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Nomor Meter / ID Pelanggan</label>
+                      <input
+                        type="text"
+                        maxLength={12}
+                        value={plnCustomerId}
+                        onChange={(e) => setPlnCustomerId(e.target.value.replace(/[^0-9]/g, ""))}
+                        placeholder="Masukkan 11-12 digit ID Pelanggan"
+                        className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                      />
+                    </div>
+                    {plnCustomerId.length >= 11 ? (
+                      isSimulatingPln ? (
+                        <div className="flex justify-center py-6">
+                          <Loader2 className="animate-spin text-emerald-500" size={24} />
+                        </div>
+                      ) : plnInquiry ? (
+                        <div className="animate-in fade-in slide-in-from-bottom-2">
+                          <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-sm space-y-3">
+                            <div className="flex items-center gap-2 text-emerald-700 font-bold border-b border-emerald-100 pb-2 mb-2">
+                              <CheckCircle2 size={16} />
+                              <span>Data Pelanggan Ditemukan</span>
+                            </div>
+                            <div className="flex justify-between"><span className="text-gray-500">Nama Pelanggan</span><span className="font-bold text-gray-900">{plnInquiry.customer_name}</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500">Bulan Tagihan</span><span className="font-bold text-gray-900">{plnInquiry.bill_month}</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500">Tagihan Riil</span><span className="font-bold text-gray-900">{formatIDR(plnInquiry.amount)}</span></div>
+                          </div>
+                        </div>
+                      ) : null
+                    ) : (
+                      <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
+                        <Zap className="w-9 h-9 mx-auto mb-2 text-gray-300 animate-pulse" />
+                        <p className="text-xs font-medium">Masukkan nomor meteran (min. 11 angka) untuk auto-inquiry data tagihan</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* FORM PDAM */}
+                {activeTab === "pdam" && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Pilih Wilayah / Kota</label>
+                        <select
+                          value={pdamRegion}
+                          onChange={(e) => { setPdamRegion(e.target.value); setPdamInquiry(null); }}
+                          className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                        >
+                          <option value="">-- Pilih Wilayah --</option>
+                          {PDAM_REGIONS.map((reg) => (
+                            <option key={reg} value={reg}>{reg}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Nomor Pelanggan PDAM</label>
+                        <input
+                          type="text"
+                          value={pdamCustomerId}
+                          onChange={(e) => setPdamCustomerId(e.target.value.replace(/[^0-9]/g, ""))}
+                          placeholder="Contoh: 109823412"
                           className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
                         />
                       </div>
                     </div>
-                  ) : (
-                    <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
-                      <Smartphone className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />
-                      <p className="text-xs font-medium">Masukkan nomor HP di atas (maks 12 angka) untuk menampilkan pilihan nominal</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* FORM PLN */}
-              {activeTab === "pln" && (
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Jenis Layanan Listrik
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        onClick={() => { setPlnServiceType("token"); setPlnInquiry(null); setPlnCustomerId(""); }}
-                        className={`py-3 px-4 rounded-xl font-bold text-xs transition-all border ${
-                          plnServiceType === "token"
-                            ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
-                            : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
-                        }`}
-                      >
-                        Token Listrik
-                      </button>
-                      <button
-                        onClick={() => { setPlnServiceType("tagihan"); setPlnInquiry(null); setPlnCustomerId(""); }}
-                        className={`py-3 px-4 rounded-xl font-bold text-xs transition-all border ${
-                          plnServiceType === "tagihan"
-                            ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
-                            : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
-                        }`}
-                      >
-                        Tagihan Listrik
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Nomor Meter / ID Pelanggan
-                    </label>
-                    <input
-                      type="text"
-                      maxLength={12}
-                      value={plnCustomerId}
-                      onChange={(e) => setPlnCustomerId(e.target.value.replace(/[^0-9]/g, ""))}
-                      placeholder="Masukkan 11-12 digit ID Pelanggan"
-                      className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
-                    />
-                  </div>
-
-                  {plnCustomerId.length >= 11 ? (
-                    isSimulatingPln ? (
-                      <div className="flex justify-center py-6">
-                        <Loader2 className="animate-spin text-emerald-500" size={24} />
-                      </div>
-                    ) : plnInquiry ? (
-                      <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
-                        {/* Customer Details Box */}
-                        <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-sm space-y-3">
-                          <div className="flex items-center gap-2 text-emerald-700 font-bold border-b border-emerald-100 pb-2 mb-2">
-                            <CheckCircle2 size={16} />
-                            <span>Data Pelanggan Ditemukan</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Nama Pelanggan</span>
-                            <span className="font-bold text-gray-900">{plnInquiry.customer_name}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Bulan Tagihan</span>
-                            <span className="font-bold text-gray-900">{plnInquiry.bill_month}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Tagihan Riil</span>
-                            <span className="font-bold text-gray-900">{formatIDR(plnInquiry.amount)}</span>
+                    {pdamRegion && pdamCustomerId.length >= 6 ? (
+                      isSimulatingPdam ? (
+                        <div className="flex justify-center py-6">
+                          <Loader2 className="animate-spin text-emerald-500" size={24} />
+                        </div>
+                      ) : pdamInquiry ? (
+                        <div className="animate-in fade-in slide-in-from-bottom-2">
+                          <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-sm space-y-3">
+                            <div className="flex items-center gap-2 text-emerald-700 font-bold border-b border-emerald-100 pb-2 mb-2">
+                              <CheckCircle2 size={16} />
+                              <span>Data Pelanggan Ditemukan</span>
+                            </div>
+                            <div className="flex justify-between"><span className="text-gray-500">Nama Pelanggan</span><span className="font-bold text-gray-900">{pdamInquiry.customer_name}</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500">Wilayah</span><span className="font-bold text-gray-900">{pdamRegion}</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500">Bulan Tagihan</span><span className="font-bold text-gray-900">{pdamInquiry.bill_month}</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500">Tagihan Riil</span><span className="font-bold text-gray-900">{formatIDR(pdamInquiry.amount)}</span></div>
                           </div>
                         </div>
+                      ) : null
+                    ) : (
+                      <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
+                        <Droplets className="w-9 h-9 mx-auto mb-2 text-gray-300 animate-pulse" />
+                        <p className="text-xs font-medium">Pilih wilayah kota dan ketik nomor pelanggan air PDAM Anda</p>
                       </div>
-                    ) : null
-                  ) : (
-                    <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
-                      <Zap className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />
-                      <p className="text-xs font-medium">Masukkan nomor meteran (min. 11 angka) untuk auto-inquiry data tagihan</p>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                )}
+
+              </div>{/* /Form Card */}
+
+              {/* ── Tanam Mangrove — Horizontal Compact Card ── */}
+              <div className="bg-emerald-950 text-white rounded-2xl p-4 shadow-lg relative overflow-hidden flex items-center gap-4">
+                <div className="absolute top-0 right-0 w-36 h-36 bg-white/5 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none" />
+
+                {/* Animated tree icon */}
+                <div className="relative flex-shrink-0 w-14 h-14 flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[#a3e635]/20 rounded-full blur-md absolute" />
+                  <div className="w-9 h-9 bg-[#a3e635] rounded-full flex items-center justify-center relative z-10 shadow-[0_0_10px_rgba(163,230,53,0.6)] animate-pulse">
+                    <Leaf size={18} className="text-emerald-950" />
+                  </div>
                 </div>
-              )}
 
-              {/* FORM PDAM */}
-              {activeTab === "pdam" && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">
-                        Pilih Wilayah / Kota
-                      </label>
-                      <select
-                        value={pdamRegion}
-                        onChange={(e) => {
-                          setPdamRegion(e.target.value);
-                          setPdamInquiry(null); // reset inquiry
-                        }}
-                        className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
-                      >
-                        <option value="">-- Pilih Wilayah --</option>
-                        {PDAM_REGIONS.map((reg) => (
-                          <option key={reg} value={reg}>
-                            {reg}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">
-                        Nomor Pelanggan PDAM
-                      </label>
-                      <input
-                        type="text"
-                        value={pdamCustomerId}
-                        onChange={(e) => setPdamCustomerId(e.target.value.replace(/[^0-9]/g, ""))}
-                        placeholder="Contoh: 109823412"
-                        className="w-full px-4 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                {/* Text + progress */}
+                <div className="flex-1 min-w-0 relative z-10">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="font-bold text-sm text-white">Tanam Mangrove</h3>
+                    <span className="text-xs font-black text-[#a3e635] ml-2">Skor: {impactScore.toFixed(1)}</span>
+                  </div>
+                  <p className="text-emerald-100/80 text-[11px] leading-snug mb-2">
+                    Setiap 5× pembayaran tagihan = 1 bibit mangrove untuk alam.
+                  </p>
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex-1 bg-white/10 rounded-full h-1.5">
+                      <div
+                        className="bg-[#a3e635] h-1.5 rounded-full transition-all duration-500"
+                        style={{ width: `${(mangroveProgress / 5) * 100}%` }}
                       />
                     </div>
+                    <span className="text-[11px] font-bold text-white">{mangroveProgress}/5</span>
                   </div>
-
-                  {pdamRegion && pdamCustomerId.length >= 6 ? (
-                    isSimulatingPdam ? (
-                      <div className="flex justify-center py-6">
-                        <Loader2 className="animate-spin text-emerald-500" size={24} />
-                      </div>
-                    ) : pdamInquiry ? (
-                      <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
-                        {/* Customer Details Box */}
-                        <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-sm space-y-3">
-                          <div className="flex items-center gap-2 text-emerald-700 font-bold border-b border-emerald-100 pb-2 mb-2">
-                            <CheckCircle2 size={16} />
-                            <span>Data Pelanggan Ditemukan</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Nama Pelanggan</span>
-                            <span className="font-bold text-gray-900">{pdamInquiry.customer_name}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Wilayah</span>
-                            <span className="font-bold text-gray-900">{pdamRegion}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Bulan Tagihan</span>
-                            <span className="font-bold text-gray-900">{pdamInquiry.bill_month}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Tagihan Riil</span>
-                            <span className="font-bold text-gray-900">{formatIDR(pdamInquiry.amount)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    ) : null
-                  ) : (
-                    <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
-                      <Droplets className="w-10 h-10 mx-auto mb-2 text-gray-300 animate-pulse" />
-                      <p className="text-xs font-medium">Pilih wilayah kota dan ketik nomor pelanggan air PDAM Anda</p>
-                    </div>
-                  )}
                 </div>
-              )}
+              </div>
 
-            </div>
-          </div>
+            </div>{/* /Kolom Kiri */}
 
-          {/* Payment Summary Sidebar */}
-          <div className="flex flex-col gap-6">
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 space-y-6">
-              <h3 className="text-md font-bold text-gray-900">Ringkasan Pembayaran</h3>
+            {/* ────────────────────────────────────────────────
+                KOLOM KANAN: Payment Summary + Security footer
+                ──────────────────────────────────────────────── */}
+            <div className="flex flex-col gap-4">
 
-              {currentCheckout ? (
-                <div className="space-y-4 text-sm">
-                  <div className="flex justify-between text-gray-500">
-                    <span>Layanan</span>
-                    <span className="font-semibold text-gray-800 uppercase">{currentCheckout.bill_type}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-500">
-                    <span>Produk</span>
-                    <span className="font-semibold text-gray-800 text-right max-w-[150px]">{currentCheckout.product_name}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-500">
-                    <span>No. Pelanggan</span>
-                    <span className="font-semibold text-gray-800 font-mono text-xs">{currentCheckout.customer_id}</span>
-                  </div>
-                  {currentCheckout.admin_fee > 0 && (
-                    <div className="flex justify-between text-gray-500">
-                      <span>Biaya Admin</span>
-                      <span className="font-semibold text-gray-800">{formatIDR(currentCheckout.admin_fee)}</span>
+              {/* Payment Summary Card — tall & flexible */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 flex flex-col gap-4 min-h-[340px]">
+                <h3 className="text-base font-bold text-gray-900">Ringkasan Pembayaran</h3>
+
+                {currentCheckout ? (
+                  <div className="flex flex-col gap-4 text-sm flex-1">
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-gray-500">
+                        <span>Layanan</span>
+                        <span className="font-semibold text-gray-800 uppercase">{currentCheckout.bill_type}</span>
+                      </div>
+                      <div className="flex justify-between text-gray-500">
+                        <span>Produk</span>
+                        <span className="font-semibold text-gray-800 text-right max-w-[160px] leading-tight">{currentCheckout.product_name}</span>
+                      </div>
+                      <div className="flex justify-between text-gray-500">
+                        <span>No. Pelanggan</span>
+                        <span className="font-semibold text-gray-800 font-mono text-xs">{currentCheckout.customer_id}</span>
+                      </div>
+                      {currentCheckout.admin_fee > 0 && (
+                        <div className="flex justify-between text-gray-500">
+                          <span>Biaya Admin</span>
+                          <span className="font-semibold text-gray-800">{formatIDR(currentCheckout.admin_fee)}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
 
-                  {/* PPOB Redeem Eco Poin UI */}
-                  {userEcoPoints > 0 && (
-                    <div className="pt-2">
+                    {userEcoPoints > 0 && (
                       <label className="flex items-center gap-3 p-3 border border-emerald-100 bg-emerald-50/50 rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors">
-                        <input 
-                          type="checkbox" 
-                          checked={useEcoPointsForDiscount} 
+                        <input
+                          type="checkbox"
+                          checked={useEcoPointsForDiscount}
                           onChange={(e) => setUseEcoPointsForDiscount(e.target.checked)}
                           className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-gray-300"
                         />
                         <div className="flex-1">
-                          <p className="text-sm font-bold text-gray-900">Gunakan Eco Poin untuk Diskon</p>
-                          <p className="text-xs text-emerald-700">Tersedia {userEcoPoints} Poin (Maks. potongan {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))})</p>
+                          <p className="text-sm font-bold text-gray-900">Gunakan Eco Poin</p>
+                          <p className="text-xs text-emerald-700">{userEcoPoints} Poin (Maks. {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))})</p>
                         </div>
                       </label>
-                    </div>
-                  )}
-
-                  {useEcoPointsForDiscount && (
-                    <div className="flex justify-between text-green-600 font-medium pt-2">
-                      <span>Potongan Eco-Points:</span>
-                      <span>- {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))}</span>
-                    </div>
-                  )}
-
-                  <div className="border-t border-gray-100 pt-4 flex justify-between items-end">
-                    <span className="font-bold text-gray-800">Total Harga</span>
-                    <span className="text-xl font-black text-emerald-600">
-                      {useEcoPointsForDiscount 
-                        ? formatIDR(Math.max(0, currentCheckout.amount - Math.min(userEcoPoints, currentCheckout.amount * 0.10))) 
-                        : formatIDR(currentCheckout.amount)
-                      }
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={handleCheckoutTagihan}
-                    disabled={checkoutLoading}
-                    className="w-full mt-4 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm shadow-md shadow-emerald-600/10 hover:shadow-lg transition-all disabled:opacity-50"
-                  >
-                    {checkoutLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Memproses...
-                      </>
-                    ) : (
-                      "Bayar Sekarang"
                     )}
-                  </button>
-                </div>
-              ) : (
-                <div className="py-6 text-center text-gray-400 space-y-2">
-                  <HelpCircle className="w-8 h-8 mx-auto text-gray-300" />
-                  <p className="text-xs font-semibold leading-relaxed">
-                    Lengkapi detail formulir tagihan Anda untuk memproses pembayaran
-                  </p>
-                </div>
-              )}
-            </div>
 
-            {/* Tanam Mangrove Widget */}
-            <div className="bg-emerald-950 text-white rounded-[2rem] p-6 pb-8 shadow-xl relative overflow-hidden flex flex-col items-center justify-center gap-4 min-h-[250px] h-auto">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
-              
-              <div className="relative h-24 flex items-end justify-center w-full">
-                <div className="absolute bottom-0 w-2 h-10 bg-emerald-900 rounded-t-sm"></div>
-                <div className="w-20 h-20 bg-[#a3e635] rounded-full blur-md opacity-80 absolute bottom-3 z-10"></div>
-                <div className="w-14 h-14 bg-emerald-400 rounded-full blur-sm absolute bottom-7 z-20"></div>
-                <div className="w-12 h-12 bg-[#a3e635] rounded-full flex items-center justify-center absolute bottom-8 z-30 shadow-[0_0_15px_rgba(163,230,53,0.8)] animate-pulse">
-                  <Leaf size={24} className="text-emerald-950 animate-bounce" />
-                </div>
+                    {useEcoPointsForDiscount && (
+                      <div className="flex justify-between text-green-600 font-medium">
+                        <span>Potongan Eco-Points:</span>
+                        <span>- {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))}</span>
+                      </div>
+                    )}
+
+                    <div className="border-t border-gray-100 pt-3 flex justify-between items-end mt-auto">
+                      <span className="font-bold text-gray-800">Total Harga</span>
+                      <span className="text-xl font-black text-emerald-600">
+                        {useEcoPointsForDiscount
+                          ? formatIDR(Math.max(0, currentCheckout.amount - Math.min(userEcoPoints, currentCheckout.amount * 0.10)))
+                          : formatIDR(currentCheckout.amount)
+                        }
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={handleCheckoutTagihan}
+                      disabled={checkoutLoading}
+                      className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm shadow-md shadow-emerald-600/10 hover:shadow-lg transition-all disabled:opacity-50"
+                    >
+                      {checkoutLoading ? (
+                        <><Loader2 className="w-4 h-4 animate-spin" />Memproses...</>
+                      ) : (
+                        "Bayar Sekarang"
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center py-8 text-center text-gray-400 gap-3">
+                    <HelpCircle className="w-9 h-9 text-gray-300" />
+                    <p className="text-xs font-semibold leading-relaxed max-w-[190px]">
+                      Lengkapi detail formulir tagihan Anda untuk memproses pembayaran
+                    </p>
+                    <div className="w-full mt-3 space-y-2.5 px-1">
+                      {["Layanan", "Produk", "No. Pelanggan", "Biaya Admin"].map((label) => (
+                        <div key={label} className="flex justify-between text-xs text-gray-300">
+                          <span>{label}</span>
+                          <span className="w-20 h-2.5 bg-gray-100 rounded animate-pulse inline-block" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-              
-              <div className="text-center relative z-10">
-                <h2 className="text-xl font-serif font-bold mb-1">Tanam Mangrove</h2>
-                <p className="text-emerald-100/90 text-xs leading-relaxed max-w-[280px]">
-                  Setiap 5x pembayaran tagihan, Anda menyumbang 1 bibit mangrove ke alam.
+
+              {/* ── GARANSI TRANSAKSI AMAN — compact footer card ── */}
+              <div className="bg-emerald-50/60 rounded-2xl border border-emerald-100/70 p-4">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-800">
+                    Garansi Transaksi Aman
+                  </h4>
+                </div>
+                <p className="text-[11px] text-emerald-700/80 leading-relaxed">
+                  Setiap pembayaran diamankan dengan enkripsi modern. Anda berhak mendapat{" "}
+                  <span className="font-bold text-emerald-700">EcoPoints</span> untuk setiap
+                  kontribusi pelestarian lingkungan.
                 </p>
               </div>
 
-              <div className="bg-white/10 rounded-xl p-4 border border-white/20 backdrop-blur-sm relative z-10 w-full">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-xs font-bold text-white">Progress</span>
-                  <span className="text-xs font-bold text-white">{mangroveProgress} / 5</span>
-                </div>
-                <div className="w-full bg-black/20 rounded-full h-2 mb-3">
-                  <div className="bg-[#a3e635] h-2 rounded-full transition-all duration-500" style={{width: `${(mangroveProgress / 5) * 100}%`}}></div>
-                </div>
-                <p className="text-[10px] text-emerald-100/90 font-semibold text-center">Bayar tagihan untuk mulai menanam!</p>
-              </div>
+            </div>{/* /Kolom Kanan */}
 
-              <div className="relative z-10 w-full text-center mt-1">
-                <p className="text-sm font-bold text-[#a3e635]">Skor Dampak: {impactScore.toFixed(1)}</p>
-              </div>
-            </div>
-
-            <div className="bg-emerald-50/50 rounded-2xl border border-emerald-100/50 p-5 space-y-3">
-              <div className="flex items-center gap-2 text-emerald-800">
-                <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                <h4 className="text-xs font-bold uppercase tracking-wider">Garansi Transaksi Aman</h4>
-              </div>
-              <p className="text-xs text-emerald-700/80 leading-relaxed">
-                Setiap pembayaran tagihan melalui EcoBank diamankan dengan enkripsi modern. Anda juga berhak mendapatkan poin EcoPoints untuk setiap kontribusi pelestarian lingkungan.
-              </p>
-            </div>
-          </div>
+          </div>{/* /2-Column Grid */}
         </div>
-      </div>
+      </div>{/* /Outer Wrapper */}
 
       {/* Struk Modal Pop-up on Success */}
       <StrukModal

@@ -249,7 +249,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
           
           {/* Card Saldo — Glassmorphism */}
-          <div className="h-full">
+          <div className="flex flex-col h-full w-full">
             <WalletBalanceCard
               balance={userBalance}
               accountNumber={accountNumber}
@@ -260,31 +260,46 @@ export default function DashboardPage() {
           </div>
 
           {/* Card Karbon */}
-          <div className="bg-[#111827] text-white p-6 rounded-[24px] shadow-lg relative overflow-hidden h-full flex flex-col justify-between border border-gray-800">
+          <div className="bg-[#111827] text-white p-6 rounded-[24px] shadow-lg relative overflow-hidden h-full flex flex-col justify-between border border-gray-800 min-h-[220px]">
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#115e59]/20 rounded-full blur-3xl"></div>
             <div>
-              <div className="w-10 h-10 bg-gray-800 text-emerald-400 rounded-xl flex items-center justify-center mb-3">
-                <Leaf size={20} />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gray-800 text-emerald-400 rounded-xl flex items-center justify-center border border-gray-700/50">
+                  <Leaf size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-emerald-300/80 font-bold leading-none">Dampak Lingkungan</p>
+                  <h4 className="font-serif font-black text-sm text-white mt-1">Eco-Impact</h4>
+                </div>
               </div>
-              <p className="text-gray-400 text-sm font-medium mb-1">Pengurangan Karbon</p>
-              <h2 className="text-2xl font-bold font-serif text-emerald-400 tracking-tight">{Number(impactScore * 0.5).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} kg CO2e</h2>
+              <span className="text-gray-400 text-xs font-semibold tracking-wide block mb-1">Pengurangan Karbon</span>
+              <h2 className="text-2xl font-bold font-sans text-emerald-400 tracking-tight">{Number(impactScore * 0.5).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} kg CO2e</h2>
             </div>
-            <Link href="/dashboard/investasi" className="mt-3 text-xs text-emerald-400 font-bold hover:underline">
-              Tingkatkan Impact ➔
-            </Link>
+            <div className="pt-3 border-t border-gray-800 mt-4">
+              <Link href="/dashboard/investasi" className="text-xs text-emerald-400 font-bold hover:underline flex items-center justify-between">
+                <span>Tingkatkan Impact</span>
+                <span>➔</span>
+              </Link>
+            </div>
           </div>
 
           {/* Card Eco Points */}
-          <div className="bg-white border border-gray-100 p-6 rounded-[24px] shadow-sm h-full flex flex-col justify-between">
+          <div className="bg-white border border-gray-100 p-6 rounded-[24px] shadow-sm h-full flex flex-col justify-between min-h-[220px]">
             <div>
-              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-3">
-                <Heart size={20} />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center border border-blue-100">
+                  <Heart size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-blue-500/80 font-bold leading-none">Loyalti Hijau</p>
+                  <h4 className="font-serif font-black text-sm text-gray-900 mt-1">Eco-Points</h4>
+                </div>
               </div>
-              <p className="text-gray-500 text-sm font-medium mb-1">Poin Eco - Tier {displayTierName}</p>
-              <h2 className="text-2xl font-bold font-serif text-gray-900 tracking-tight">{userEcoPoints} Poin</h2>
+              <span className="text-gray-500 text-xs font-semibold tracking-wide block mb-1">Poin Eco - Tier {displayTierName}</span>
+              <h2 className="text-2xl font-bold font-sans text-gray-900 tracking-tight">{userEcoPoints} Poin</h2>
             </div>
-            <div className="mt-4">
-              <div className="flex justify-between text-[10px] text-gray-500 font-bold mb-1">
+            <div className="pt-3 border-t border-gray-100 mt-4">
+              <div className="flex justify-between text-[9px] text-gray-500 font-bold mb-1">
                 <span>{displayTierName === 'PLATINUM' ? 'Tier Tertinggi Dicapai' : progressText}</span>
                 <span>
                   {displayTierName === 'PLATINUM' 
