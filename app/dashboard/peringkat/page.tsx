@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { 
-  Trophy, Globe, Leaf, Loader2, TrendingUp, Sparkles, Lightbulb, Zap, Car
+  Trophy, Globe, Leaf, Loader2, Lightbulb, Car
 } from "lucide-react";
 import { useUserContext } from "@/hooks/useUserData";
 
@@ -23,20 +23,20 @@ interface LeaderboardEntry {
 
 export default function PeringkatPage() {
   const userHook = useUserContext();
-  const { userEmail, avatarUrl, initials, userName, userEcoPoints, impactScore } = userHook;
+  const { userEmail, avatarUrl, initials, userName } = userHook;
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCollective, setTotalCollective] = useState(0);
 
-  // Dynamic user details
+  // Dynamic user details - Desbellion (47.654,0 Skor Dampak)
   const displayUserName = userName || "Desbellion";
-  const displayUserScore = impactScore || 2307.0;
+  const displayUserScore = 47654.0;
   const displayUserCo2 = displayUserScore * 0.5;
 
   // Conversion calculations
-  const treesCount = Math.round(displayUserCo2 / 22) || 45;
-  const electricityHours = Math.round(displayUserCo2 / 0.04) || 1200;
-  const drivingAvoidedKm = Math.round(displayUserCo2 / 0.12) || 350;
+  const treesCount = Math.round(displayUserCo2 / 22) || 1083;
+  const electricityHours = Math.round(displayUserCo2 / 0.04) || 595675;
+  const drivingAvoidedKm = Math.round(displayUserCo2 / 0.12) || 198558;
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -44,9 +44,38 @@ export default function PeringkatPage() {
         const res = await fetch(`${API_URL}/leaderboard`);
         if (res.ok) {
           const data = await res.json();
-          setLeaderboard(data.leaderboard || []);
-          // Calculate collective impact from MySQL impact_score
-          const totalImpact = (data.leaderboard || []).reduce((sum: number, u: LeaderboardEntry) => sum + (u.impact_score || 0), 0);
+          const list = data.leaderboard || [];
+          
+          // Filter out existing entries to prevent duplicates
+          const filteredList = list.filter((u: any) => 
+            !u.name.toLowerCase().includes("krisna aji") && 
+            !u.name.toLowerCase().includes("muhammad rendi") && 
+            !u.name.toLowerCase().includes("desbellion") &&
+            u.email !== userEmail
+          );
+          
+          // Inject exactly the top 3 with Desbellion as Rank #3
+          const top3 = [
+            { id: 10001, name: "Krisna Aji", email: "krisna@greenbanking.com", impact_score: 75366.0, rank: 1, tier: "Platinum" },
+            { id: 10002, name: "Muhammad Rendi", email: "rendi@greenbanking.com", impact_score: 53261.0, rank: 2, tier: "Platinum" },
+            { id: 10003, name: "Desbellion", email: userEmail || "desbellion@greenbanking.com", impact_score: 47654.0, rank: 3, tier: "Platinum" }
+          ];
+          
+          // Merge top 3 with the rest of the leaderboard list
+          const allList = [...top3, ...filteredList];
+          
+          // Sort list by impact score descending
+          allList.sort((a, b) => (b.impact_score || 0) - (a.impact_score || 0));
+          
+          // Re-assign ranks dynamically based on index
+          allList.forEach((u, index) => {
+            u.rank = index + 1;
+          });
+          
+          setLeaderboard(allList);
+          
+          // Calculate collective impact
+          const totalImpact = allList.reduce((sum: number, u: any) => sum + (u.impact_score || 0), 0);
           setTotalCollective(totalImpact);
         }
       } catch (e) {
@@ -56,7 +85,7 @@ export default function PeringkatPage() {
       }
     };
     fetchLeaderboard();
-  }, []);
+  }, [userEmail]);
 
   const getInitialsFromName = (name: string) => {
     const parts = name.split(' ').filter(Boolean);
@@ -64,9 +93,8 @@ export default function PeringkatPage() {
     return name.substring(0, 2).toUpperCase();
   };
 
-  // Find user's dynamic rank in the leaderboard
-  const userRankIndex = leaderboard.findIndex(u => u.email === userEmail);
-  const displayRank = userRankIndex !== -1 ? `#${leaderboard[userRankIndex].rank}` : "#12 Global";
+  // Rank matches exact user rank
+  const displayRank = "#3 Global";
 
   return (
     <>
@@ -90,28 +118,20 @@ export default function PeringkatPage() {
         {/* 1. BAGIAN ATAS (Top Row): 2 Columns */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           
-          {/* Sisi Kiri (60-70% lebar) - Kartu Hijau Besar */}
+          {/* Sisi Kiri (60-70% lebar) - Kartu Hijau Besar (Kanan Bersih) */}
           <div className="lg:col-span-2">
             <div className="bg-gradient-to-br from-[#064e3b] via-[#0f766e] to-[#115e59] text-white rounded-[2rem] p-8 shadow-xl shadow-emerald-950/15 relative overflow-hidden border border-white/10 flex flex-col justify-between h-full min-h-[260px] group">
               {/* Glow Accent */}
               <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-400/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-emerald-400/20 transition-colors duration-500"></div>
               
-              <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                  <p className="text-emerald-200 text-sm font-medium tracking-wide flex items-center gap-2 mb-1.5">
-                    <Globe size={16} className="text-emerald-300" />
-                    Dampak Kolektif Nasabah EcoBank
-                  </p>
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-tight drop-shadow-sm">
-                    {loading ? '64.313,5 kg CO2e' : `${Number(totalCollective > 0 ? totalCollective * 0.5 : 128627).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} kg CO2e`}
-                  </h2>
-                </div>
-
-                {/* Trend Stat */}
-                <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-md text-emerald-200 px-3.5 py-1.5 rounded-full text-xs font-bold border border-white/10 shadow-sm">
-                  <TrendingUp size={14} className="text-emerald-300 animate-pulse" />
-                  <span>+12% dari bulan lalu</span>
-                </div>
+              <div className="relative z-10">
+                <p className="text-emerald-200 text-sm font-medium tracking-wide flex items-center gap-2 mb-1.5">
+                  <Globe size={16} className="text-emerald-300 animate-pulse" />
+                  Dampak Kolektif Nasabah EcoBank
+                </p>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-tight drop-shadow-sm">
+                  {loading ? '64.313,5 kg CO2e' : `${Number(totalCollective > 0 ? totalCollective * 0.5 : 128627).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} kg CO2e`}
+                </h2>
               </div>
 
               {/* Mini SVG Line Chart */}
@@ -141,7 +161,7 @@ export default function PeringkatPage() {
               <div>
                 <h4 className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Reforestasi</h4>
                 <p className="font-bold text-gray-900 text-xs sm:text-sm leading-snug">
-                  Setara menanam <span className="text-emerald-600 font-extrabold">{treesCount}</span> pohon dewasa
+                  Setara menanam <span className="text-emerald-600 font-extrabold">{treesCount.toLocaleString('id-ID')}</span> pohon dewasa
                 </p>
               </div>
             </div>
@@ -167,7 +187,7 @@ export default function PeringkatPage() {
               <div>
                 <h4 className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Emisi Kendaraan</h4>
                 <p className="font-bold text-gray-900 text-xs sm:text-sm leading-snug">
-                  Hindari emisi <span className="text-blue-600 font-extrabold">{drivingAvoidedKm}</span> km perjalanan mobil
+                  Hindari emisi <span className="text-blue-600 font-extrabold">{drivingAvoidedKm.toLocaleString('id-ID')}</span> km perjalanan mobil
                 </p>
               </div>
             </div>
@@ -179,12 +199,9 @@ export default function PeringkatPage() {
         {/* 2. BAGIAN BAWAH (Bottom Row): Leaderboard Eco-Champion (Full Width) */}
         <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between w-full">
           
-          {/* Leaderboard Header */}
+          {/* Leaderboard Header (Clean - No small sparkles/icons) */}
           <div className="p-6 border-b border-gray-50 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles size={18} className="text-emerald-600" />
-              <h3 className="font-serif font-bold text-gray-900 text-lg">Leaderboard Eco-Champion</h3>
-            </div>
+            <h3 className="font-serif font-bold text-gray-900 text-lg">Leaderboard Eco-Champion</h3>
             <span className="text-[10px] font-bold tracking-widest text-[#115e59] bg-emerald-50 px-2.5 py-1 rounded-full uppercase">Global</span>
           </div>
 
@@ -198,7 +215,7 @@ export default function PeringkatPage() {
               <div className="p-8 text-center text-gray-400">Belum ada data leaderboard</div>
             ) : (
               leaderboard.map((user) => {
-                const isCurrentUser = user.email === userEmail;
+                const isCurrentUser = user.email === userEmail || user.name.toLowerCase().includes("desbellion");
                 
                 let rankColor = "text-gray-400";
                 let rankBadge = "";
@@ -250,7 +267,7 @@ export default function PeringkatPage() {
             )}
           </div>
 
-          {/* User's Highlithed Card Rank (Sticky at bottom of leaderboard box) */}
+          {/* User's Highlighted Card Rank (Sticky at bottom of leaderboard box) */}
           <div className="p-4 border-t border-gray-100 bg-gray-50/40">
             <div className="bg-gradient-to-br from-[#064e3b] via-[#0f766e] to-[#115e59] text-white p-5 rounded-2xl shadow-md border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
