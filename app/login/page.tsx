@@ -168,42 +168,42 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-gray-50 via-white to-emerald-50/30 p-4 relative overflow-hidden font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-gray-50 via-white to-emerald-50/30 p-0 md:p-6 relative overflow-hidden font-sans">
       {/* Background Ornaments */}
       <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/5 blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-teal-500/5 blur-[120px] pointer-events-none"></div>
 
       {/* Main Centered Card Container */}
-      <div className="w-full max-w-md bg-white border border-gray-100/80 rounded-3xl shadow-xl shadow-gray-100/40 p-8 sm:p-10 relative z-10 hover:shadow-2xl transition-shadow duration-500">
+      <div className="w-full min-h-screen md:min-h-0 md:max-w-md bg-white border-0 md:border md:border-gray-100/80 rounded-none md:rounded-3xl shadow-none md:shadow-xl md:shadow-gray-100/40 p-6 sm:p-8 md:p-10 relative z-10 flex flex-col justify-center hover:shadow-2xl transition-shadow duration-500">
         
         {/* Logo and Header */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-block group mb-4">
-            <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105 border border-emerald-100/50 shadow-sm mx-auto">
-              <img src="/logo.svg" alt="GreenBanking Logo" className="w-9 h-9 object-contain" />
+        <div className="text-center mb-6 md:mb-8">
+          <Link href="/" className="inline-block group mb-3 md:mb-4">
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-emerald-50 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105 border border-emerald-100/50 shadow-sm mx-auto">
+              <img src="/logo.svg" alt="GreenBanking Logo" className="w-8 h-8 md:w-9 md:h-9 object-contain" />
             </div>
           </Link>
-          <h2 className="text-2xl font-serif font-black text-emerald-900 tracking-tight mb-1.5">
+          <h2 className="text-xl md:text-2xl font-serif font-black text-emerald-900 tracking-tight mb-1 md:mb-1.5">
             Selamat Datang Kembali
           </h2>
-          <p className="text-xs text-gray-400 font-medium">
+          <p className="text-[11px] md:text-xs text-gray-400 font-medium">
             Masuk untuk mengakses layanan perbankan ramah lingkungan
           </p>
         </div>
 
         {/* ─── Error Notification ─── */}
         {errorMsg && (
-          <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-2xl text-xs mb-6 text-center font-semibold animate-shake">
+          <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-2.5 md:py-3 rounded-2xl text-[11px] md:text-xs mb-5 md:mb-6 text-center font-semibold animate-shake">
             {errorMsg}
           </div>
         )}
 
         {/* ─── Login Form ─── */}
-        <form onSubmit={handleManualLogin} className="space-y-4 mb-6">
+        <form onSubmit={handleManualLogin} className="space-y-3.5 md:space-y-4 mb-5 md:mb-6">
           
           {/* Email Input */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 tracking-wide block ml-1">Email</label>
+          <div className="space-y-1 md:space-y-1.5">
+            <label className="text-[10px] md:text-xs font-bold text-gray-500 tracking-wide block ml-1">Email</label>
             <div className="relative">
               <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -213,7 +213,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
                 required
-                className={`w-full pl-11 pr-4 py-3.5 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                className={`w-full pl-11 pr-4 py-3 md:py-3.5 border rounded-2xl text-xs md:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
                   emailError 
                     ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
                     : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
@@ -221,15 +221,15 @@ export default function LoginPage() {
               />
             </div>
             {emailError && (
-              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+              <p className="text-[10px] md:text-[11px] text-red-500 font-semibold mt-1 ml-1">
                 {emailError}
               </p>
             )}
           </div>
 
           {/* Password Input */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 tracking-wide block ml-1">Kata Sandi</label>
+          <div className="space-y-1 md:space-y-1.5">
+            <label className="text-[10px] md:text-xs font-bold text-gray-500 tracking-wide block ml-1">Kata Sandi</label>
             <div className="relative">
               <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -239,7 +239,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setPasswordError(""); }}
                 required
-                className={`w-full pl-11 pr-12 py-3.5 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                className={`w-full pl-11 pr-12 py-3 md:py-3.5 border rounded-2xl text-xs md:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
                   passwordError 
                     ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
                     : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
@@ -254,17 +254,17 @@ export default function LoginPage() {
               </button>
             </div>
             {passwordError && (
-              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+              <p className="text-[10px] md:text-[11px] text-red-500 font-semibold mt-1 ml-1">
                 {passwordError}
               </p>
             )}
           </div>
           
           {/* Forget Password link */}
-          <div className="flex justify-end pt-1">
+          <div className="flex justify-end pt-0.5 md:pt-1">
             <Link 
               href="/forgot-password" 
-              className="text-xs font-bold text-[#059669] hover:text-[#047857] transition-colors"
+              className="text-[10px] md:text-xs font-bold text-[#059669] hover:text-[#047857] transition-colors"
             >
               Lupa Kata Sandi?
             </Link>
@@ -274,7 +274,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3.5 rounded-2xl text-sm transition-all duration-150 transform hover:scale-[1.01] active:scale-95 shadow-md shadow-emerald-600/10 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+            className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3 md:py-3.5 rounded-2xl text-xs md:text-sm transition-all duration-150 transform hover:scale-[1.01] active:scale-95 shadow-md shadow-emerald-600/10 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-1 md:mt-2"
           >
             {isLoading ? (
               <><Loader2 size={16} className="animate-spin" /> Masuk...</>
@@ -286,9 +286,9 @@ export default function LoginPage() {
         </form>
 
         {/* Divider */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-3 md:gap-4 mb-5 md:mb-6">
           <div className="flex-1 h-px bg-gray-100" />
-          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">atau</span>
+          <span className="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-wider">atau</span>
           <div className="flex-1 h-px bg-gray-100" />
         </div>
 
@@ -297,7 +297,7 @@ export default function LoginPage() {
           type="button"
           onClick={handleGoogleLogin}
           disabled={isLoggingIn}
-          className="w-full flex justify-center items-center gap-3 py-3.5 px-4 border border-gray-200 rounded-2xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-100 transition-all transform hover:scale-[1.01] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex justify-center items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-4 border border-gray-200 rounded-2xl shadow-sm text-xs md:text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-100 transition-all transform hover:scale-[1.01] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoggingIn ? (
             <>
@@ -313,7 +313,7 @@ export default function LoginPage() {
         </button>
 
         {/* Sign Up Redirect */}
-        <p className="mt-8 text-center text-xs text-gray-500">
+        <p className="mt-6 md:mt-8 text-center text-xs text-gray-500">
           Belum punya akun?{' '}
           <Link href="/register" className="text-[#059669] font-extrabold hover:underline ml-1">
             Daftar di sini
@@ -321,7 +321,7 @@ export default function LoginPage() {
         </p>
 
         {/* T&C Footer */}
-        <p className="mt-8 text-[10px] text-gray-400 text-center leading-normal px-4">
+        <p className="mt-6 md:mt-8 text-[9px] md:text-[10px] text-gray-400 text-center leading-normal px-4">
           Dengan masuk, Anda menyetujui <span className="underline cursor-pointer">Syarat &amp; Ketentuan</span> serta <span className="underline cursor-pointer">Kebijakan Privasi</span> GreenBanking.
         </p>
 

@@ -114,13 +114,13 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50/50 p-4">
-        <div className="w-full max-w-md bg-white border border-gray-100/80 rounded-3xl shadow-xl p-8 sm:p-10 text-center">
-          <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-100 shadow-sm">
-            <CheckCircle size={32} className="text-[#059669]" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50/50 p-0 md:p-6">
+        <div className="w-full min-h-screen md:min-h-0 md:max-w-md bg-white border-0 md:border md:border-gray-100/80 rounded-none md:rounded-3xl shadow-none md:shadow-xl p-6 sm:p-8 md:p-10 text-center flex flex-col justify-center">
+          <div className="w-14 h-14 md:w-16 md:h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-5 md:mb-6 border border-emerald-100 shadow-sm animate-pulse">
+            <CheckCircle className="text-[#059669] w-7 h-7 md:w-8 md:h-8" />
           </div>
-          <h2 className="text-2xl font-serif font-black text-emerald-900 tracking-tight mb-2">Registrasi Berhasil!</h2>
-          <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+          <h2 className="text-xl md:text-2xl font-serif font-black text-emerald-900 tracking-tight mb-2">Registrasi Berhasil!</h2>
+          <p className="text-gray-400 text-xs md:text-sm mb-5 md:mb-6 leading-relaxed">
             Selamat! Akun Anda telah terdaftar di GreenBanking Nusantara. Mengalihkan ke dashboard...
           </p>
           <Loader2 size={24} className="animate-spin text-[#059669] mx-auto" />
@@ -130,42 +130,42 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-gray-50 via-white to-emerald-50/30 p-4 relative overflow-hidden font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-gray-50 via-white to-emerald-50/30 p-0 md:p-6 relative overflow-hidden font-sans">
       {/* Background Ornaments */}
       <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/5 blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-teal-500/5 blur-[120px] pointer-events-none"></div>
 
       {/* Main Centered Card Container */}
-      <div className="w-full max-w-md bg-white border border-gray-100/80 rounded-3xl shadow-xl shadow-gray-100/40 p-8 sm:p-10 relative z-10 hover:shadow-2xl transition-shadow duration-500">
+      <div className="w-full min-h-screen md:min-h-0 md:max-w-md bg-white border-0 md:border md:border-gray-100/80 rounded-none md:rounded-3xl shadow-none md:shadow-xl md:shadow-gray-100/40 p-6 sm:p-8 md:p-10 relative z-10 flex flex-col justify-center hover:shadow-2xl transition-shadow duration-500">
         
         {/* Logo and Header */}
-        <div className="text-center mb-6">
-          <Link href="/" className="inline-block group mb-4">
-            <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105 border border-emerald-100/50 shadow-sm mx-auto">
-              <img src="/logo.svg" alt="GreenBanking Logo" className="w-9 h-9 object-contain" />
+        <div className="text-center mb-5 md:mb-6">
+          <Link href="/" className="inline-block group mb-3 md:mb-4">
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-emerald-50 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105 border border-emerald-100/50 shadow-sm mx-auto">
+              <img src="/logo.svg" alt="GreenBanking Logo" className="w-8 h-8 md:w-9 md:h-9 object-contain" />
             </div>
           </Link>
-          <h2 className="text-2xl font-serif font-black text-emerald-900 tracking-tight mb-1.5">
+          <h2 className="text-xl md:text-2xl font-serif font-black text-emerald-900 tracking-tight mb-1 md:mb-1.5">
             Mulai Langkah Hijau Anda
           </h2>
-          <p className="text-xs text-gray-400 font-medium">
+          <p className="text-[11px] md:text-xs text-gray-400 font-medium">
             Daftar sekarang untuk masa depan bumi yang berkelanjutan
           </p>
         </div>
 
         {/* ─── Error Notification ─── */}
         {errorMsg && (
-          <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-2xl text-xs mb-5 text-center font-semibold animate-shake">
+          <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-2.5 md:py-3 rounded-2xl text-[11px] md:text-xs mb-4 md:mb-5 text-center font-semibold animate-shake">
             {errorMsg}
           </div>
         )}
 
         {/* ─── Registration Form ─── */}
-        <form onSubmit={handleRegister} className="space-y-4 mb-6">
+        <form onSubmit={handleRegister} className="space-y-3.5 md:space-y-4 mb-5 md:mb-6">
           
           {/* Full Name Input */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Nama Lengkap</label>
+          <div className="space-y-1 md:space-y-1.5">
+            <label className="text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Nama Lengkap</label>
             <div className="relative">
               <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -174,7 +174,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => { setName(e.target.value); setNameError(""); }}
                 required
-                className={`w-full pl-11 pr-4 py-3 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                className={`w-full pl-11 pr-4 py-2.5 md:py-3 border rounded-2xl text-xs md:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
                   nameError 
                     ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
                     : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
@@ -182,15 +182,15 @@ export default function RegisterPage() {
               />
             </div>
             {nameError && (
-              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+              <p className="text-[10px] md:text-[11px] text-red-500 font-semibold mt-1 ml-1">
                 {nameError}
               </p>
             )}
           </div>
 
           {/* Email Input */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Email</label>
+          <div className="space-y-1 md:space-y-1.5">
+            <label className="text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Email</label>
             <div className="relative">
               <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -199,7 +199,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
                 required
-                className={`w-full pl-11 pr-4 py-3 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                className={`w-full pl-11 pr-4 py-2.5 md:py-3 border rounded-2xl text-xs md:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
                   emailError 
                     ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
                     : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
@@ -207,15 +207,15 @@ export default function RegisterPage() {
               />
             </div>
             {emailError && (
-              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+              <p className="text-[10px] md:text-[11px] text-red-500 font-semibold mt-1 ml-1">
                 {emailError}
               </p>
             )}
           </div>
 
           {/* Password Input */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Kata Sandi</label>
+          <div className="space-y-1 md:space-y-1.5">
+            <label className="text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Kata Sandi</label>
             <div className="relative">
               <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -224,7 +224,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setPasswordError(""); }}
                 required
-                className={`w-full pl-11 pr-12 py-3 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                className={`w-full pl-11 pr-12 py-2.5 md:py-3 border rounded-2xl text-xs md:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
                   passwordError 
                     ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
                     : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
@@ -239,15 +239,15 @@ export default function RegisterPage() {
               </button>
             </div>
             {passwordError && (
-              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+              <p className="text-[10px] md:text-[11px] text-red-500 font-semibold mt-1 ml-1">
                 {passwordError}
               </p>
             )}
           </div>
 
           {/* Confirm Password Input */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Konfirmasi Kata Sandi</label>
+          <div className="space-y-1 md:space-y-1.5">
+            <label className="text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-widest block ml-1">Konfirmasi Kata Sandi</label>
             <div className="relative">
               <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -256,7 +256,7 @@ export default function RegisterPage() {
                 value={passwordConfirm}
                 onChange={(e) => { setPasswordConfirm(e.target.value); setPasswordConfirmError(""); }}
                 required
-                className={`w-full pl-11 pr-4 py-3 border rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
+                className={`w-full pl-11 pr-4 py-2.5 md:py-3 border rounded-2xl text-xs md:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 transition-all bg-gray-50/30 ${
                   passwordConfirmError 
                     ? 'border-red-300 focus:ring-red-100 focus:border-red-500' 
                     : 'border-gray-200 focus:ring-emerald-100/50 focus:border-[#059669]'
@@ -264,7 +264,7 @@ export default function RegisterPage() {
               />
             </div>
             {passwordConfirmError && (
-              <p className="text-[11px] text-red-500 font-semibold mt-1 ml-1">
+              <p className="text-[10px] md:text-[11px] text-red-500 font-semibold mt-1 ml-1">
                 {passwordConfirmError}
               </p>
             )}
@@ -274,7 +274,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3.5 rounded-2xl text-sm transition-all duration-150 transform hover:scale-[1.01] active:scale-95 shadow-md shadow-emerald-600/10 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+            className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3 md:py-3.5 rounded-2xl text-xs md:text-sm transition-all duration-150 transform hover:scale-[1.01] active:scale-95 shadow-md shadow-emerald-600/10 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-3 md:mt-4"
           >
             {loading ? (
               <><Loader2 size={16} className="animate-spin" /> Mendaftar...</>
@@ -294,7 +294,7 @@ export default function RegisterPage() {
         </p>
 
         {/* T&C Footer */}
-        <p className="mt-8 text-[10px] text-gray-400 text-center leading-normal px-4">
+        <p className="mt-6 md:mt-8 text-[9px] md:text-[10px] text-gray-400 text-center leading-normal px-4">
           Dengan mendaftar, Anda menyetujui <span className="underline cursor-pointer">Syarat &amp; Ketentuan</span> serta <span className="underline cursor-pointer">Kebijakan Privasi</span> GreenBanking.
         </p>
 
