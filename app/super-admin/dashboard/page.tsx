@@ -247,66 +247,83 @@ export default function SuperAdminDashboard() {
   };
 
   const handleAccelerate = async (inv: any) => {
-    const { isConfirmed } = await Swal.fire({
-      title: "Percepat Jatuh Tempo?",
-      text: `Apakah Anda yakin ingin memundurkan tanggal mulai investasi "${inv.name}" milik ${inv.nasabah_name} agar gembok tenor terbuka?`,
-      icon: "question",
+    const { value: formValues } = await Swal.fire({
+      title: "Mesin Waktu: Edit Waktu Investasi",
+      html: `
+        <div style="text-align: left; margin-bottom: 1rem; padding: 0 10px;">
+          <p style="font-size: 0.875rem; color: #4b5563; margin-bottom: 1.25rem; line-height: 1.5;">
+            Masukkan jumlah waktu untuk memundurkan tanggal mulai investasi nasabah <strong>${inv.nasabah_name}</strong> pada proyek <strong>${inv.name}</strong>.
+          </p>
+          <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; font-size: 0.875rem; color: #374151;">Jumlah Waktu</label>
+          <input id="swal-time-value" type="number" class="swal2-input" style="width: 100%; margin: 0 0 1.25rem 0; box-sizing: border-box; height: 3em; font-size: 1rem; padding: 0 1em;" placeholder="Contoh: 10" min="1" value="1">
+          
+          <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; font-size: 0.875rem; color: #374151;">Satuan Waktu</label>
+          <select id="swal-time-unit" class="swal2-select" style="width: 100%; margin: 0; box-sizing: border-box; height: 3em; font-size: 1rem; display: flex;">
+            <option value="days">Hari</option>
+            <option value="months">Bulan</option>
+          </select>
+        </div>
+      `,
+      focusConfirm: false,
       showCancelButton: true,
-      confirmButtonText: "Ya, Percepat!",
-      cancelButtonText: "Batal",
-      confirmButtonColor: "#059669",
-      cancelButtonColor: "#dc2626",
-      background: "#ffffff",
-      color: "#111827",
-    });
+      background: '#ffffff',
+      color: '#111827',
+      confirmButtonText: 'Simpan Percepatan 🚀',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#059669',
+      cancelButtonColor: '#dc2626',
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        const valueEl = document.getElementById('swal-time-value') as HTMLInputElement;
+        const unitEl = document.getElementById('swal-time-unit') as HTMLSelectElement;
+        
+        if (!valueEl || !valueEl.value || Number(valueEl.value) <= 0) {
+          Swal.showValidationMessage('Jumlah waktu harus diisi dan berupa angka positif!');
+          return false;
+        }
 
-    if (!isConfirmed) return;
+        try {
+          const token = localStorage.getItem('admin_token');
+          const payload = {
+            id: inv.id,
+            value: Number(valueEl.value),
+            unit: unitEl.value
+          };
+          
+          const res = await fetch(`${API_URL}/admin/invest/fast-forward`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify(payload)
+          });
 
-    Swal.fire({
-      title: "Memproses Bypass Waktu...",
-      text: "Membuka gembok investasi...",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.message || 'Gagal mengubah waktu investasi');
+          }
+          return await res.json();
+        } catch (error: any) {
+          Swal.showValidationMessage(`Akses Ditolak/Error: ${error.message}`);
+        }
       },
+      allowOutsideClick: () => !Swal.isLoading()
     });
 
-    try {
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch(`${API_URL}/admin/investments/${inv.id}/accelerate`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        Swal.fire({
-          icon: "error",
-          title: "Bypass Gagal",
-          text: data.error || "Gagal mempercepat tenor investasi.",
-          confirmButtonColor: "#dc2626",
-        });
-        return;
-      }
-
+    if (formValues) {
       Swal.fire({
-        icon: "success",
-        title: "Bypass Berhasil!",
-        text: "Waktu investasi berhasil dipercepat. Sekarang gembok tenor terbuka di halaman nasabah!",
-        confirmButtonColor: "#059669",
+        icon: 'success',
+        title: 'Bypass Berhasil!',
+        text: 'Waktu investasi berhasil dimundurkan. Gembok tenor & perhitungan profit nasabah telah ter-update!',
+        background: '#ffffff',
+        color: '#111827',
+        confirmButtonColor: '#059669',
+        timer: 3000,
+        timerProgressBar: true
       });
-
       fetchAdminInvestments();
-    } catch {
-      Swal.fire({
-        icon: "error",
-        title: "Koneksi Gagal",
-        text: "Gagal menghubungkan ke server.",
-        confirmButtonColor: "#dc2626",
-      });
     }
   };
 
@@ -1700,15 +1717,15 @@ export default function SuperAdminDashboard() {
                                   </div>
                                 </td>
                                 <td className="px-6 py-4 text-right">
-                                  {inv.status === 'active' && inv.tipe_investasi === 'tenor' && inv.is_locked ? (
+                                  {inv.status === 'active' ? (
                                     <button
                                       onClick={() => handleAccelerate(inv)}
-                                      className="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-xl transition-all shadow-sm hover:shadow-md flex items-center gap-1.5 ml-auto"
+                                      className="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl transition-all shadow-sm hover:shadow-md flex items-center gap-1.5 ml-auto"
                                     >
-                                      <span>🚀 Percepat Tenor</span>
+                                      <span>🕒 Edit Waktu</span>
                                     </button>
                                   ) : (
-                                    <span className="text-xs text-gray-400 italic">Tidak Perlu Bypass</span>
+                                    <span className="text-xs text-gray-400 italic">Investasi Selesai</span>
                                   )}
                                 </td>
                               </tr>
