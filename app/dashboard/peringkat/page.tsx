@@ -13,73 +13,55 @@ interface LeaderboardEntry {
   rank: number;
   id: number;
   name: string;
-  email: string;
-  account_number: string;
-  balance: number;
-  eco_points: number;
-  impact_score: number;
-  tier: string;
+  avatar: string | null;
+  skor_dampak: number;
+}
+
+interface GlobalImpact {
+  co2_saved: number;
+  trees_planted: number;
+  energy_saved: number;
+  emissions_avoided: number;
+  total_funding: number;
 }
 
 export default function PeringkatPage() {
   const userHook = useUserContext();
-  const { userEmail, avatarUrl, initials, userName } = userHook;
+  const { userEmail, avatarUrl, initials, userName, userData } = userHook;
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [globalImpact, setGlobalImpact] = useState<GlobalImpact | null>(null);
+  const [currentUserRankData, setCurrentUserRankData] = useState<{ rank: number; skor_dampak: number } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [totalCollective, setTotalCollective] = useState(0);
 
-  // Dynamic user details - diambil dari data leaderboard berdasarkan nama user yang login
-  const displayUserName = userName || "Krisna Aji";
-  const currentUserData = leaderboard.find((item) => item.name === userName || (userName && item.name.toLowerCase().includes(userName.toLowerCase())));
-  const currentUserRank = leaderboard.findIndex((item) => item.name === userName || (userName && item.name.toLowerCase().includes(userName.toLowerCase()))) + 1;
+  // Dynamic user details - diambil dari data leaderboard/current_user_rank berdasarkan nama atau ID user yang login
+  const displayUserName = userName || "Nasabah EcoBank";
+  const userId = userData?.user?.id || userData?.id;
 
-  const displayUserScore = currentUserData?.impact_score ?? 75366.0;
-  const displayUserCo2 = displayUserScore * 0.5;
+  const displayRank = currentUserRankData && currentUserRankData.rank > 0 
+    ? `#${currentUserRankData.rank} Global` 
+    : "—";
 
-  // Conversion calculations
-  const treesCount = Math.round(displayUserCo2 / 22) || 1713;
-  const electricityHours = Math.round(displayUserCo2 / 0.04) || 942075;
-  const drivingAvoidedKm = Math.round(displayUserCo2 / 0.12) || 314025;
+  const displayUserScore = currentUserRankData?.skor_dampak ?? 0;
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
+      setLoading(true);
       try {
-        const res = await fetch(`${API_URL}/leaderboard`);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_URL}/impact-leaderboard`, {
+          cache: "no-store",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
         if (res.ok) {
           const data = await res.json();
-          const list = data.leaderboard || [];
-          
-          // Filter out existing entries to prevent duplicates
-          const filteredList = list.filter((u: any) => 
-            !u.name.toLowerCase().includes("krisna aji") && 
-            !u.name.toLowerCase().includes("muhammad rendi") && 
-            !u.name.toLowerCase().includes("desbellion") &&
-            u.email !== userEmail
-          );
-          
-          // Inject exactly the top 3 with Desbellion as Rank #3
-          const top3 = [
-            { id: 10001, name: "Krisna Aji", email: "krisna@greenbanking.com", impact_score: 75366.0, rank: 1, tier: "Platinum" },
-            { id: 10002, name: "Muhammad Rendi", email: "rendi@greenbanking.com", impact_score: 53261.0, rank: 2, tier: "Platinum" },
-            { id: 10003, name: "Desbellion", email: "desbellion@greenbanking.com", impact_score: 47654.0, rank: 3, tier: "Platinum" }
-          ];
-          
-          // Merge top 3 with the rest of the leaderboard list
-          const allList = [...top3, ...filteredList];
-          
-          // Sort list by impact score descending
-          allList.sort((a, b) => (b.impact_score || 0) - (a.impact_score || 0));
-          
-          // Re-assign ranks dynamically based on index
-          allList.forEach((u, index) => {
-            u.rank = index + 1;
-          });
-          
-          setLeaderboard(allList);
-          
-          // Calculate collective impact
-          const totalImpact = allList.reduce((sum: number, u: any) => sum + (u.impact_score || 0), 0);
-          setTotalCollective(totalImpact);
+          if (data.success) {
+            setLeaderboard(data.leaderboard || []);
+            setGlobalImpact(data.global_impact || null);
+            setCurrentUserRankData(data.current_user_rank || null);
+          }
         }
       } catch (e) {
         console.error('Fetch leaderboard error:', e);
@@ -88,16 +70,13 @@ export default function PeringkatPage() {
       }
     };
     fetchLeaderboard();
-  }, [userEmail]);
+  }, [userEmail, userId]);
 
   const getInitialsFromName = (name: string) => {
     const parts = name.split(' ').filter(Boolean);
     if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
     return name.substring(0, 2).toUpperCase();
   };
-
-  // Rank diambil secara dinamis dari data leaderboard berdasarkan nama user yang login
-  const displayRank = currentUserRank > 0 ? `#${currentUserRank} Global` : "—";
 
   return (
     <>
@@ -133,10 +112,14 @@ export default function PeringkatPage() {
                   Dampak Kolektif Nasabah EcoBank
                 </p>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-tight drop-shadow-sm">
-                  {loading ? '64.313,5 kg CO2e' : `${Number(totalCollective > 0 ? totalCollective * 0.5 : 128627).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} kg CO2e`}
+                  {loading || !globalImpact ? (
+                    <span className="text-emerald-200">Memuat...</span>
+                  ) : (
+                    `${new Intl.NumberFormat('id-ID').format(Math.floor(globalImpact.co2_saved))} kg CO2e`
+                  )}
                 </h2>
               </div>
-
+ 
               {/* Mini SVG Line Chart */}
               <div className="relative z-10 mt-6 -mx-8 -mb-8 overflow-hidden rounded-b-[2rem]">
                 <svg className="w-full h-16 opacity-35" viewBox="0 0 100 20" preserveAspectRatio="none">
@@ -152,7 +135,7 @@ export default function PeringkatPage() {
               </div>
             </div>
           </div>
-
+ 
           {/* Sisi Kanan (30-40% lebar) - Kontribusi Setara (Stacked Vertically) */}
           <div className="lg:col-span-1 flex flex-col gap-3 justify-between">
             
@@ -164,11 +147,11 @@ export default function PeringkatPage() {
               <div>
                 <h4 className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Reforestasi</h4>
                 <p className="font-bold text-gray-900 text-xs sm:text-sm leading-snug">
-                  Setara menanam <span className="text-emerald-600 font-extrabold">{treesCount.toLocaleString('id-ID')}</span> pohon dewasa
+                  Setara menanam <span className="text-emerald-600 font-extrabold">{loading || !globalImpact ? '...' : new Intl.NumberFormat('id-ID').format(Math.floor(globalImpact.trees_planted))}</span> pohon dewasa
                 </p>
               </div>
             </div>
-
+ 
             {/* Card 2: Penghematan Energi */}
             <div className="bg-white border border-gray-100 hover:border-amber-200 p-4 rounded-2xl flex items-center gap-3.5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group flex-1">
               <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
@@ -177,11 +160,11 @@ export default function PeringkatPage() {
               <div>
                 <h4 className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Hemat Energi</h4>
                 <p className="font-bold text-gray-900 text-xs sm:text-sm leading-snug">
-                  Setara menghemat <span className="text-amber-600 font-extrabold">{electricityHours.toLocaleString('id-ID')}</span> jam LED
+                  Setara menghemat <span className="text-amber-600 font-extrabold">{loading || !globalImpact ? '...' : new Intl.NumberFormat('id-ID').format(Math.floor(globalImpact.energy_saved))}</span> jam LED
                 </p>
               </div>
             </div>
-
+ 
             {/* Card 3: Emisi Kendaraan */}
             <div className="bg-white border border-gray-100 hover:border-blue-200 p-4 rounded-2xl flex items-center gap-3.5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group flex-1">
               <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
@@ -190,15 +173,15 @@ export default function PeringkatPage() {
               <div>
                 <h4 className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Emisi Kendaraan</h4>
                 <p className="font-bold text-gray-900 text-xs sm:text-sm leading-snug">
-                  Hindari emisi <span className="text-blue-600 font-extrabold">{drivingAvoidedKm.toLocaleString('id-ID')}</span> km perjalanan mobil
+                  Hindari emisi <span className="text-blue-600 font-extrabold">{loading || !globalImpact ? '...' : new Intl.NumberFormat('id-ID').format(Math.floor(globalImpact.emissions_avoided))}</span> km perjalanan mobil
                 </p>
               </div>
             </div>
-
+ 
           </div>
-
+ 
         </div>
-
+ 
         {/* 2. BAGIAN BAWAH (Bottom Row): Leaderboard Eco-Champion (Full Width) */}
         <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between w-full">
           
@@ -207,7 +190,7 @@ export default function PeringkatPage() {
             <h3 className="font-serif font-bold text-gray-900 text-lg">Leaderboard Eco-Champion</h3>
             <span className="text-[10px] font-bold tracking-widest text-[#115e59] bg-emerald-50 px-2.5 py-1 rounded-full uppercase">Global</span>
           </div>
-
+ 
           {/* Leaderboard Scrollable List */}
           <div className="divide-y divide-gray-50 max-h-[380px] overflow-y-auto overflow-x-hidden w-full pb-4">
             {loading ? (
@@ -218,7 +201,7 @@ export default function PeringkatPage() {
               <div className="p-8 text-center text-gray-400">Belum ada data leaderboard</div>
             ) : (
               leaderboard.map((user) => {
-                const isCurrentUser = user.name === userName || (userName && user.name.toLowerCase().includes(userName.toLowerCase()));
+                const isCurrentUser = user.id === userId || user.name === userName || (userName && user.name.toLowerCase().includes(userName.toLowerCase()));
                 
                 let rankColor = "text-gray-400";
                 let rankBadge = "";
@@ -232,7 +215,7 @@ export default function PeringkatPage() {
                   rankColor = "text-amber-600 text-base";
                   rankBadge = " 🥉";
                 }
-
+ 
                 return (
                   <div 
                     key={user.id} 
@@ -260,7 +243,7 @@ export default function PeringkatPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className={`font-black text-sm ${isCurrentUser ? 'text-[#064e3b]' : 'text-[#115e59]'}`}>
-                        {Number(user.impact_score).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
+                        {new Intl.NumberFormat('id-ID').format(Math.floor(user.skor_dampak))}
                       </span>
                       <Leaf size={14} className={isCurrentUser ? 'text-[#064e3b]' : 'text-[#115e59]'} />
                     </div>
@@ -269,7 +252,7 @@ export default function PeringkatPage() {
               })
             )}
           </div>
-
+ 
           {/* User's Highlighted Card Rank (Sticky at bottom of leaderboard box) */}
           <div className="p-4 border-t border-gray-100 bg-gray-50/40 mt-2">
             <div className="bg-gradient-to-br from-[#064e3b] via-[#0f766e] to-[#115e59] text-white p-5 rounded-2xl shadow-md border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -291,7 +274,7 @@ export default function PeringkatPage() {
                   <p className="text-[10px] text-emerald-200 mt-0.5">Nasabah Lestari EcoBank</p>
                 </div>
               </div>
-
+ 
               <div className="flex items-center justify-between sm:justify-end gap-6">
                 <div className="text-left sm:text-right">
                   <p className="text-[9px] uppercase tracking-wider text-emerald-200 font-bold">Posisi Global</p>
@@ -302,7 +285,7 @@ export default function PeringkatPage() {
                   <div>
                     <p className="text-[9px] uppercase tracking-wider text-emerald-200 font-bold">Skor Dampak</p>
                     <span className="font-black text-base text-white">
-                      {Number(displayUserScore).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
+                      {new Intl.NumberFormat('id-ID').format(Math.floor(displayUserScore))}
                     </span>
                   </div>
                   <Leaf size={18} className="text-emerald-300 mt-3" />
