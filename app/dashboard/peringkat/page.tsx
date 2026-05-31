@@ -32,6 +32,7 @@ export default function PeringkatPage() {
   const [globalImpact, setGlobalImpact] = useState<GlobalImpact | null>(null);
   const [currentUserRankData, setCurrentUserRankData] = useState<{ rank: number; skor_dampak: number } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentUserScore, setCurrentUserScore] = useState<number>(0);
 
   // Dynamic user details - diambil dari data leaderboard/current_user_rank berdasarkan nama atau ID user yang login
   const displayUserName = userName || "Nasabah EcoBank";
@@ -41,7 +42,7 @@ export default function PeringkatPage() {
     ? `#${currentUserRankData.rank} Global` 
     : "—";
 
-  const displayUserScore = currentUserRankData?.skor_dampak ?? 0;
+  const displayUserScore = currentUserScore;
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -61,6 +62,7 @@ export default function PeringkatPage() {
             setLeaderboard(data.leaderboard || []);
             setGlobalImpact(data.global_impact || null);
             setCurrentUserRankData(data.current_user_rank || null);
+            setCurrentUserScore(data.current_user_score ?? 0);
           } else {
             throw new Error(data.message || "Gagal memproses data");
           }
@@ -76,6 +78,7 @@ export default function PeringkatPage() {
           emissions_avoided: 0,
           total_funding: 0,
         });
+        setCurrentUserScore(0);
       } finally {
         setLoading(false);
       }

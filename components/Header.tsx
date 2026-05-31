@@ -24,6 +24,32 @@ export default function Header({ userHook }: { userHook: any }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const notifRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const [currentUserScore, setCurrentUserScore] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchUserScore = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const res = await fetch(`${API_URL}/impact-leaderboard`, {
+          cache: "no-store",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            setCurrentUserScore(data.current_user_score ?? 0);
+          }
+        }
+      } catch (e) {
+        console.error("Gagal mengambil skor dampak user:", e);
+      }
+    };
+    fetchUserScore();
+  }, []);
 
   const menuItems = [
     { name: "Transfer", href: "/dashboard/transfer" },
@@ -155,7 +181,11 @@ export default function Header({ userHook }: { userHook: any }) {
         )}
         <Link href="/dashboard/peringkat" className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 hover:bg-emerald-100 transition-colors cursor-pointer">
           <Leaf size={16} className="text-[#115e59]" />
-          <span className="text-sm font-bold text-[#064e3b]">Skor Dampak: {Number(impactScore || 0).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</span>
+          <span className="text-sm font-bold text-[#064e3b]">
+            Skor Dampak: {currentUserScore !== null 
+              ? new Intl.NumberFormat('id-ID').format(Math.floor(currentUserScore)) 
+              : new Intl.NumberFormat('id-ID').format(Math.floor(impactScore || 0))}
+          </span>
         </Link>
 
         {/* Notification Bell — Functional */}
