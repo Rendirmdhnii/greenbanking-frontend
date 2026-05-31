@@ -293,7 +293,7 @@ export default function TransferModal({
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
                   readOnly={serviceType === 'transfer'}
-                  placeholder={serviceType === 'donasi' ? 'Contoh: Reboisasi Kalimantan' : (serviceType === 'transfer' ? 'Otomatis terisi jika nomor valid' : 'Contoh: Budi Santoso')} 
+                  placeholder={serviceType === 'donasi' ? 'Contoh: Reboisasi Kalimantan' : (serviceType === 'transfer' ? 'Otomatis terisi jika nomor valid' : 'Contoh: Nama Penerima')} 
                   className={`w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none transition-all ${serviceType === 'transfer' ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'focus:ring-2 focus:ring-[#115e59]/20 focus:border-[#115e59]'}`}
                 />
               </div>

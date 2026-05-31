@@ -26,13 +26,14 @@ function detectOperator(phone: string): string | null {
   if (phone.length < 4) return null;
   const prefix = phone.substring(0, 4);
   if (["0811", "0812", "0813", "0821", "0822"].includes(prefix)) return "Telkomsel";
-  if (["0895", "0896", "0897", "0898", "0899"].includes(prefix)) return "Tri";
+  if (["0856", "0857"].includes(prefix)) return "Indosat";
   if (["0817", "0818", "0819", "0877", "0878"].includes(prefix)) return "XL";
-  return "Operator";
+  if (["0895", "0896", "0897", "0898", "0899"].includes(prefix)) return "Tri";
+  return null;
 }
 
 export default function TagihanPage() {
-  const { userBalance, userEcoPoints, refreshUserData, impactScore: contextImpactScore } = useUserContext();
+  const { userBalance, userEcoPoints, refreshUserData, impactScore: contextImpactScore, userName } = useUserContext();
   const [activeTab, setActiveTab] = useState<"pulsa" | "pln" | "pdam">("pulsa");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [strukData, setStrukData] = useState<any>(null);
@@ -82,82 +83,68 @@ export default function TagihanPage() {
     }
   }, [phoneNumber]);
 
-  // Handle API Inquiry Call
-  const handleInquiry = async (customerNumber: string, category: "pln" | "pdam") => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/checkout/inquiry-tagihan`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          customer_number: customerNumber,
-          category: category,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        Swal.fire({
-          icon: "error",
-          title: "Tagihan Lunas",
-          text: data.message || "Gagal cek tagihan",
-          ...SwalGreenBanking.error,
-        });
-        return null;
-      }
-      return data.data;
-    } catch (err) {
-      console.error(err);
-      Swal.fire({
-        icon: "error",
-        title: "Kesalahan Jaringan",
-        text: "Gagal terhubung dengan server EcoBank.",
-        ...SwalGreenBanking.error,
-      });
-      return null;
-    }
-  };
-
-  // Effect PLN: Mock API via Inquiry
+  // Effect PLN: Client-side Mock Simulation with 1.5s Fake Loading
   useEffect(() => {
-    if (plnCustomerId.length >= 11 && !plnInquiry && !isSimulatingPln) {
-      const fetchInquiry = async () => {
-        setIsSimulatingPln(true);
-        const data = await handleInquiry(plnCustomerId, "pln");
-        if (data) {
-          setPlnInquiry(data);
-        } else {
-          setPlnCustomerId(""); // reset if already paid
-        }
+    if (plnCustomerId.length >= 11) {
+      setIsSimulatingPln(true);
+      setPlnInquiry(null);
+      const timer = setTimeout(() => {
+        const randomAmt = Math.floor(Math.random() * (300 - 50 + 1) + 50) * 1000;
+        const tariffPower = plnServiceType === "token"
+          ? (Math.random() > 0.5 ? "R1/450VA" : "R1M/900VA")
+          : "R1/1300VA Pasca";
+        
+        setPlnInquiry({
+          customer_name: userName || "EcoBank User",
+          customer_number: plnCustomerId,
+          bill_month: "Juni 2026",
+          amount: randomAmt,
+          admin_fee: 2500,
+          total_amount: randomAmt + 2500,
+          tariff_power: tariffPower,
+          category: "pln",
+        });
+        setIsSimulatingPln(false);
+      }, 1500);
+      return () => {
+        clearTimeout(timer);
         setIsSimulatingPln(false);
       };
-      fetchInquiry();
-    } else if (plnCustomerId.length < 11) {
+    } else {
       setPlnInquiry(null);
+      setIsSimulatingPln(false);
     }
-  }, [plnCustomerId]);
+  }, [plnCustomerId, plnServiceType, userName]);
 
-  // Effect PDAM: Mock API via Inquiry
+  // Effect PDAM: Client-side Mock Simulation with 1.5s Fake Loading
   useEffect(() => {
-    if (pdamCustomerId.length >= 6 && !pdamInquiry && !isSimulatingPdam && pdamRegion) {
-      const fetchInquiry = async () => {
-        setIsSimulatingPdam(true);
-        const data = await handleInquiry(pdamCustomerId, "pdam");
-        if (data) {
-          setPdamInquiry(data);
-        } else {
-          setPdamCustomerId(""); // reset if already paid
-        }
+    if (pdamRegion && pdamCustomerId.length >= 9) {
+      setIsSimulatingPdam(true);
+      setPdamInquiry(null);
+      const timer = setTimeout(() => {
+        const randomAmt = Math.floor(Math.random() * (250 - 40 + 1) + 40) * 1000;
+        
+        setPdamInquiry({
+          customer_name: userName || "EcoBank User",
+          customer_number: pdamCustomerId,
+          bill_month: "Juni 2026",
+          amount: randomAmt,
+          admin_fee: 2500,
+          total_amount: randomAmt + 2500,
+          region: pdamRegion,
+          category: "pdam",
+        });
+        setIsSimulatingPdam(false);
+      }, 1500);
+      return () => {
+        clearTimeout(timer);
         setIsSimulatingPdam(false);
       };
-      fetchInquiry();
-    } else if (pdamCustomerId.length < 6) {
+    } else {
       setPdamInquiry(null);
+      setIsSimulatingPdam(false);
     }
-  }, [pdamCustomerId, pdamRegion]);
+  }, [pdamCustomerId, pdamRegion, userName]);
 
 
   // Reset states when changing tab
@@ -168,13 +155,13 @@ export default function TagihanPage() {
   // Get current active form total & description
   const getCheckoutDetails = () => {
     if (activeTab === "pulsa") {
-      if (!phoneNumber || !pulsaManualAmount || !detectedOperator) return null;
+      if (!phoneNumber || phoneNumber.length < 10 || !pulsaManualAmount || !detectedOperator) return null;
       return {
-        amount: Number(pulsaManualAmount) + 1000,
+        amount: Number(pulsaManualAmount) + 1500,
         bill_type: "pulsa",
         customer_id: phoneNumber,
         product_name: `${detectedOperator} Rp${Number(pulsaManualAmount)/1000}k`,
-        admin_fee: 1000,
+        admin_fee: 1500,
       };
     } else if (activeTab === "pln") {
       if (!plnInquiry) return null;
@@ -182,7 +169,7 @@ export default function TagihanPage() {
         amount: plnInquiry.total_amount,
         bill_type: "pln",
         customer_id: plnCustomerId,
-        product_name: plnServiceType === "token" ? `Token Listrik ${plnInquiry.customer_name}` : `Tagihan Listrik PLN`,
+        product_name: plnServiceType === "token" ? `Token PLN ${formatIDR(plnInquiry.amount)} (${plnInquiry.customer_name})` : `Tagihan PLN Pasca (${plnInquiry.customer_name})`,
         admin_fee: plnInquiry.admin_fee,
       };
     } else if (activeTab === "pdam") {
@@ -191,7 +178,7 @@ export default function TagihanPage() {
         amount: pdamInquiry.total_amount,
         bill_type: "pdam",
         customer_id: pdamCustomerId,
-        product_name: `Tagihan ${pdamRegion}`,
+        product_name: `PDAM ${pdamRegion} (${pdamInquiry.customer_name})`,
         admin_fee: pdamInquiry.admin_fee,
       };
     }
@@ -532,8 +519,9 @@ export default function TagihanPage() {
                     </div>
                     {plnCustomerId.length >= 11 ? (
                       isSimulatingPln ? (
-                        <div className="flex justify-center py-6">
+                        <div className="flex flex-col items-center justify-center py-6 gap-2">
                           <Loader2 className="animate-spin text-emerald-500" size={24} />
+                          <span className="text-xs text-gray-500 font-medium">Mengecek ID Pelanggan...</span>
                         </div>
                       ) : plnInquiry ? (
                         <div className="animate-in fade-in slide-in-from-bottom-2">
@@ -543,6 +531,7 @@ export default function TagihanPage() {
                               <span>Data Pelanggan Ditemukan</span>
                             </div>
                             <div className="flex justify-between"><span className="text-gray-500">Nama Pelanggan</span><span className="font-bold text-gray-900">{plnInquiry.customer_name}</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500">Tarif / Daya</span><span className="font-bold text-gray-900">{plnInquiry.tariff_power}</span></div>
                             <div className="flex justify-between"><span className="text-gray-500">Bulan Tagihan</span><span className="font-bold text-gray-900">{plnInquiry.bill_month}</span></div>
                             <div className="flex justify-between"><span className="text-gray-500">Tagihan Riil</span><span className="font-bold text-gray-900">{formatIDR(plnInquiry.amount)}</span></div>
                           </div>
@@ -585,10 +574,11 @@ export default function TagihanPage() {
                         />
                       </div>
                     </div>
-                    {pdamRegion && pdamCustomerId.length >= 6 ? (
+                    {pdamRegion && pdamCustomerId.length >= 9 ? (
                       isSimulatingPdam ? (
-                        <div className="flex justify-center py-6">
+                        <div className="flex flex-col items-center justify-center py-6 gap-2">
                           <Loader2 className="animate-spin text-emerald-500" size={24} />
+                          <span className="text-xs text-gray-500 font-medium">Mengecek Tagihan PDAM...</span>
                         </div>
                       ) : pdamInquiry ? (
                         <div className="animate-in fade-in slide-in-from-bottom-2">
@@ -607,7 +597,7 @@ export default function TagihanPage() {
                     ) : (
                       <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
                         <Droplets className="w-9 h-9 mx-auto mb-2 text-gray-300 animate-pulse" />
-                        <p className="text-xs font-medium">Pilih wilayah kota dan ketik nomor pelanggan air PDAM Anda</p>
+                        <p className="text-xs font-medium">Pilih wilayah kota dan ketik nomor pelanggan air PDAM Anda (min. 9 angka)</p>
                       </div>
                     )}
                   </div>
@@ -659,8 +649,8 @@ export default function TagihanPage() {
               <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 flex flex-col gap-4 min-h-[340px]">
                 <h3 className="text-base font-bold text-gray-900">Ringkasan Pembayaran</h3>
 
-                {currentCheckout ? (
-                  <div className="flex flex-col gap-4 text-sm flex-1">
+                <div className="flex flex-col gap-4 text-sm flex-1">
+                  {currentCheckout ? (
                     <div className="space-y-3">
                       <div className="flex justify-between text-gray-500">
                         <span>Layanan</span>
@@ -681,67 +671,84 @@ export default function TagihanPage() {
                         </div>
                       )}
                     </div>
-
-                    {userEcoPoints > 0 && (
-                      <label className="flex items-center gap-3 p-3 border border-emerald-100 bg-emerald-50/50 rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={useEcoPointsForDiscount}
-                          onChange={(e) => setUseEcoPointsForDiscount(e.target.checked)}
-                          className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-gray-300"
-                        />
-                        <div className="flex-1">
-                          <p className="text-sm font-bold text-gray-900">Gunakan Eco Poin</p>
-                          <p className="text-xs text-emerald-700">{userEcoPoints} Poin (Maks. {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))})</p>
+                  ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center py-6 text-center text-gray-400 gap-3">
+                      <HelpCircle className="w-9 h-9 text-gray-300 animate-pulse" />
+                      <p className="text-xs font-semibold leading-relaxed max-w-[190px]">
+                        Lengkapi detail formulir tagihan Anda untuk memproses pembayaran
+                      </p>
+                      <div className="w-full mt-3 space-y-2.5 px-1">
+                        <div className="flex justify-between text-xs text-gray-400">
+                          <span>Layanan</span>
+                          <span className="font-semibold text-gray-600 uppercase">{activeTab}</span>
                         </div>
-                      </label>
-                    )}
-
-                    {useEcoPointsForDiscount && (
-                      <div className="flex justify-between text-green-600 font-medium">
-                        <span>Potongan Eco-Points:</span>
-                        <span>- {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))}</span>
+                        <div className="flex justify-between text-xs text-gray-400">
+                          <span>Produk</span>
+                          <span className="w-24 h-3 bg-gray-100 rounded animate-pulse inline-block" />
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-400">
+                          <span>No. Pelanggan</span>
+                          <span className="font-mono text-xs text-gray-600">
+                            {activeTab === "pulsa" ? phoneNumber || "-" : activeTab === "pln" ? plnCustomerId || "-" : pdamCustomerId || "-"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-400">
+                          <span>Biaya Admin</span>
+                          <span className="font-semibold text-gray-600">
+                            {activeTab === "pulsa" ? formatIDR(1500) : formatIDR(2500)}
+                          </span>
+                        </div>
                       </div>
-                    )}
+                    </div>
+                  )}
 
-                    <div className="border-t border-gray-100 pt-3 flex justify-between items-end mt-auto">
-                      <span className="font-bold text-gray-800">Total Harga</span>
-                      <span className="text-xl font-black text-emerald-600">
-                        {useEcoPointsForDiscount
+                  {currentCheckout && userEcoPoints > 0 && (
+                    <label className="flex items-center gap-3 p-3 border border-emerald-100 bg-emerald-50/50 rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={useEcoPointsForDiscount}
+                        onChange={(e) => setUseEcoPointsForDiscount(e.target.checked)}
+                        className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-gray-300"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-gray-900">Gunakan Eco Poin</p>
+                        <p className="text-xs text-emerald-700">{userEcoPoints} Poin (Maks. {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))})</p>
+                      </div>
+                    </label>
+                  )}
+
+                  {currentCheckout && useEcoPointsForDiscount && (
+                    <div className="flex justify-between text-green-600 font-medium">
+                      <span>Potongan Eco-Points:</span>
+                      <span>- {formatIDR(Math.min(userEcoPoints, currentCheckout.amount * 0.10))}</span>
+                    </div>
+                  )}
+
+                  <div className="border-t border-gray-100 pt-3 flex justify-between items-end mt-auto">
+                    <span className="font-bold text-gray-800">Total Harga</span>
+                    <span className="text-xl font-black text-emerald-600">
+                      {currentCheckout ? (
+                        useEcoPointsForDiscount
                           ? formatIDR(Math.max(0, currentCheckout.amount - Math.min(userEcoPoints, currentCheckout.amount * 0.10)))
                           : formatIDR(currentCheckout.amount)
-                        }
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={handleCheckoutTagihan}
-                      disabled={checkoutLoading}
-                      className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm shadow-md shadow-emerald-600/10 hover:shadow-lg transition-all disabled:opacity-50"
-                    >
-                      {checkoutLoading ? (
-                        <><Loader2 className="w-4 h-4 animate-spin" />Memproses...</>
                       ) : (
-                        "Bayar Sekarang"
+                        formatIDR(0)
                       )}
-                    </button>
+                    </span>
                   </div>
-                ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center py-8 text-center text-gray-400 gap-3">
-                    <HelpCircle className="w-9 h-9 text-gray-300" />
-                    <p className="text-xs font-semibold leading-relaxed max-w-[190px]">
-                      Lengkapi detail formulir tagihan Anda untuk memproses pembayaran
-                    </p>
-                    <div className="w-full mt-3 space-y-2.5 px-1">
-                      {["Layanan", "Produk", "No. Pelanggan", "Biaya Admin"].map((label) => (
-                        <div key={label} className="flex justify-between text-xs text-gray-300">
-                          <span>{label}</span>
-                          <span className="w-20 h-2.5 bg-gray-100 rounded animate-pulse inline-block" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+
+                  <button
+                    onClick={handleCheckoutTagihan}
+                    disabled={checkoutLoading || isSimulatingPln || isSimulatingPdam || !currentCheckout}
+                    className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm shadow-md shadow-emerald-600/10 hover:shadow-lg transition-all disabled:opacity-50"
+                  >
+                    {checkoutLoading ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" />Memproses...</>
+                    ) : (
+                      "Bayar Sekarang"
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* ── GARANSI TRANSAKSI AMAN — compact footer card ── */}
