@@ -343,6 +343,7 @@ export default function TagihanPage() {
           balance: data.new_balance,
           eco_points: data.eco_points,
           tier: data.tier,
+          impact_score: data.impact_score,
         });
 
         // Update mangrove progress

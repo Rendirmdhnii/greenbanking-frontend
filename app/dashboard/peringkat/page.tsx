@@ -10,11 +10,9 @@ import { useUserContext } from "@/hooks/useUserData";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
 interface LeaderboardEntry {
-  rank: number;
-  id: number;
   name: string;
   avatar: string | null;
-  skor_dampak: number;
+  impact_score: number;
 }
 
 interface GlobalImpact {
@@ -211,36 +209,37 @@ export default function PeringkatPage() {
               <div className="p-8 text-center flex items-center justify-center gap-2 text-gray-400">
                 <Loader2 size={16} className="animate-spin" /> Memuat leaderboard...
               </div>
-            ) : (
-              leaderboard.map((user) => {
-                const isCurrentUser = user.id === userId || user.name === userName || (userName && user.name.toLowerCase().includes(userName.toLowerCase()));
+            ) : leaderboard.length > 0 ? (
+              leaderboard.map((user, index) => {
+                const isCurrentUser = user.name === userName || (userName && user.name.toLowerCase().includes(userName.toLowerCase()));
+                const rank = index + 1;
                 
                 let rankColor = "text-gray-400";
                 let rankBadge = "";
-                if (user.rank === 1) {
+                if (rank === 1) {
                   rankColor = "text-yellow-500 text-lg drop-shadow-sm";
                   rankBadge = " 🥇";
-                } else if (user.rank === 2) {
+                } else if (rank === 2) {
                   rankColor = "text-gray-400 text-base";
                   rankBadge = " 🥈";
-                } else if (user.rank === 3) {
+                } else if (rank === 3) {
                   rankColor = "text-amber-600 text-base";
                   rankBadge = " 🥉";
                 }
  
                 return (
                   <div 
-                    key={user.id} 
+                    key={user.name} 
                     className={`flex items-center justify-between p-4 px-6 transition-all duration-200 cursor-pointer hover:scale-[1.005] hover:bg-emerald-50/20 hover:shadow-sm ${
                       isCurrentUser 
                         ? 'bg-emerald-50/60 border-l-4 border-[#115e59]' 
-                        : user.rank <= 3 
+                        : rank <= 3 
                           ? 'bg-gradient-to-r from-yellow-50/20 to-transparent' 
                           : ''
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <span className={`w-6 font-bold text-center text-xs ${rankColor}`}>#{user.rank}</span>
+                      <span className={`w-6 font-bold text-center text-xs ${rankColor}`}>#{rank}</span>
                       <div className={`w-8 h-8 rounded-full flex items-shrink-0 items-center justify-center font-bold text-xs ${
                         isCurrentUser
                           ? 'bg-[#115e59] text-white border border-[#064e3b]'
@@ -255,13 +254,17 @@ export default function PeringkatPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className={`font-black text-sm ${isCurrentUser ? 'text-[#064e3b]' : 'text-[#115e59]'}`}>
-                        {new Intl.NumberFormat('id-ID').format(Math.floor(user.skor_dampak))}
+                        {new Intl.NumberFormat('id-ID').format(Math.floor(user.impact_score))}
                       </span>
                       <Leaf size={14} className={isCurrentUser ? 'text-[#064e3b]' : 'text-[#115e59]'} />
                     </div>
                   </div>
                 );
               })
+            ) : (
+              <div className="p-8 text-center text-gray-400">
+                Belum ada data
+              </div>
             )}
           </div>
  
