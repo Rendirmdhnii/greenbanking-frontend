@@ -61,10 +61,21 @@ export default function PeringkatPage() {
             setLeaderboard(data.leaderboard || []);
             setGlobalImpact(data.global_impact || null);
             setCurrentUserRankData(data.current_user_rank || null);
+          } else {
+            throw new Error(data.message || "Gagal memproses data");
           }
+        } else {
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
       } catch (e) {
         console.error('Fetch leaderboard error:', e);
+        setGlobalImpact({
+          co2_saved: 0,
+          trees_planted: 0,
+          energy_saved: 0,
+          emissions_avoided: 0,
+          total_funding: 0,
+        });
       } finally {
         setLoading(false);
       }

@@ -213,50 +213,7 @@ export default function DashboardPage() {
     );
   }
 
-  const dummyTransactions = [
-    {
-      id: "TX-987654",
-      title: "Top Up Eco-Wallet via Midtrans",
-      created_at: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45 menit lalu
-      status: "BERHASIL",
-      type: "in",
-      amount: 250000
-    },
-    {
-      id: "TX-123456",
-      title: "Transfer ke BNI Green Account",
-      created_at: new Date(Date.now() - 1000 * 60 * 120).toISOString(), // 2 jam lalu
-      status: "BERHASIL",
-      type: "out",
-      amount: 75000
-    },
-    {
-      id: "TX-654321",
-      title: "Pembayaran Tagihan PLN Eco-Energy",
-      created_at: new Date(Date.now() - 1000 * 60 * 360).toISOString(), // 6 jam lalu
-      status: "BERHASIL",
-      type: "out",
-      amount: 125000
-    },
-    {
-      id: "TX-789012",
-      title: "Investasi Solar Panel Project",
-      created_at: new Date(Date.now() - 1000 * 60 * 1440).toISOString(), // 1 hari lalu
-      status: "BERHASIL",
-      type: "out",
-      amount: 500000
-    },
-    {
-      id: "TX-345678",
-      title: "Refund Reward Donasi Penanaman Mangrove",
-      created_at: new Date(Date.now() - 1000 * 60 * 2880).toISOString(), // 2 hari lalu
-      status: "BERHASIL",
-      type: "in",
-      amount: 50000
-    }
-  ];
-
-  const transactionsToRender = recentTrx.length > 0 ? recentTrx : dummyTransactions;
+  // Menggunakan data transaksi riwayat dinamis saja
 
   return (
     <>
@@ -432,8 +389,12 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
+            ) : recentTrx.length === 0 ? (
+              <div className="p-8 text-center text-gray-500 font-medium">
+                Belum ada riwayat transaksi
+              </div>
             ) : (
-              transactionsToRender.map((tx, i) => (
+              recentTrx.map((tx, i) => (
                 <div 
                   key={i} 
                   className="flex items-center justify-between p-5 hover:bg-gray-50/50 transition-colors duration-200"
