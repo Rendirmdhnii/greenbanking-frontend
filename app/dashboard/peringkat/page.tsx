@@ -27,12 +27,12 @@ interface GlobalImpact {
 
 export default function PeringkatPage() {
   const userHook = useUserContext();
-  const { userEmail, avatarUrl, initials, userName, userData } = userHook;
+  const { userEmail, avatarUrl, initials, userName, userData, impactScore } = userHook;
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [globalImpact, setGlobalImpact] = useState<GlobalImpact | null>(null);
   const [currentUserRankData, setCurrentUserRankData] = useState<{ rank: number; skor_dampak: number } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentUserScore, setCurrentUserScore] = useState<number>(0);
+  const [currentUserScore, setCurrentUserScore] = useState<number>(impactScore || 0);
 
   // Dynamic user details - diambil dari data leaderboard/current_user_rank berdasarkan nama atau ID user yang login
   const displayUserName = userName || "Nasabah EcoBank";
@@ -211,8 +211,6 @@ export default function PeringkatPage() {
               <div className="p-8 text-center flex items-center justify-center gap-2 text-gray-400">
                 <Loader2 size={16} className="animate-spin" /> Memuat leaderboard...
               </div>
-            ) : leaderboard.length === 0 ? (
-              <div className="p-8 text-center text-gray-400">Belum ada data leaderboard</div>
             ) : (
               leaderboard.map((user) => {
                 const isCurrentUser = user.id === userId || user.name === userName || (userName && user.name.toLowerCase().includes(userName.toLowerCase()));
