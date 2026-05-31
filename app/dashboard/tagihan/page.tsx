@@ -25,10 +25,11 @@ const PDAM_REGIONS = [
 function detectOperator(phone: string): string | null {
   if (phone.length < 4) return null;
   const prefix = phone.substring(0, 4);
-  if (["0811", "0812", "0813", "0821", "0822"].includes(prefix)) return "Telkomsel";
-  if (["0856", "0857"].includes(prefix)) return "Indosat";
-  if (["0817", "0818", "0819", "0877", "0878"].includes(prefix)) return "XL";
+  if (["0811", "0812", "0813", "0821", "0822", "0851", "0852", "0853"].includes(prefix)) return "Telkomsel";
+  if (["0814", "0815", "0816", "0855", "0856", "0857", "0858"].includes(prefix)) return "Indosat";
+  if (["0817", "0818", "0819", "0859", "0877", "0878", "0831", "0832", "0833", "0838"].includes(prefix)) return "XL / Axis";
   if (["0895", "0896", "0897", "0898", "0899"].includes(prefix)) return "Tri";
+  if (["0881", "0882", "0883", "0884", "0885", "0886", "0887", "0888", "0889"].includes(prefix)) return "Smartfren";
   return null;
 }
 
@@ -59,6 +60,7 @@ export default function TagihanPage() {
   // State Pulsa
   const [phoneNumber, setPhoneNumber] = useState("");
   const [detectedOperator, setDetectedOperator] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState("");
   const [pulsaManualAmount, setPulsaManualAmount] = useState("");
   const pulsaOptions = [10000, 25000, 50000, 100000];
 
@@ -74,12 +76,28 @@ export default function TagihanPage() {
   const [isSimulatingPdam, setIsSimulatingPdam] = useState(false);
   const [pdamInquiry, setPdamInquiry] = useState<any>(null);
 
-  // Effect Pulsa: Deteksi prefix nomor handphone
+  // Effect Pulsa: Deteksi prefix & validasi nomor handphone
   useEffect(() => {
+    if (phoneNumber.length === 0) {
+      setDetectedOperator(null);
+      setPhoneError("");
+      return;
+    }
+
     if (phoneNumber.length >= 4) {
-      setDetectedOperator(detectOperator(phoneNumber));
+      const op = detectOperator(phoneNumber);
+      setDetectedOperator(op);
+
+      if (!op) {
+        setPhoneError("Provider tidak dikenali. Periksa kembali nomor Anda.");
+      } else if (phoneNumber.length > 4 && (phoneNumber.length < 11 || phoneNumber.length > 13)) {
+        setPhoneError("Nomor HP harus terdiri dari 11 - 13 digit.");
+      } else {
+        setPhoneError("");
+      }
     } else {
       setDetectedOperator(null);
+      setPhoneError("");
     }
   }, [phoneNumber]);
 
@@ -155,7 +173,7 @@ export default function TagihanPage() {
   // Get current active form total & description
   const getCheckoutDetails = () => {
     if (activeTab === "pulsa") {
-      if (!phoneNumber || phoneNumber.length < 10 || !pulsaManualAmount || !detectedOperator) return null;
+      if (!phoneNumber || phoneNumber.length < 11 || phoneNumber.length > 13 || !pulsaManualAmount || !detectedOperator || phoneError) return null;
       return {
         amount: Number(pulsaManualAmount) + 1500,
         bill_type: "pulsa",
@@ -425,11 +443,15 @@ export default function TagihanPage() {
                       <div className="relative">
                         <input
                           type="tel"
-                          maxLength={12}
+                          maxLength={13}
                           value={phoneNumber}
                           onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ""))}
                           placeholder="Contoh: 08123456789"
-                          className="w-full pl-4 pr-24 py-3.5 border border-gray-200 rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
+                          className={`w-full pl-4 pr-24 py-3.5 border rounded-xl font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all ${
+                            phoneError
+                              ? "border-red-500 focus:border-red-500 focus:ring-red-100"
+                              : "border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                          }`}
                         />
                         {detectedOperator && (
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-black px-3 py-1.5 rounded-lg select-none">
@@ -437,9 +459,14 @@ export default function TagihanPage() {
                           </div>
                         )}
                       </div>
+                      {phoneError && (
+                        <p className="text-red-500 text-xs font-semibold mt-1.5 animate-in fade-in slide-in-from-top-1">
+                          {phoneError}
+                        </p>
+                      )}
                     </div>
 
-                    {detectedOperator ? (
+                    {detectedOperator && !phoneError && phoneNumber.length >= 11 ? (
                       <div className="space-y-4">
                         <label className="block text-sm font-bold text-gray-700">Pilih Nominal (Rp)</label>
                         <div className="grid grid-cols-4 gap-2">
@@ -472,7 +499,7 @@ export default function TagihanPage() {
                     ) : (
                       <div className="text-center py-8 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400">
                         <Smartphone className="w-9 h-9 mx-auto mb-2 text-gray-300 animate-pulse" />
-                        <p className="text-xs font-medium">Masukkan nomor HP di atas (maks 12 angka) untuk menampilkan pilihan nominal</p>
+                        <p className="text-xs font-medium">Masukkan nomor HP valid di atas (11 - 13 digit) untuk menampilkan pilihan nominal</p>
                       </div>
                     )}
                   </div>
