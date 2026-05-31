@@ -410,40 +410,50 @@ export default function InvestasiPage() {
 
                     {/* --- BODY --- */}
                     <div className="p-5">
+                      {/* Visual Badge Tipe Investasi */}
+                      <div className="mb-3">
+                        {(!p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0) ? (
+                          <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                            💧 LIQUID - Fleksibel
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                            🔒 TENOR {p.tenor_bulan} BULAN
+                          </span>
+                        )}
+                      </div>
+
                       <h3 className="font-bold text-gray-900 text-base mb-1 leading-snug">{p.title}</h3>
                       {p.location && (
                         <p className="text-xs text-gray-400 flex items-center gap-1 mb-3"><MapPin size={12} />{p.location}</p>
                       )}
                       <p className="text-gray-500 text-sm leading-relaxed mb-4">{p.description}</p>
 
-                      {/* --- PROGRESS BAR --- */}
-                      <div className="mb-4">
-                        <div className="flex justify-between text-[11px] font-bold mb-1.5">
-                          <span className="text-gray-500">Terkumpul: {formatIDR(p.current_funding)}</span>
-                          <span className="text-gray-400">Target: {formatIDR(p.target_funding)}</span>
+                      {/* --- FINTECH BANKING INFO GRID --- */}
+                      <div className="grid grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded-2xl border border-gray-100/80">
+                        <div>
+                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Imbal Hasil (Bunga)</p>
+                          <p className="text-emerald-600 text-lg font-black">{p.interest_rate ?? 0}% <span className="text-xs font-bold text-gray-500">p.a.</span></p>
                         </div>
-                        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }} animate={{ width: `${Math.min(progress, 100)}%` }}
-                            transition={{ duration: 1, delay: i * 0.1 }}
-                            className={`h-2 rounded-full ${progress >= 80 ? "bg-emerald-500" : progress >= 50 ? "bg-emerald-400" : "bg-emerald-300"}`}
-                          />
+                        <div>
+                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Min. Transaksi</p>
+                          <p className="text-gray-900 text-sm font-black mt-0.5">{formatIDR(p.min_amount)}</p>
                         </div>
-                        <p className="text-[10px] text-emerald-600 font-bold mt-1">{Math.min(progress, 100).toFixed(1)}% Terdanai</p>
                       </div>
 
                       {/* --- FOOTER STATS --- */}
                       <div className="flex items-center justify-between text-xs text-gray-400 mb-4 pb-4 border-b border-gray-50">
-                        <span className="flex items-center gap-1"><Clock size={12} />{p.days_left} Hari Lagi</span>
-                        <span className="flex items-center gap-1"><CloudRain size={12} />{p.impact_co2e} Ton CO2e</span>
+                        <span className="flex items-center gap-1 text-emerald-700 font-bold">
+                          <CloudRain size={12} className="text-emerald-500" /> Dampak: {p.impact_co2e ?? 0} Ton CO2e
+                        </span>
                       </div>
 
                       {/* --- EXPAND / INVEST --- */}
                       <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
                         disabled={progress >= 100}
-                        className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
+                        className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
                       >
-                        {progress >= 100 ? "🔒 Pendanaan Selesai" : (
+                        {progress >= 100 ? "🔒 Kuota Penuh" : (
                           <>
                             <Zap size={14} /> Investasi Sekarang
                             {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
