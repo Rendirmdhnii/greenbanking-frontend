@@ -80,6 +80,13 @@ export default function SuperAdminDashboard() {
   const itemsPerNasabahPage = 5;
   const itemsPerTransaksiPage = 10;
 
+  // Demo Mode: Pantau & Percepat Investasi Nasabah States
+  const [adminInvestments, setAdminInvestments] = useState<any[]>([]);
+  const [adminInvestmentsLoading, setAdminInvestmentsLoading] = useState(false);
+  const [searchQueryInvestasi, setSearchQueryInvestasi] = useState("");
+  const [currentPageInvestasi, setCurrentPageInvestasi] = useState(1);
+  const itemsPerInvestasiPage = 10;
+
   // Tab Navigation State
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -112,6 +119,7 @@ export default function SuperAdminDashboard() {
           setAdminUser(userData);
           fetchStats(token);
           fetchTransactions(token);
+          fetchAdminInvestments(token);
         } else {
           setIsAdmin(false);
         }
@@ -213,6 +221,92 @@ export default function SuperAdminDashboard() {
       console.error("Gagal memuat transaksi:", error);
     } finally {
       setTransactionsLoading(false);
+    }
+  };
+
+  const fetchAdminInvestments = async (tokenOverride?: string) => {
+    setAdminInvestmentsLoading(true);
+    try {
+      const token = tokenOverride || localStorage.getItem("admin_token");
+      const res = await fetch(`${API_URL}/admin/investments`, {
+        cache: 'no-store',
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        const d = await res.json();
+        setAdminInvestments(d.investments || []);
+      }
+    } catch (e) {
+      console.error("Gagal memuat data investasi nasabah:", e);
+    } finally {
+      setAdminInvestmentsLoading(false);
+    }
+  };
+
+  const handleAccelerate = async (inv: any) => {
+    const { isConfirmed } = await Swal.fire({
+      title: "Percepat Jatuh Tempo?",
+      text: `Apakah Anda yakin ingin memundurkan tanggal mulai investasi "${inv.name}" milik ${inv.nasabah_name} agar gembok tenor terbuka?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Percepat!",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#059669",
+      cancelButtonColor: "#dc2626",
+      background: "#ffffff",
+      color: "#111827",
+    });
+
+    if (!isConfirmed) return;
+
+    Swal.fire({
+      title: "Memproses Bypass Waktu...",
+      text: "Membuka gembok investasi...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const token = localStorage.getItem("admin_token");
+      const res = await fetch(`${API_URL}/admin/investments/${inv.id}/accelerate`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Bypass Gagal",
+          text: data.error || "Gagal mempercepat tenor investasi.",
+          confirmButtonColor: "#dc2626",
+        });
+        return;
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Bypass Berhasil!",
+        text: "Waktu investasi berhasil dipercepat. Sekarang gembok tenor terbuka di halaman nasabah!",
+        confirmButtonColor: "#059669",
+      });
+
+      fetchAdminInvestments();
+    } catch {
+      Swal.fire({
+        icon: "error",
+        title: "Koneksi Gagal",
+        text: "Gagal menghubungkan ke server.",
+        confirmButtonColor: "#dc2626",
+      });
     }
   };
 
@@ -693,6 +787,20 @@ export default function SuperAdminDashboard() {
     (currentPageTransaksi - 1) * itemsPerTransaksiPage, 
     currentPageTransaksi * itemsPerTransaksiPage
   );
+
+  // Filter & Pagination for Investments (Demo Mode)
+  const filteredInvestments = adminInvestments.filter(inv =>
+    (inv.nasabah_name || "").toLowerCase().includes(searchQueryInvestasi.toLowerCase()) ||
+    (inv.name || "").toLowerCase().includes(searchQueryInvestasi.toLowerCase()) ||
+    (inv.nasabah_email || "").toLowerCase().includes(searchQueryInvestasi.toLowerCase())
+  );
+  
+  const totalPagesInvestasi = Math.ceil(filteredInvestments.length / itemsPerInvestasiPage);
+  const paginatedInvestments = filteredInvestments.slice(
+    (currentPageInvestasi - 1) * itemsPerInvestasiPage,
+    currentPageInvestasi * itemsPerInvestasiPage
+  );
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
       {/* Sidebar */}
@@ -737,6 +845,13 @@ export default function SuperAdminDashboard() {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'transaksi' ? 'text-emerald-400' : ''}`}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
             <span className={`text-sm ${activeTab === 'transaksi' ? 'font-bold' : 'font-semibold'}`}>Riwayat Transaksi</span>
           </div>
+          <div 
+            onClick={() => { setActiveTab('pantau_investasi'); fetchAdminInvestments(); }}
+            className={`px-4 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeTab === 'pantau_investasi' ? 'bg-emerald-800/50 text-white border border-emerald-700/50 shadow-inner' : 'hover:bg-emerald-800/30 text-emerald-200'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${activeTab === 'pantau_investasi' ? 'text-emerald-400' : ''}`}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span className={`text-sm ${activeTab === 'pantau_investasi' ? 'font-bold' : 'font-semibold'}`}>Pantau Investasi</span>
+          </div>
         </nav>
         
         <div className="p-6 border-t border-emerald-800/50 relative z-10">
@@ -764,7 +879,7 @@ export default function SuperAdminDashboard() {
           </div>
           <div className="flex items-center gap-6">
             <button 
-              onClick={() => { fetchStats(); fetchTransactions(); }}
+              onClick={() => { fetchStats(); fetchTransactions(); fetchAdminInvestments(); }}
               disabled={statsLoading}
               className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100 hover:bg-emerald-100 transition-colors text-sm font-bold"
             >
@@ -1490,6 +1605,140 @@ export default function SuperAdminDashboard() {
                             </div>
                           </div>
                         ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'pantau_investasi' && (
+                  // Demo Mode: Monitor & Fast-forward customer investments
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
+                    <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-bold text-gray-900">Pantau & Cairkan Investasi Nasabah</h2>
+                          <p className="text-xs text-gray-500 font-medium">Bypass kunci tenor dan pantau portofolio nasabah ({filteredInvestments.length} Total)</p>
+                        </div>
+                      </div>
+                      <div className="relative w-full sm:w-64">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-gray-400"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Cari nasabah atau produk..."
+                          value={searchQueryInvestasi}
+                          onChange={(e) => {
+                            setSearchQueryInvestasi(e.target.value);
+                            setCurrentPageInvestasi(1);
+                          }}
+                          className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="overflow-x-auto w-full">
+                      <table className="min-w-full divide-y divide-gray-100">
+                        <thead className="bg-gray-50/50">
+                          <tr className="text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                            <th className="px-6 py-4">Nasabah</th>
+                            <th className="px-6 py-4">Instrumen Investasi</th>
+                            <th className="px-6 py-4">Nominal</th>
+                            <th className="px-6 py-4">Suku Bunga</th>
+                            <th className="px-6 py-4">Tipe & Status</th>
+                            <th className="px-6 py-4 text-right">Aksi Demo</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 bg-white">
+                          {(!filteredInvestments || filteredInvestments.length === 0) ? (
+                            <tr>
+                              <td colSpan={6} className="px-6 py-12 text-center text-sm font-medium text-gray-500">
+                                {adminInvestmentsLoading ? (
+                                  <div className="flex items-center justify-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 animate-spin text-emerald-500"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                                    <span>Memuat data...</span>
+                                  </div>
+                                ) : "Tidak ada data investasi ditemukan."}
+                              </td>
+                            </tr>
+                          ) : (
+                            paginatedInvestments.map((inv) => (
+                              <tr key={inv.id} className="hover:bg-gray-50/50 transition-colors text-gray-900">
+                                <td className="px-6 py-4">
+                                  <div className="font-bold text-gray-900 text-sm">{inv.nasabah_name}</div>
+                                  <div className="text-xs text-gray-500 mt-0.5">{inv.nasabah_email}</div>
+                                </td>
+                                <td className="px-6 py-4">
+                                  <div className="font-bold text-gray-900 text-sm">{inv.name}</div>
+                                  <div className="text-[10px] text-gray-400 font-mono mt-0.5">ID: {inv.id} | Dibuat: {inv.created_at}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span className="font-black text-gray-900 text-sm">{formatRupiah(inv.amount)}</span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span className="font-bold text-indigo-600 text-sm">{inv.return_rate}% p.a.</span>
+                                </td>
+                                <td className="px-6 py-4">
+                                  <div className="flex flex-col gap-1">
+                                    <span className={`inline-flex items-center w-max px-2 py-0.5 rounded text-[9px] font-black border uppercase tracking-wider ${
+                                      inv.tipe_investasi === 'liquid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                                    }`}>
+                                      {inv.tipe_investasi === 'liquid' ? 'Liquid' : `Tenor ${inv.tenor_bulan} bln`}
+                                    </span>
+                                    <span className={`inline-flex items-center w-max px-2 py-0.5 rounded-full text-[9px] font-black border uppercase tracking-wider ${
+                                      inv.status === 'active' 
+                                        ? (inv.is_locked ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200')
+                                        : 'bg-gray-100 text-gray-500 border-gray-200'
+                                    }`}>
+                                      {inv.status === 'active' 
+                                        ? (inv.is_locked ? '🔒 Terkunci' : '🔓 Jatuh Tempo') 
+                                        : 'Completed'}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 text-right">
+                                  {inv.status === 'active' && inv.tipe_investasi === 'tenor' && inv.is_locked ? (
+                                    <button
+                                      onClick={() => handleAccelerate(inv)}
+                                      className="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-xl transition-all shadow-sm hover:shadow-md flex items-center gap-1.5 ml-auto"
+                                    >
+                                      <span>🚀 Percepat Tenor</span>
+                                    </button>
+                                  ) : (
+                                    <span className="text-xs text-gray-400 italic">Tidak Perlu Bypass</span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                    {totalPagesInvestasi > 1 && (
+                      <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+                        <span className="text-xs font-medium text-gray-500">
+                          Hal {currentPageInvestasi || 1} / {totalPagesInvestasi || 1}
+                        </span>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => setCurrentPageInvestasi(p => Math.max(1, p - 1))}
+                            disabled={currentPageInvestasi === 1}
+                            className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
+                          </button>
+                          <button
+                            onClick={() => setCurrentPageInvestasi(p => Math.min(totalPagesInvestasi, p + 1))}
+                            disabled={currentPageInvestasi === totalPagesInvestasi}
+                            className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg>
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

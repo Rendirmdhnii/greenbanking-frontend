@@ -71,7 +71,7 @@ export default function InvestasiPage() {
   // Load Katalog Produk
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/green-products?category=investment`);
+      const res = await fetch(`${API_URL}/green-products?category=investment`, { cache: "no-store" });
       const d = await res.json();
       setProducts(d.products || []);
     } catch (e) {
@@ -87,6 +87,7 @@ export default function InvestasiPage() {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${API_URL}/investments`, {
+        cache: "no-store",
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
