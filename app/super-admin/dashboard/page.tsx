@@ -546,9 +546,9 @@ export default function SuperAdminDashboard() {
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Judul Produk</div>
             <input id="swal-title" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" placeholder="Contoh: Rehabilitasi Mangrove">
           </div>
-          <div class="col-span-2 hidden">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">URL Gambar (Terunci Otomatis)</div>
-            <input id="swal-image" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" disabled>
+          <div class="col-span-2">
+            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Upload Gambar Produk</div>
+            <input id="swal-image-file" type="file" accept="image/*" class="swal2-file !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900">
           </div>
           <div class="col-span-2">
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Deskripsi (opsional)</div>
@@ -631,6 +631,8 @@ export default function SuperAdminDashboard() {
         const title = (document.getElementById("swal-title") as HTMLInputElement).value;
         const isDonation = (document.querySelector('input[name="swal-tipe-utama"]:checked') as HTMLInputElement)?.value === 'donation';
         const category = isDonation ? 'donation' : ((document.getElementById("swal-category") as HTMLInputElement).value || 'investment');
+        const imageFileInput = document.getElementById("swal-image-file") as HTMLInputElement;
+        const imageFile = imageFileInput?.files?.[0];
 
         if (!title.trim() || (!isDonation && !category.trim())) {
           Swal.showValidationMessage("Judul dan kategori wajib diisi.");
@@ -639,7 +641,7 @@ export default function SuperAdminDashboard() {
         return {
           title,
           category,
-          image: globalProjectImages[title] || fallbackImage,
+          imageFile,
           description: (document.getElementById("swal-desc") as HTMLTextAreaElement).value,
           target_funding: Number((document.getElementById("swal-target") as HTMLInputElement).value),
           min_amount: Number((document.getElementById("swal-min") as HTMLInputElement).value),
@@ -654,14 +656,33 @@ export default function SuperAdminDashboard() {
     if (formValues) {
       try {
         const token = localStorage.getItem("admin_token");
+        const formData = new FormData();
+        formData.append("title", formValues.title);
+        formData.append("category", formValues.category);
+        formData.append("description", formValues.description);
+        formData.append("target_funding", String(formValues.target_funding));
+        formData.append("min_amount", String(formValues.min_amount));
+        formData.append("interest_rate", String(formValues.interest_rate));
+        formData.append("days_left", String(formValues.days_left));
+        formData.append("tipe_investasi", formValues.tipe_investasi);
+        formData.append("tenor_bulan", String(formValues.tenor_bulan));
+
+        formData.append("type", formValues.category === 'donation' ? 'donasi' : 'investasi');
+        formData.append("target_fund", String(formValues.target_funding));
+        formData.append("min_transaction", String(formValues.min_amount));
+        formData.append("roi_percentage", String(formValues.interest_rate));
+
+        if (formValues.imageFile) {
+          formData.append("image", formValues.imageFile);
+        }
+
         const res = await fetch(`${API_URL}/admin/products/store`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
             Accept: "application/json",
           },
-          body: JSON.stringify(formValues),
+          body: formData,
         });
 
         if (res.ok) {
@@ -1143,10 +1164,10 @@ export default function SuperAdminDashboard() {
                   </div>
                 </div>
 
-                {/* Bottom Grid: Riwayat Transaksi (2 Cols) & Katalog Produk (1 Col) */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Riwayat Transaksi Widget (col-span-2) */}
-                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-2">
+                {/* Bottom Grid: Riwayat Transaksi & Katalog Produk */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  {/* Riwayat Transaksi Widget (col-span-8) */}
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-8">
                     <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
@@ -1279,9 +1300,9 @@ export default function SuperAdminDashboard() {
                     </div>
                   </div>
 
-                  {/* Katalog Produk Widget (col-span-1) */}
-                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                  {/* Katalog Produk Widget (col-span-4) */}
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-4 flex flex-col h-[500px]">
+                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-amber-600"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
@@ -1291,20 +1312,28 @@ export default function SuperAdminDashboard() {
                           <p className="text-xs text-gray-500 font-medium">Investasi & Donasi Hijau</p>
                         </div>
                       </div>
-                      <button 
-                        onClick={() => setActiveTab('produk')}
-                        className="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-1"
-                      >
-                        Lihat Semua &rarr;
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleTambahProduk}
+                          className="text-[10px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-2 py-1.5 rounded-lg transition-colors"
+                        >
+                          + Tambah
+                        </button>
+                        <button 
+                          onClick={() => setActiveTab('produk')}
+                          className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-0.5"
+                        >
+                          Semua &rarr;
+                        </button>
+                      </div>
                     </div>
 
                     {(!stats?.products || stats.products.length === 0) ? (
-                      <div className="p-6 text-center text-sm font-medium text-gray-500">
+                      <div className="p-6 text-center text-sm font-medium text-gray-500 flex-1 flex items-center justify-center">
                         Katalog kosong.   
                       </div>
                     ) : (
-                      <div className="divide-y divide-gray-100">
+                      <div className="divide-y divide-gray-100 overflow-y-auto flex-1">
                         {stats.products.slice(0, 5).map((p) => (
                           <div key={p?.id || Math.random()} className="p-4 hover:bg-gray-50/50 transition-colors group flex items-center justify-between gap-3">
                             <div className="flex gap-3 min-w-0 items-center">

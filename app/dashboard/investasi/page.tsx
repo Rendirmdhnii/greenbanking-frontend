@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   TrendingUp, Loader2, CheckCircle, Zap, MapPin, Clock,
-  CloudRain, ShieldCheck, Crown, ChevronDown, ChevronUp, Heart
+  CloudRain, ShieldCheck, Crown, ChevronDown, ChevronUp, Heart, Leaf
 } from "lucide-react";
 import StrukModal from "@/components/StrukModal";
 import { useUserContext } from "@/hooks/useUserData";
@@ -35,6 +35,7 @@ export default function InvestasiPage() {
     title: string;
     tag: string;
     image?: string | null;
+    image_url?: string | null;
     location?: string;
     description?: string;
     min_amount: number;
@@ -48,6 +49,9 @@ export default function InvestasiPage() {
     tipe_investasi?: string;
     tenor_bulan?: number;
     category?: string;
+    type?: string;
+    tenor_months?: number;
+    has_invested?: boolean;
   };
 
   type StrukData = {
@@ -71,11 +75,20 @@ export default function InvestasiPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/green-products`, { cache: "no-store" });
-      const d = await res.json();
-      setProducts(d.products || []);
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/products`, {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+      if (res.ok) {
+        const d = await res.json();
+        setProducts(d.products || []);
+      }
     } catch (e) {
-      console.error("Error fetching green products:", e);
+      console.error("Error fetching products:", e);
     } finally {
       setLoading(false);
     }
@@ -289,15 +302,19 @@ export default function InvestasiPage() {
 
   const tags = ["Semua", ...Array.from(new Set(products.map(p => p.tag).filter(Boolean)))];
   const filtered = activeFilter === "Semua" ? products : products.filter(p => p.tag === activeFilter);
-  const liquidProducts = filtered.filter(p => p.category !== 'donation' && (!p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0) && p.tipe_investasi !== 'donasi');
-  const tenorProducts = filtered.filter(p => p.category !== 'donation' && p.tipe_investasi === 'tenor' && (p.tenor_bulan ?? 0) > 0);
-  const donationProducts = filtered.filter(p => p.category === 'donation' || p.tipe_investasi === 'donasi');
+  const liquidProducts = filtered.filter(p => p.type === 'investasi' && (!p.tenor_months || p.tenor_months === 0));
+  const tenorProducts = filtered.filter(p => p.type === 'investasi' && p.tenor_months! > 0);
+  const donationProducts = filtered.filter(p => p.type === 'donasi');
 
   const renderProductCard = (p: GreenProduct, i: number) => {
     const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
     const isExpanded = expandedCard === p.id;
-    const currentImg = globalProjectImages[p.title] || fallbackImage;
-    const isDonasi = p.tipe_investasi === 'donasi' || p.category === 'donation';
+    let currentImg = p.image_url || p.image || globalProjectImages[p.title] || fallbackImage;
+    if (currentImg && currentImg.startsWith('/storage')) {
+      const backendHost = API_URL.replace(/\/api$/, '');
+      currentImg = `${backendHost}${currentImg}`;
+    }
+    const isDonasi = p.type === 'donasi';
 
     return (
       <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
@@ -390,10 +407,10 @@ export default function InvestasiPage() {
 
           {/* --- EXPAND / INVEST --- */}
           <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
-            disabled={progress >= 100}
-            className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : isDonasi ? 'bg-rose-700 text-white hover:bg-rose-800' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
+            disabled={progress >= 100 || p.has_invested}
+            className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : p.has_invested ? 'bg-gray-300 text-gray-400 cursor-not-allowed border border-gray-200' : isDonasi ? 'bg-rose-700 text-white hover:bg-rose-800' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
           >
-            {progress >= 100 ? "🔒 Kuota Penuh" : (
+            {progress >= 100 ? "🔒 Kuota Penuh" : p.has_invested ? "Portofolio Aktif" : (
               <>
                 {isDonasi ? <Heart size={14} /> : <Zap size={14} />} 
                 {isDonasi ? "Donasi Sekarang" : "Investasi Sekarang"}
@@ -517,9 +534,19 @@ export default function InvestasiPage() {
         {/* === VIEW 1: KATALOG PRODUK === */}
         {activeSubTab === 'katalog' && (
           <>
-            {/* === FILTER TAGS === */}
-            <div className="flex flex-wrap gap-2 mb-8">
-              {tags.map(tag => (
+            {products.length === 0 ? (
+              <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto my-12 w-full">
+                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Leaf className="text-gray-300 animate-pulse" size={28} />
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg mb-2">Belum ada produk yang tersedia</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">Saat ini belum ada produk investasi atau donasi hijau yang tersedia.</p>
+              </div>
+            ) : (
+              <>
+                {/* === FILTER TAGS === */}
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {tags.map(tag => (
                 <button key={tag} onClick={() => setActiveFilter(tag)}
                   className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${activeFilter === tag
                     ? "bg-[#064e3b] text-white shadow-md"
@@ -578,6 +605,8 @@ export default function InvestasiPage() {
             </div>
           </>
         )}
+      </>
+    )}
 
         {/* === VIEW 2: PORTOFOLIO AKTIF === */}
         {activeSubTab === 'portofolio' && (

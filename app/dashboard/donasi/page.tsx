@@ -30,9 +30,19 @@ export default function DonasiPage() {
   const [strukData, setStrukData] = useState<any>(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/green-products?category=donation`)
+    const token = localStorage.getItem("token");
+    fetch(`${API_URL}/products`, {
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    })
       .then(r => r.json())
-      .then(d => setProducts(d.products || []))
+      .then(d => {
+        const allProducts = d.products || [];
+        setProducts(allProducts.filter((p: any) => p.type === 'donasi'));
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -149,17 +159,32 @@ export default function DonasiPage() {
         </div>
 
         {/* Grid 3 Produk Donasi */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {products.map((p, i) => {
-            const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
-            return (
-            <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
-            >
-              {/* Image */}
-              <div className="relative h-48 overflow-hidden">
-                <img 
-                  src={p.image || fallbackDonasi} 
+        {/* Grid 3 Produk Donasi */}
+        {products.length === 0 ? (
+          <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto my-12 w-full">
+            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Heart className="text-gray-300 animate-pulse" size={28} />
+            </div>
+            <h3 className="font-bold text-gray-900 text-lg mb-2">Belum ada produk yang tersedia</h3>
+            <p className="text-gray-500 text-sm leading-relaxed">Saat ini belum ada produk donasi hijau yang tersedia.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {products.map((p, i) => {
+              const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
+              let currentImg = p.image_url || p.image || fallbackDonasi;
+              if (currentImg && currentImg.startsWith('/storage')) {
+                const backendHost = API_URL.replace(/\/api$/, '');
+                currentImg = `${backendHost}${currentImg}`;
+              }
+              return (
+              <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
+              >
+                {/* Image */}
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={currentImg} 
                   onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
                   alt={p.title} 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
@@ -212,21 +237,22 @@ export default function DonasiPage() {
                   </div>
                   <button
                     onClick={() => handleDonate(p)}
-                    disabled={donateLoading === p.id || progress >= 100}
-                    className={`text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1 ${progress >= 100 ? 'bg-gray-400 cursor-not-allowed' : 'bg-rose-500 hover:bg-rose-600 hover:scale-105 disabled:opacity-50'}`}
+                    disabled={donateLoading === p.id || progress >= 100 || p.has_invested}
+                    className={`text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1 ${progress >= 100 ? 'bg-gray-400 cursor-not-allowed' : p.has_invested ? 'bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-200' : 'bg-rose-500 hover:bg-rose-600 hover:scale-105 disabled:opacity-50'}`}
                   >
-                    {progress >= 100 ? "🔒 Pendanaan Selesai" : (
+                    {progress >= 100 ? "🔒 Pendanaan Selesai" : p.has_invested ? "Sudah Diikuti" : (
                       <>
                         {donateLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <Heart size={14} />}
                         {donateLoading === p.id ? '...' : 'Donasi Sekarang'}
                       </>
                     )}
                   </button>
-                </div>
-              </div>
-            </motion.div>
-          )})}
-        </div>
+            </div>
+            </div>
+          </motion.div>
+        )})}
+      </div>
+    )}
       </motion.div>
 
       <StrukModal isOpen={!!strukData} onClose={() => setStrukData(null)} data={strukData} />
