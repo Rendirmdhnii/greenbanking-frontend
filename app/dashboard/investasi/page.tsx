@@ -282,6 +282,151 @@ export default function InvestasiPage() {
 
   const tags = ["Semua", ...Array.from(new Set(products.map(p => p.tag).filter(Boolean)))];
   const filtered = activeFilter === "Semua" ? products : products.filter(p => p.tag === activeFilter);
+  const liquidProducts = filtered.filter(p => !p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0);
+  const tenorProducts = filtered.filter(p => p.tipe_investasi === 'tenor' && (p.tenor_bulan ?? 0) > 0);
+
+  const renderProductCard = (p: GreenProduct, i: number) => {
+    const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
+    const isExpanded = expandedCard === p.id;
+    const currentImg = globalProjectImages[p.title] || fallbackImage;
+    return (
+      <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+        className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
+      >
+        {/* --- IMAGE HEADER --- */}
+        <div className="relative h-44 overflow-hidden">
+          <img
+            src={currentImg}
+            alt={p.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+          {/* Badge: Terverifikasi / Hasil Premium */}
+          {p.status_badge && (
+            <div className={`absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 ${p.status_badge === "Hasil Premium"
+              ? "bg-amber-400 text-amber-900"
+              : "bg-white text-emerald-700"
+              }`}>
+              {p.status_badge === "Hasil Premium" ? <Crown size={10} /> : <ShieldCheck size={10} />}
+              {p.status_badge}
+            </div>
+          )}
+
+          {/* Tag kategori */}
+          {p.tag && (
+            <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full ${tagColors[p.tag] || "bg-gray-100 text-gray-600"}`}>
+              {p.tag}
+            </div>
+          )}
+
+          {/* ROI besar */}
+          <div className="absolute bottom-3 left-4">
+            <p className="text-emerald-300 text-[10px] font-bold uppercase tracking-wider">ROI</p>
+            <p className="text-white text-2xl font-bold drop-shadow-lg">{p.interest_rate}%<span className="text-sm text-white/60 ml-1">p.a.</span></p>
+          </div>
+        </div>
+
+        {/* --- BODY --- */}
+        <div className="p-5">
+          {/* Visual Badge Tipe Investasi */}
+          <div className="mb-3">
+            {(!p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0) ? (
+              <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                💧 LIQUID - Fleksibel
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                🔒 TENOR {p.tenor_bulan} BULAN
+              </span>
+            )}
+          </div>
+
+          <h3 className="font-bold text-gray-900 text-base mb-1 leading-snug">{p.title}</h3>
+          {p.location && (
+            <p className="text-xs text-gray-400 flex items-center gap-1 mb-3"><MapPin size={12} />{p.location}</p>
+          )}
+          <p className="text-gray-500 text-sm leading-relaxed mb-4">{p.description}</p>
+
+          {/* --- FINTECH BANKING INFO GRID --- */}
+          <div className="grid grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded-2xl border border-gray-100/80">
+            <div>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Imbal Hasil (Bunga)</p>
+              <p className="text-emerald-600 text-lg font-black">{p.interest_rate ?? 0}% <span className="text-xs font-bold text-gray-500">p.a.</span></p>
+            </div>
+            <div>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Min. Transaksi</p>
+              <p className="text-gray-900 text-sm font-black mt-0.5">{formatIDR(p.min_amount)}</p>
+            </div>
+          </div>
+
+          {/* --- FOOTER STATS --- */}
+          <div className="flex items-center justify-between text-xs text-gray-400 mb-4 pb-4 border-b border-gray-50">
+            <span className="flex items-center gap-1 text-emerald-700 font-bold">
+              <CloudRain size={12} className="text-emerald-500" /> Dampak: {p.impact_co2e ?? 0} Ton CO2e
+            </span>
+          </div>
+
+          {/* --- EXPAND / INVEST --- */}
+          <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
+            disabled={progress >= 100}
+            className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
+          >
+            {progress >= 100 ? "🔒 Kuota Penuh" : (
+              <>
+                <Zap size={14} /> Investasi Sekarang
+                {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </>
+            )}
+          </button>
+
+          {isExpanded && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="mt-3 space-y-2 overflow-hidden">
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">Rp</span>
+                  <input type="text" placeholder={formatIDR(p.min_amount).replace('Rp ', '')}
+                    value={amounts[p.id] ? parseInt(amounts[p.id], 10).toLocaleString('id-ID') : ""}
+                    onChange={e => {
+                      const rawValue = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+                      setAmounts(prev => ({ ...prev, [p.id]: rawValue }));
+                    }}
+                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                  />
+                </div>
+                <button onClick={() => handleInvest(p)} disabled={investLoading === p.id}
+                  className="bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-all disabled:opacity-50 flex items-center gap-1"
+                >
+                  {investLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle size={14} />}
+                  {investLoading === p.id ? "..." : "Bayar"}
+                </button>
+              </div>
+              <p className="text-[10px] text-gray-400">Min. {formatIDR(p.min_amount)} | Potong langsung dari saldo utama</p>
+
+              {(() => {
+                const investmentAmount = parseInt(amounts[p.id] || "0", 10) || 0;
+                const carbonImpact = (p.carbon_impact ?? p.impact_co2e ?? 25) || 25;
+                const estimatedImpact = (investmentAmount / 1000000) * carbonImpact;
+                const estimatedTrees = Math.round(estimatedImpact / 12);
+                if (investmentAmount <= 0) return null;
+
+                return (
+                  <div className="mt-3 p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1.5">
+                    <p className="text-xs font-bold text-[#064e3b]">Kalkulator Dampak Karbon</p>
+                    <p className="text-xs text-emerald-700">
+                      Estimasi Dampak:{" "}
+                      <span className="font-bold">{estimatedImpact.toFixed(2)} kg CO2e</span> / setara{" "}
+                      <span className="font-bold">{estimatedTrees}</span> pohon
+                    </p>
+                  </div>
+                );
+              })()}</motion.div>
+          )}
+        </div>
+      </motion.div>
+    );
+  };
 
   if (loading) return (
     <div className="p-8 flex items-center justify-center min-h-[60vh]">
@@ -363,150 +508,36 @@ export default function InvestasiPage() {
               ))}
             </div>
 
-            {/* === GRID PRODUK DINAMIS === */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((p, i) => {
-                const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
-                const isExpanded = expandedCard === p.id;
-                const currentImg = globalProjectImages[p.title] || fallbackImage;
-                return (
-                  <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
-                    className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
-                  >
-                    {/* --- IMAGE HEADER --- */}
-                    <div className="relative h-44 overflow-hidden">
-                      <img
-                        src={currentImg}
-                        alt={p.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            {/* === SECTION 1: LIQUID PRODUCTS === */}
+            <div className="mb-12">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-2 border-b border-gray-100">
+                <span className="text-emerald-600">💧</span> Investasi Liquid (Fleksibel - Tarik Kapan Saja)
+              </h2>
+              {liquidProducts.length === 0 ? (
+                <div className="bg-gray-50/50 rounded-2xl p-6 text-center border border-dashed border-gray-200">
+                  <p className="text-sm text-gray-400 font-medium">Tidak ada instrumen investasi Liquid aktif saat ini.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {liquidProducts.map((p, i) => renderProductCard(p, i))}
+                </div>
+              )}
+            </div>
 
-                      {/* Badge: Terverifikasi / Hasil Premium */}
-                      {p.status_badge && (
-                        <div className={`absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 ${p.status_badge === "Hasil Premium"
-                          ? "bg-amber-400 text-amber-900"
-                          : "bg-white text-emerald-700"
-                          }`}>
-                          {p.status_badge === "Hasil Premium" ? <Crown size={10} /> : <ShieldCheck size={10} />}
-                          {p.status_badge}
-                        </div>
-                      )}
-
-                      {/* Tag kategori */}
-                      {p.tag && (
-                        <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full ${tagColors[p.tag] || "bg-gray-100 text-gray-600"}`}>
-                          {p.tag}
-                        </div>
-                      )}
-
-                      {/* ROI besar */}
-                      <div className="absolute bottom-3 left-4">
-                        <p className="text-emerald-300 text-[10px] font-bold uppercase tracking-wider">ROI</p>
-                        <p className="text-white text-2xl font-bold drop-shadow-lg">{p.interest_rate}%<span className="text-sm text-white/60 ml-1">p.a.</span></p>
-                      </div>
-                    </div>
-
-                    {/* --- BODY --- */}
-                    <div className="p-5">
-                      {/* Visual Badge Tipe Investasi */}
-                      <div className="mb-3">
-                        {(!p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0) ? (
-                          <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                            💧 LIQUID - Fleksibel
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                            🔒 TENOR {p.tenor_bulan} BULAN
-                          </span>
-                        )}
-                      </div>
-
-                      <h3 className="font-bold text-gray-900 text-base mb-1 leading-snug">{p.title}</h3>
-                      {p.location && (
-                        <p className="text-xs text-gray-400 flex items-center gap-1 mb-3"><MapPin size={12} />{p.location}</p>
-                      )}
-                      <p className="text-gray-500 text-sm leading-relaxed mb-4">{p.description}</p>
-
-                      {/* --- FINTECH BANKING INFO GRID --- */}
-                      <div className="grid grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded-2xl border border-gray-100/80">
-                        <div>
-                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Imbal Hasil (Bunga)</p>
-                          <p className="text-emerald-600 text-lg font-black">{p.interest_rate ?? 0}% <span className="text-xs font-bold text-gray-500">p.a.</span></p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Min. Transaksi</p>
-                          <p className="text-gray-900 text-sm font-black mt-0.5">{formatIDR(p.min_amount)}</p>
-                        </div>
-                      </div>
-
-                      {/* --- FOOTER STATS --- */}
-                      <div className="flex items-center justify-between text-xs text-gray-400 mb-4 pb-4 border-b border-gray-50">
-                        <span className="flex items-center gap-1 text-emerald-700 font-bold">
-                          <CloudRain size={12} className="text-emerald-500" /> Dampak: {p.impact_co2e ?? 0} Ton CO2e
-                        </span>
-                      </div>
-
-                      {/* --- EXPAND / INVEST --- */}
-                      <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
-                        disabled={progress >= 100}
-                        className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
-                      >
-                        {progress >= 100 ? "🔒 Kuota Penuh" : (
-                          <>
-                            <Zap size={14} /> Investasi Sekarang
-                            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                          </>
-                        )}
-                      </button>
-
-                      {isExpanded && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="mt-3 space-y-2 overflow-hidden">
-                          <div className="flex gap-2">
-                            <div className="flex-1 relative">
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">Rp</span>
-                              <input type="text" placeholder={formatIDR(p.min_amount).replace('Rp ', '')}
-                                value={amounts[p.id] ? parseInt(amounts[p.id], 10).toLocaleString('id-ID') : ""}
-                                onChange={e => {
-                                  const rawValue = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
-                                  setAmounts(prev => ({ ...prev, [p.id]: rawValue }));
-                                }}
-                                className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-                              />
-                            </div>
-                            <button onClick={() => handleInvest(p)} disabled={investLoading === p.id}
-                              className="bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-all disabled:opacity-50 flex items-center gap-1"
-                            >
-                              {investLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle size={14} />}
-                              {investLoading === p.id ? "..." : "Bayar"}
-                            </button>
-                          </div>
-                          <p className="text-[10px] text-gray-400">Min. {formatIDR(p.min_amount)} | Potong langsung dari saldo utama</p>
-
-                          {(() => {
-                            const investmentAmount = parseInt(amounts[p.id] || "0", 10) || 0;
-                            const carbonImpact = (p.carbon_impact ?? p.impact_co2e ?? 25) || 25;
-                            const estimatedImpact = (investmentAmount / 1000000) * carbonImpact;
-                            const estimatedTrees = Math.round(estimatedImpact / 12);
-                            if (investmentAmount <= 0) return null;
-
-                            return (
-                              <div className="mt-3 p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1.5">
-                                <p className="text-xs font-bold text-[#064e3b]">Kalkulator Dampak Karbon</p>
-                                <p className="text-xs text-emerald-700">
-                                  Estimasi Dampak:{" "}
-                                  <span className="font-bold">{estimatedImpact.toFixed(2)} kg CO2e</span> / setara{" "}
-                                  <span className="font-bold">{estimatedTrees}</span> pohon
-                                </p>
-                              </div>
-                            );
-                          })()}</motion.div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
+            {/* === SECTION 2: TENOR PRODUCTS === */}
+            <div className="mb-6">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-2 border-b border-gray-100">
+                <span className="text-amber-600">🔒</span> Investasi Tenor (Berjangka - Bunga Lebih Tinggi)
+              </h2>
+              {tenorProducts.length === 0 ? (
+                <div className="bg-gray-50/50 rounded-2xl p-6 text-center border border-dashed border-gray-200">
+                  <p className="text-sm text-gray-400 font-medium">Tidak ada instrumen investasi Tenor aktif saat ini.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {tenorProducts.map((p, i) => renderProductCard(p, i))}
+                </div>
+              )}
             </div>
           </>
         )}
