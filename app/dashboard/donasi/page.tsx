@@ -158,8 +158,7 @@ export default function DonasiPage() {
           </div>
         </div>
 
-        {/* Grid 3 Produk Donasi */}
-        {/* Grid 3 Produk Donasi */}
+        {/* Grid Produk Donasi — murni dari API, tidak ada hardcode */}
         {products.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto my-12 w-full">
             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -172,10 +171,14 @@ export default function DonasiPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {products.map((p, i) => {
               const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
-              let currentImg = p.image_url || p.image || fallbackDonasi;
+              // Resolusi gambar: prioritaskan image_url dari API Backend
+              let currentImg = p.image_url || p.image || null;
               if (currentImg && currentImg.startsWith('/storage')) {
                 const backendHost = API_URL.replace(/\/api$/, '');
                 currentImg = `${backendHost}${currentImg}`;
+              }
+              if (!currentImg) {
+                currentImg = fallbackDonasi;
               }
               return (
               <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
@@ -183,12 +186,12 @@ export default function DonasiPage() {
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={currentImg} 
-                  onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
-                  alt={p.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                />
+                  <img
+                    src={currentImg}
+                    onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
+                    alt={p.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow flex items-center gap-1">
                   <Target size={10} /> {p.target_impact}

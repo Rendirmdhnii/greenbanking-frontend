@@ -309,10 +309,17 @@ export default function InvestasiPage() {
   const renderProductCard = (p: GreenProduct, i: number) => {
     const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
     const isExpanded = expandedCard === p.id;
-    let currentImg = p.image_url || p.image || globalProjectImages[p.title] || fallbackImage;
+    
+    // Resolusi gambar: prioritaskan image_url dari API Backend
+    // Jika path /storage (upload lokal), prepend backend host
+    // Jika kosong, gunakan globalProjectImages berdasarkan judul, lalu fallbackImage
+    let currentImg = p.image_url || p.image || null;
     if (currentImg && currentImg.startsWith('/storage')) {
       const backendHost = API_URL.replace(/\/api$/, '');
       currentImg = `${backendHost}${currentImg}`;
+    }
+    if (!currentImg) {
+      currentImg = globalProjectImages[p.title] || fallbackImage;
     }
     const isDonasi = p.type === 'donasi';
 
@@ -327,6 +334,7 @@ export default function InvestasiPage() {
             alt={p.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             loading="lazy"
+            onError={(e) => { e.currentTarget.src = globalProjectImages[p.title] || fallbackImage; }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
