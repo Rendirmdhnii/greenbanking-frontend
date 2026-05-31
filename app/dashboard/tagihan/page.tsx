@@ -444,10 +444,6 @@ export default function TagihanPage() {
 
           {/* ── Page Header ── */}
           <div className="mb-5">
-            <div className="flex items-center gap-2 text-emerald-700 mb-1">
-              <Receipt className="w-4 h-4" />
-              <span className="text-[10px] font-bold tracking-widest uppercase">PPOB EcoBank</span>
-            </div>
             <h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">
               Tagihan &amp; Layanan Digital
             </h1>

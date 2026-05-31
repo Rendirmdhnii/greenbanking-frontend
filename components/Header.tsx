@@ -204,7 +204,7 @@ export default function Header({ userHook }: { userHook: any }) {
 
   return (
     <>
-      <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-30">
+      <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between pl-8 pr-12 sticky top-0 z-30">
         {/* Left Side: Search Bar */}
         <div className="relative w-96" ref={searchRef}>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -336,7 +336,7 @@ export default function Header({ userHook }: { userHook: any }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed bottom-6 right-6 z-[100] max-w-sm w-full bg-white border border-gray-100 rounded-2xl shadow-2xl p-4 flex gap-3 items-start font-sans"
+            className="fixed top-24 right-6 z-[100] max-w-sm w-full bg-white border border-gray-100 rounded-2xl shadow-2xl p-4 flex gap-3 items-start font-sans"
           >
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border ${getNotifBg(activeToast.type)}`}>
               {getNotifIcon(activeToast.type)}
