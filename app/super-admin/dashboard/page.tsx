@@ -524,7 +524,6 @@ export default function SuperAdminDashboard() {
   const handleTambahProduk = async () => {
     const { value: formValues } = await Swal.fire({
       title: "Tambah Produk Investasi/Donasi",
-      width: "650px",
       html: `
         <div class="grid grid-cols-2 gap-4 text-left p-2">
           <!-- Tipe Utama -->
@@ -604,6 +603,7 @@ export default function SuperAdminDashboard() {
       background: "#ffffff",
       color: "#111827",
       customClass: {
+        popup: 'rounded-2xl shadow-xl max-w-2xl w-full mx-4 md:mx-auto font-sans p-6',
         confirmButton: 'px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-md hover:shadow-lg outline-none border-0 cursor-pointer',
         cancelButton: 'px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-all ml-3 outline-none border-0 cursor-pointer'
       },
@@ -778,7 +778,6 @@ export default function SuperAdminDashboard() {
   const handleEditProduct = async (product: GreenProduct) => {
     const { value: formValues } = await Swal.fire({
       title: `Ubah Produk: ${product.title}`,
-      width: '650px',
       html: `
         <div class="grid grid-cols-2 gap-4 text-left p-2">
           <div class="col-span-2">
@@ -832,6 +831,7 @@ export default function SuperAdminDashboard() {
       confirmButtonText: 'Simpan',
       cancelButtonText: 'Batal',
       customClass: {
+        popup: 'rounded-2xl shadow-xl max-w-2xl w-full mx-4 md:mx-auto font-sans p-6',
         confirmButton: 'px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-md hover:shadow-lg outline-none border-0 cursor-pointer',
         cancelButton: 'px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-all ml-3 outline-none border-0 cursor-pointer'
       },

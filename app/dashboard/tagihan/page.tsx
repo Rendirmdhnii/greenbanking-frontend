@@ -282,8 +282,14 @@ export default function TagihanPage() {
         showCancelButton: true,
         confirmButtonText: 'Verifikasi',
         cancelButtonText: 'Batal',
-        confirmButtonColor: '#059669',
-        cancelButtonColor: '#d33',
+        customClass: {
+            popup: 'rounded-2xl shadow-xl p-6 font-sans',
+            input: 'text-center text-3xl tracking-[1em] pl-[1.1em] font-bold py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-gray-900 max-w-xs mx-auto',
+            confirmButton: 'px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-md hover:shadow-lg outline-none border-0 cursor-pointer flex-1',
+            cancelButton: 'px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-all outline-none border-0 cursor-pointer flex-1',
+            actions: 'flex gap-3 w-full justify-center mt-4'
+        },
+        buttonsStyling: false,
         inputValidator: (value) => {
             if (!value) {
                 return 'PIN tidak boleh kosong!';
