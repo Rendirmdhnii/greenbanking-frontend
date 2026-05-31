@@ -601,8 +601,8 @@ export default function InvestasiPage() {
                             <span className="font-bold text-gray-900">{formatIDR(item.amount)}</span>
                           </div>
                           <div className="flex justify-between text-xs font-semibold">
-                            <span className="text-gray-500">Estimasi Keuntungan ({item.days_passed} Hari)</span>
-                            <span className="font-bold text-emerald-600">+Rp {formatNumber(item.estimasi_profit)}</span>
+                            <span className="text-gray-500">Estimasi Keuntungan ({item.days_passed || 0} Hari)</span>
+                            <span className="font-bold text-emerald-600">+Rp {formatNumber(item.estimasi_profit || 0)}</span>
                           </div>
                           {item.tgl_jatuh_tempo && (
                             <div className="flex justify-between text-xs font-semibold">
