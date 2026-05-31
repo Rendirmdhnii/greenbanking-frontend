@@ -262,6 +262,9 @@ export default function SuperAdminDashboard() {
             <option value="days">Hari</option>
             <option value="months">Bulan</option>
           </select>
+          <p style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem; line-height: 1.4;">
+            💡 Contoh: Ketik 6 lalu pilih 'Bulan' untuk memajukan waktu investasi menjadi 6 bulan yang lalu.
+          </p>
         </div>
       `,
       focusConfirm: false,
@@ -1693,7 +1696,7 @@ export default function SuperAdminDashboard() {
                                   <div className="text-[10px] text-gray-400 font-mono mt-0.5">ID: {inv.id} | Dibuat: {inv.created_at}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                  <span className="font-black text-gray-900 text-sm">{formatRupiah(inv.amount)}</span>
+                                  <span className="font-black text-gray-900 text-sm">{"Rp " + new Intl.NumberFormat('id-ID').format(Number(inv.amount))}</span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                   <span className="font-bold text-indigo-600 text-sm">{inv.return_rate}% p.a.</span>
