@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Search, Bell, ShieldCheck, Leaf, X, Wrench, Sparkles, Info } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
@@ -23,7 +24,10 @@ export default function Header({ userHook }: { userHook: any }) {
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [activeToast, setActiveToast] = useState<Notification | null>(null);
+  const shownNotifIdsRef = useRef<Set<number>>(new Set());
   const notifRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [currentUserScore, setCurrentUserScore] = useState<number | null>(null);
 
@@ -84,7 +88,17 @@ export default function Header({ userHook }: { userHook: any }) {
         });
         if (res.ok) {
           const data = await res.json();
-          setNotifications(data.notifications || []);
+          const list = data.notifications || [];
+          setNotifications(list);
+
+          // Auto-Toast logic for unread notifications not shown in this session
+          const newUnread = list.filter((n: Notification) => (!n.read && !n.is_read) && !shownNotifIdsRef.current.has(n.id));
+          if (newUnread.length > 0) {
+            const nextNotif = newUnread[0];
+            // Mark all found as shown in session
+            newUnread.forEach((n: Notification) => shownNotifIdsRef.current.add(n.id));
+            setActiveToast(nextNotif);
+          }
         }
       } catch (e) {
         // Fallback notifications if API unavailable
@@ -100,11 +114,23 @@ export default function Header({ userHook }: { userHook: any }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Close notifications on outside click
+  useEffect(() => {
+    if (activeToast) {
+      const timer = setTimeout(() => {
+        setActiveToast(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeToast]);
+
+  // Close notifications and search on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearchDropdown(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -177,126 +203,154 @@ export default function Header({ userHook }: { userHook: any }) {
   };
 
   return (
-    <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-30">
-      <div className="relative w-96">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-        <input 
-          type="text" 
-          placeholder="Cari transaksi atau fitur..." 
-          className="w-full bg-gray-50 border-none rounded-full py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#115e59]/20 outline-none" 
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setShowSearchDropdown(true);
-          }}
-          onFocus={() => setShowSearchDropdown(true)}
-          onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
-        />
-        {showSearchDropdown && searchQuery && (
-          <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-            {filteredMenu.length > 0 ? (
-              filteredMenu.map((item, idx) => (
-                <button
-                  key={idx}
-                  onMouseDown={() => handleSearchSelect(item.href)}
-                  className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 transition-colors"
-                >
-                  {item.name}
-                </button>
-              ))
-            ) : (
-              <div className="px-4 py-3 text-sm text-gray-500 text-center">Tidak ditemukan</div>
-            )}
-          </div>
-        )}
-      </div>
-      <div className="flex items-center gap-6">
-        {isAdmin && (
-          <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-50 to-yellow-50 px-3 py-1.5 rounded-full border border-amber-200">
-            <ShieldCheck size={14} className="text-amber-600" />
-            <span className="text-xs font-bold text-amber-700">Super Admin</span>
-          </div>
-        )}
-        <Link href="/dashboard/peringkat" className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 hover:bg-emerald-100 transition-colors cursor-pointer">
-          <Leaf size={16} className="text-[#115e59]" />
-          <span className="text-sm font-bold text-[#064e3b]">
-            Skor Dampak: {currentUserScore !== null 
-              ? new Intl.NumberFormat('id-ID').format(Math.floor(currentUserScore)) 
-              : new Intl.NumberFormat('id-ID').format(Math.floor(impactScore || 0))}
-          </span>
-        </Link>
-
-        {/* Notification Bell — Functional */}
-        <div className="relative" ref={notifRef}>
-          <button 
-            onClick={() => setShowNotifications(!showNotifications)}
-            className="relative text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <Bell size={20} />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white text-white text-[8px] font-bold flex items-center justify-center">
-                {unreadCount}
-              </span>
-            )}
-          </button>
- 
-          {showNotifications && (
-            <div className="absolute right-0 top-full mt-3 w-85 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h4 className="font-bold text-gray-900 text-sm">Notifikasi</h4>
-                <div className="flex items-center gap-3">
-                  {unreadCount > 0 && (
-                    <button 
-                      onClick={markAllRead} 
-                      className="text-xs text-emerald-600 hover:text-emerald-700 font-bold"
-                    >
-                      Tandai Semua Dibaca
-                    </button>
-                  )}
-                  <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
-                    <X size={16} />
+    <>
+      <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-30">
+        {/* Left Side: Search Bar */}
+        <div className="relative w-96" ref={searchRef}>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+          <input 
+            type="text" 
+            placeholder="Cari transaksi atau fitur..." 
+            className="w-full bg-gray-50 border-none rounded-full py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#115e59]/20 outline-none" 
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowSearchDropdown(true);
+            }}
+            onFocus={() => setShowSearchDropdown(true)}
+          />
+          {showSearchDropdown && searchQuery && (
+            <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50">
+              {filteredMenu.length > 0 ? (
+                filteredMenu.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onMouseDown={() => handleSearchSelect(item.href)}
+                    className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 transition-colors"
+                  >
+                    {item.name}
                   </button>
-                </div>
-              </div>
-              <div className="max-h-72 overflow-y-auto divide-y divide-gray-50">
-                {notifications.length === 0 ? (
-                  <div className="px-5 py-8 text-center text-gray-400 text-sm">Tidak ada notifikasi</div>
-                ) : (
-                  notifications.map(n => {
-                    const isUnread = !n.read && !n.is_read;
-                    return (
-                      <div 
-                        key={n.id} 
-                        onClick={() => handleNotifClick(n.id)}
-                        className={`px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${isUnread ? 'bg-emerald-50/10 hover:bg-emerald-50/20 border-l-2 border-emerald-500' : ''}`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border ${getNotifBg(n.type)}`}>
-                            {getNotifIcon(n.type)}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-sm ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>{n.title}</p>
-                            <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{n.message}</p>
-                            <p className="text-[10px] text-gray-400 mt-1 font-medium">{timeAgo(n.created_at)}</p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
+                ))
+              ) : (
+                <div className="px-4 py-3 text-sm text-gray-500 text-center">Tidak ditemukan</div>
+              )}
             </div>
           )}
         </div>
- 
-        <Link href="/dashboard/akun" className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center cursor-pointer bg-gradient-to-br from-[#064e3b] to-[#115e59]">
-          {avatarUrl ? (
-            <img src={`${avatarUrl}${avatarUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} alt="Avatar" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-white font-bold text-sm tracking-widest">{initials}</span>
+
+        {/* Right Side: Notification Icon & Profile Avatar */}
+        <div className="flex items-center gap-6">
+          {isAdmin && (
+            <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-50 to-yellow-50 px-3 py-1.5 rounded-full border border-amber-200">
+              <ShieldCheck size={14} className="text-amber-600" />
+              <span className="text-xs font-bold text-amber-700">Super Admin</span>
+            </div>
           )}
-        </Link>
-      </div>
-    </header>
+          <Link href="/dashboard/peringkat" className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 hover:bg-emerald-100 transition-colors cursor-pointer">
+            <Leaf size={16} className="text-[#115e59]" />
+            <span className="text-sm font-bold text-[#064e3b]">
+              Skor Dampak: {currentUserScore !== null 
+                ? new Intl.NumberFormat('id-ID').format(Math.floor(currentUserScore)) 
+                : new Intl.NumberFormat('id-ID').format(Math.floor(impactScore || 0))}
+            </span>
+          </Link>
+
+          {/* Notification Lonceng Dropdown */}
+          <div className="relative" ref={notifRef}>
+            <button 
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="p-2.5 text-gray-500 hover:bg-gray-100 rounded-xl transition-all cursor-pointer relative hover:scale-105 border border-gray-100 bg-white"
+            >
+              <Bell size={20} />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white animate-pulse">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+
+            {showNotifications && (
+              <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white border border-gray-100 rounded-[2rem] shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-3 duration-200">
+                {/* Notification Header */}
+                <div className="px-5 py-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
+                  <span className="font-bold text-gray-900 text-base">Notifikasi Baru</span>
+                  <div className="flex items-center gap-3">
+                    {unreadCount > 0 && (
+                      <button onClick={markAllRead} className="text-xs font-bold text-[#115e59] hover:underline">
+                        Tandai Semua Dibaca
+                      </button>
+                    )}
+                    <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Notification Body */}
+                <div className="max-h-80 overflow-y-auto divide-y divide-gray-50">
+                  {notifications.length === 0 ? (
+                    <div className="px-5 py-8 text-center text-gray-400 text-sm">Tidak ada notifikasi</div>
+                  ) : (
+                    notifications.map(n => {
+                      const isUnread = !n.read && !n.is_read;
+                      return (
+                        <div 
+                          key={n.id} 
+                          onClick={() => handleNotifClick(n.id)}
+                          className={`px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${isUnread ? 'bg-emerald-50/10 hover:bg-emerald-50/20 border-l-2 border-emerald-500' : ''}`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border ${getNotifBg(n.type)}`}>
+                              {getNotifIcon(n.type)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-sm ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>{n.title}</p>
+                              <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{n.message}</p>
+                              <p className="text-[10px] text-gray-400 mt-1 font-medium">{timeAgo(n.created_at)}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <Link href="/dashboard/akun" className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center cursor-pointer bg-gradient-to-br from-[#064e3b] to-[#115e59]">
+            {avatarUrl ? (
+              <img src={`${avatarUrl}${avatarUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-white font-bold text-sm tracking-widest">{initials}</span>
+            )}
+          </Link>
+        </div>
+      </header>
+
+      {/* Auto-Toast Notification Container */}
+      <AnimatePresence>
+        {activeToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed bottom-6 right-6 z-[100] max-w-sm w-full bg-white border border-gray-100 rounded-2xl shadow-2xl p-4 flex gap-3 items-start font-sans"
+          >
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border ${getNotifBg(activeToast.type)}`}>
+              {getNotifIcon(activeToast.type)}
+            </div>
+            <div className="flex-1 min-w-0 text-left">
+              <p className="text-sm font-bold text-gray-900 truncate">{activeToast.title}</p>
+              <p className="text-xs text-gray-500 mt-1 leading-relaxed">{activeToast.message}</p>
+            </div>
+            <button onClick={() => setActiveToast(null)} className="text-gray-400 hover:text-gray-600 flex-shrink-0 self-start mt-0.5">
+              <X size={14} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

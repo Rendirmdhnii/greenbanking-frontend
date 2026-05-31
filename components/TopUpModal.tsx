@@ -198,7 +198,6 @@ export default function TopUpModal({
                     </>
                   ) : (
                     <>
-                      <Zap size={16} />
                       <span>Konfirmasi Top Up</span>
                     </>
                   )}
