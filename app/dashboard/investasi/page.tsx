@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import StrukModal from "@/components/StrukModal";
 import { useUserContext } from "@/hooks/useUserData";
-import { formatIDR, SwalGreenBanking } from "@/utils/format";
+import { formatIDR, formatNumber, SwalGreenBanking } from "@/utils/format";
 import Swal from "sweetalert2";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
@@ -568,7 +568,7 @@ export default function InvestasiPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {portfolios.filter(p => p.status === 'active').map((item, i) => {
                   const isLiquid = item.tipe_investasi === 'liquid' || item.tenor_bulan === 0;
-                  const canWithdraw = isLiquid || !item.is_locked;
+                  const canWithdraw = !item.is_locked;
 
                   return (
                     <motion.div
@@ -601,8 +601,8 @@ export default function InvestasiPage() {
                             <span className="font-bold text-gray-900">{formatIDR(item.amount)}</span>
                           </div>
                           <div className="flex justify-between text-xs font-semibold">
-                            <span className="text-gray-500">Estimasi Keuntungan ({item.selisih_hari} Hari)</span>
-                            <span className="font-bold text-emerald-600">+{formatIDR(item.estimasi_profit)}</span>
+                            <span className="text-gray-500">Estimasi Keuntungan ({item.days_passed} Hari)</span>
+                            <span className="font-bold text-emerald-600">+Rp {formatNumber(item.estimasi_profit)}</span>
                           </div>
                           {item.tgl_jatuh_tempo && (
                             <div className="flex justify-between text-xs font-semibold">
