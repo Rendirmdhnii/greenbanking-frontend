@@ -390,7 +390,7 @@ export default function SuperAdminDashboard() {
         </div>
         <div style="text-align: left; padding: 0 10px;">
           <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; font-size: 0.875rem; color: #374151;">Nominal</label>
-          <input id="swal-amount" type="number" class="swal2-input" style="width: 100%; margin: 0; box-sizing: border-box; height: 3em; font-size: 1rem; padding: 0 1em;" placeholder="Contoh: 50000">
+          <input id="swal-amount" type="text" inputmode="numeric" class="swal2-input" style="width: 100%; margin: 0; box-sizing: border-box; height: 3em; font-size: 1rem; padding: 0 1em;" placeholder="Contoh: 50.000">
         </div>
       `,
       focusConfirm: false,
@@ -402,6 +402,19 @@ export default function SuperAdminDashboard() {
       confirmButtonColor: '#059669',
       cancelButtonColor: '#dc2626',
       showLoaderOnConfirm: true,
+      didOpen: () => {
+        const amountInput = document.getElementById('swal-amount') as HTMLInputElement;
+        if (amountInput) {
+          amountInput.addEventListener('input', () => {
+            let val = amountInput.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+            if (val) {
+              amountInput.value = Number(val).toLocaleString('id-ID');
+            } else {
+              amountInput.value = '';
+            }
+          });
+        }
+      },
       preConfirm: async () => {
         const amountEl = document.getElementById('swal-amount') as HTMLInputElement;
         const actionEl = document.querySelector('input[name="swal-action"]:checked') as HTMLInputElement;
@@ -411,11 +424,17 @@ export default function SuperAdminDashboard() {
           return false;
         }
 
+        const rawAmount = Number(amountEl.value.replace(/\./g, ''));
+        if (isNaN(rawAmount) || rawAmount <= 0) {
+          Swal.showValidationMessage('Nominal harus berupa angka valid di atas 0!');
+          return false;
+        }
+
         try {
           const token = localStorage.getItem('admin_token');
           const payload = { 
             action: actionEl.value,
-            amount: Number(amountEl.value) 
+            amount: rawAmount 
           };
           
           const res = await fetch(`${API_URL}/admin/users/${user.id}/adjust-balance`, {
@@ -508,6 +527,21 @@ export default function SuperAdminDashboard() {
       width: "700px",
       html: `
         <div class="grid grid-cols-2 gap-4">
+          <!-- Tipe Utama -->
+          <div class="col-span-2">
+            <div class="text-left mb-1.5 text-sm text-gray-700 font-bold">Tipe Utama</div>
+            <div style="display: flex; gap: 1.5rem; margin-bottom: 0.5rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="radio" name="swal-tipe-utama" value="investment" checked style="accent-color: #059669;" />
+                <span class="text-sm font-bold text-gray-800">Investasi</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="radio" name="swal-tipe-utama" value="donation" style="accent-color: #059669;" />
+                <span class="text-sm font-bold text-gray-800">Donasi</span>
+              </label>
+            </div>
+          </div>
+
           <div class="col-span-2">
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Judul Produk</div>
             <input id="swal-title" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" placeholder="Contoh: Rehabilitasi Mangrove">
@@ -520,9 +554,9 @@ export default function SuperAdminDashboard() {
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Deskripsi (opsional)</div>
             <textarea id="swal-desc" class="swal2-textarea !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" style="min-height: 90px;" placeholder="Tuliskan ringkasan proyek..."></textarea>
           </div>
-          <div>
+          <div id="swal-category-wrapper">
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori</div>
-            <input id="swal-category" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" placeholder="Contoh: Restorasi">
+            <input id="swal-category" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" placeholder="Contoh: Restorasi" value="investment">
           </div>
           <div>
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Minimal Invest/Donasi (Rp)</div>
@@ -532,21 +566,26 @@ export default function SuperAdminDashboard() {
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Target Dana (Rp)</div>
             <input id="swal-target" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
           </div>
-          <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori Investasi</div>
-            <select id="swal-tipe-investasi" class="swal2-select !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900">
-              <option value="liquid">Liquid (Fleksibel)</option>
-              <option value="tenor">Tenor (Dikunci)</option>
-            </select>
+
+          <!-- Investment specific container -->
+          <div id="swal-investment-container" class="col-span-2 grid grid-cols-2 gap-4 !p-0 !m-0">
+            <div>
+              <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori Investasi</div>
+              <select id="swal-tipe-investasi" class="swal2-select !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" style="display: flex;">
+                <option value="liquid">Liquid (Fleksibel)</option>
+                <option value="tenor">Tenor (Dikunci)</option>
+              </select>
+            </div>
+            <div>
+              <div class="text-left mb-1 text-sm text-gray-700 font-bold">Persentase Bunga/ROI (% p.a.)</div>
+              <input id="swal-roi" type="number" step="0.1" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+            </div>
+            <div class="col-span-2">
+              <div class="text-left mb-1 text-sm text-gray-700 font-bold">Lama Tenor (Bulan) <span class="text-xs text-gray-400 font-normal">(Isi 0 jika Liquid)</span></div>
+              <input id="swal-tenor-bulan" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+            </div>
           </div>
-          <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Persentase Bunga/ROI (% p.a.)</div>
-            <input id="swal-roi" type="number" step="0.1" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
-          </div>
-          <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Lama Tenor (Bulan) <span class="text-xs text-gray-400 font-normal">(Isi 0 jika Liquid)</span></div>
-            <input id="swal-tenor-bulan" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
-          </div>
+
           <div>
             <div class="text-left mb-1 text-sm text-gray-700 font-bold">Hari Tersisa (opsional)</div>
             <input id="swal-days" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
@@ -561,10 +600,39 @@ export default function SuperAdminDashboard() {
       color: "#111827",
       confirmButtonColor: "#059669",
       cancelButtonColor: "#dc2626",
+      didOpen: () => {
+        const radios = document.querySelectorAll('input[name="swal-tipe-utama"]');
+        const investContainer = document.getElementById('swal-investment-container');
+        const categoryWrapper = document.getElementById('swal-category-wrapper');
+        const categoryInput = document.getElementById('swal-category') as HTMLInputElement;
+
+        const handleTypeChange = () => {
+          const selected = (document.querySelector('input[name="swal-tipe-utama"]:checked') as HTMLInputElement)?.value;
+          if (selected === 'donation') {
+            if (investContainer) investContainer.style.setProperty('display', 'none', 'important');
+            if (categoryWrapper) categoryWrapper.style.setProperty('display', 'none', 'important');
+            if (categoryInput) categoryInput.value = 'donation';
+          } else {
+            if (investContainer) investContainer.style.setProperty('display', 'grid', 'important');
+            if (categoryWrapper) categoryWrapper.style.setProperty('display', 'block', 'important');
+            if (categoryInput && categoryInput.value === 'donation') {
+              categoryInput.value = 'investment';
+            }
+          }
+        };
+
+        radios.forEach(radio => {
+          radio.addEventListener('change', handleTypeChange);
+        });
+
+        handleTypeChange();
+      },
       preConfirm: () => {
         const title = (document.getElementById("swal-title") as HTMLInputElement).value;
-        const category = (document.getElementById("swal-category") as HTMLInputElement).value;
-        if (!title.trim() || !category.trim()) {
+        const isDonation = (document.querySelector('input[name="swal-tipe-utama"]:checked') as HTMLInputElement)?.value === 'donation';
+        const category = isDonation ? 'donation' : ((document.getElementById("swal-category") as HTMLInputElement).value || 'investment');
+
+        if (!title.trim() || (!isDonation && !category.trim())) {
           Swal.showValidationMessage("Judul dan kategori wajib diisi.");
           return null;
         }
@@ -575,10 +643,10 @@ export default function SuperAdminDashboard() {
           description: (document.getElementById("swal-desc") as HTMLTextAreaElement).value,
           target_funding: Number((document.getElementById("swal-target") as HTMLInputElement).value),
           min_amount: Number((document.getElementById("swal-min") as HTMLInputElement).value),
-          interest_rate: Number((document.getElementById("swal-roi") as HTMLInputElement).value),
+          interest_rate: isDonation ? 0 : Number((document.getElementById("swal-roi") as HTMLInputElement).value),
           days_left: Number((document.getElementById("swal-days") as HTMLInputElement).value),
-          tipe_investasi: (document.getElementById("swal-tipe-investasi") as HTMLSelectElement).value,
-          tenor_bulan: Number((document.getElementById("swal-tenor-bulan") as HTMLInputElement).value),
+          tipe_investasi: isDonation ? 'donasi' : (document.getElementById("swal-tipe-investasi") as HTMLSelectElement).value,
+          tenor_bulan: isDonation ? 0 : Number((document.getElementById("swal-tenor-bulan") as HTMLInputElement).value),
         };
       },
     });

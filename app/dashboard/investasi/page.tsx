@@ -1,11 +1,14 @@
 // FORCE TRIGGER DEPLOYMENT VER MARET 2026 - REVISI UAS FIX FINAL
 "use client";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   TrendingUp, Loader2, CheckCircle, Zap, MapPin, Clock,
-  CloudRain, ShieldCheck, Crown, ChevronDown, ChevronUp
+  CloudRain, ShieldCheck, Crown, ChevronDown, ChevronUp, Heart
 } from "lucide-react";
 import StrukModal from "@/components/StrukModal";
 import { useUserContext } from "@/hooks/useUserData";
@@ -47,6 +50,7 @@ export default function InvestasiPage() {
     carbon_impact?: number | null;
     tipe_investasi?: string;
     tenor_bulan?: number;
+    category?: string;
   };
 
   type StrukData = {
@@ -68,10 +72,9 @@ export default function InvestasiPage() {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [activeSubTab, setActiveSubTab] = useState<'katalog' | 'portofolio'>('katalog');
 
-  // Load Katalog Produk
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/green-products?category=investment`, { cache: "no-store" });
+      const res = await fetch(`${API_URL}/green-products`, { cache: "no-store" });
       const d = await res.json();
       setProducts(d.products || []);
     } catch (e) {
@@ -111,11 +114,12 @@ export default function InvestasiPage() {
 
   const handleInvest = async (p: GreenProduct) => {
     const amt = parseInt(amounts[p.id] || "") || p.min_amount;
+    const isDonasi = p.tipe_investasi === 'donasi';
     if (amt < p.min_amount) { 
       Swal.fire({ 
         icon: 'warning', 
         title: 'Nominal Kurang', 
-        text: `Minimal investasi ${formatIDR(p.min_amount)}`, 
+        text: `Minimal ${isDonasi ? 'donasi' : 'investasi'} ${formatIDR(p.min_amount)}`, 
         ...SwalGreenBanking.warning 
       }); 
       return; 
@@ -164,7 +168,7 @@ export default function InvestasiPage() {
     }
 
     Swal.fire({
-      title: 'Memproses Investasi',
+      title: isDonasi ? 'Memproses Donasi' : 'Memproses Investasi',
       text: 'Mohon tunggu sebentar...',
       allowOutsideClick: false,
       didOpen: () => {
@@ -174,23 +178,28 @@ export default function InvestasiPage() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/invest`, {
+      const endpoint = isDonasi ? `${API_URL}/donate` : `${API_URL}/invest`;
+      const body = isDonasi
+        ? JSON.stringify({ name: p.title, type: p.product_id || String(p.id), amount: Number(amt), pin: pin })
+        : JSON.stringify({ investment_id: p.id, type: "investment", amount: Number(amt), pin: pin });
+
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ investment_id: p.id, type: "investment", amount: Number(amt), pin: pin }),
+        body: body,
       });
       const data = await res.json();
 
       if (!res.ok) {
-        Swal.fire({ icon: 'error', title: 'Gagal', text: data.error || data.message || 'Gagal investasi', ...SwalGreenBanking.error });
+        Swal.fire({ icon: 'error', title: 'Gagal', text: data.error || data.message || (isDonasi ? 'Gagal donasi' : 'Gagal investasi'), ...SwalGreenBanking.error });
         return;
       }
 
       Swal.close();
 
       setStrukData({
-        id: data.transaction_id, title: "Struk Investasi Hijau",
-        service: `Investasi: ${p.title}`, amount: amt,
+        id: data.transaction_id, title: isDonasi ? "Struk Donasi Lingkungan" : "Struk Investasi Hijau",
+        service: isDonasi ? `Donasi: ${p.title}` : `Investasi: ${p.title}`, amount: amt,
         time: new Date().toLocaleString("id-ID", { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }) + " WIB",
       });
       
@@ -205,7 +214,7 @@ export default function InvestasiPage() {
       setAmounts(prev => ({ ...prev, [p.id]: "" }));
       setExpandedCard(null);
       refreshUserData();
-      fetchPortfolios(); // Muat ulang portofolio setelah berhasil investasi
+      fetchPortfolios(); // Muat ulang portofolio setelah berhasil
     } catch { 
       Swal.fire({ icon: 'error', title: 'Koneksi Gagal', text: 'Gagal terhubung ke server.', ...SwalGreenBanking.error }); 
     } finally { 
@@ -283,13 +292,16 @@ export default function InvestasiPage() {
 
   const tags = ["Semua", ...Array.from(new Set(products.map(p => p.tag).filter(Boolean)))];
   const filtered = activeFilter === "Semua" ? products : products.filter(p => p.tag === activeFilter);
-  const liquidProducts = filtered.filter(p => !p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0);
-  const tenorProducts = filtered.filter(p => p.tipe_investasi === 'tenor' && (p.tenor_bulan ?? 0) > 0);
+  const liquidProducts = filtered.filter(p => p.category !== 'donation' && (!p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0) && p.tipe_investasi !== 'donasi');
+  const tenorProducts = filtered.filter(p => p.category !== 'donation' && p.tipe_investasi === 'tenor' && (p.tenor_bulan ?? 0) > 0);
+  const donationProducts = filtered.filter(p => p.category === 'donation' || p.tipe_investasi === 'donasi');
 
   const renderProductCard = (p: GreenProduct, i: number) => {
     const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
     const isExpanded = expandedCard === p.id;
     const currentImg = globalProjectImages[p.title] || fallbackImage;
+    const isDonasi = p.tipe_investasi === 'donasi' || p.category === 'donation';
+
     return (
       <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
         className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
@@ -323,17 +335,23 @@ export default function InvestasiPage() {
           )}
 
           {/* ROI besar */}
-          <div className="absolute bottom-3 left-4">
-            <p className="text-emerald-300 text-[10px] font-bold uppercase tracking-wider">ROI</p>
-            <p className="text-white text-2xl font-bold drop-shadow-lg">{p.interest_rate}%<span className="text-sm text-white/60 ml-1">p.a.</span></p>
-          </div>
+          {!isDonasi && (
+            <div className="absolute bottom-3 left-4">
+              <p className="text-emerald-300 text-[10px] font-bold uppercase tracking-wider">ROI</p>
+              <p className="text-white text-2xl font-bold drop-shadow-lg">{p.interest_rate}%<span className="text-sm text-white/60 ml-1">p.a.</span></p>
+            </div>
+          )}
         </div>
 
         {/* --- BODY --- */}
         <div className="p-5">
           {/* Visual Badge Tipe Investasi */}
           <div className="mb-3">
-            {(!p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0) ? (
+            {isDonasi ? (
+              <span className="inline-flex items-center gap-1.5 bg-rose-100 text-rose-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                🌱 DONASI - Peduli Lingkungan
+              </span>
+            ) : (!p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0) ? (
               <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
                 💧 LIQUID - Fleksibel
               </span>
@@ -353,8 +371,12 @@ export default function InvestasiPage() {
           {/* --- FINTECH BANKING INFO GRID --- */}
           <div className="grid grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded-2xl border border-gray-100/80">
             <div>
-              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Imbal Hasil (Bunga)</p>
-              <p className="text-emerald-600 text-lg font-black">{p.interest_rate ?? 0}% <span className="text-xs font-bold text-gray-500">p.a.</span></p>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{isDonasi ? 'Tipe Proyek' : 'Imbal Hasil (Bunga)'}</p>
+              {isDonasi ? (
+                <p className="text-rose-600 text-xs font-black mt-1 uppercase tracking-wider">Sumbangan Sosial</p>
+              ) : (
+                <p className="text-emerald-600 text-lg font-black">{p.interest_rate ?? 0}% <span className="text-xs font-bold text-gray-500">p.a.</span></p>
+              )}
             </div>
             <div>
               <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Min. Transaksi</p>
@@ -372,11 +394,12 @@ export default function InvestasiPage() {
           {/* --- EXPAND / INVEST --- */}
           <button onClick={() => setExpandedCard(isExpanded ? null : p.id)}
             disabled={progress >= 100}
-            className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
+            className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : isDonasi ? 'bg-rose-700 text-white hover:bg-rose-800' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
           >
             {progress >= 100 ? "🔒 Kuota Penuh" : (
               <>
-                <Zap size={14} /> Investasi Sekarang
+                {isDonasi ? <Heart size={14} /> : <Zap size={14} />} 
+                {isDonasi ? "Donasi Sekarang" : "Investasi Sekarang"}
                 {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </>
             )}
@@ -526,7 +549,7 @@ export default function InvestasiPage() {
             </div>
 
             {/* === SECTION 2: TENOR PRODUCTS === */}
-            <div className="mb-6">
+            <div className="mb-12">
               <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-2 border-b border-gray-100">
                 <span className="text-amber-600">🔒</span> Investasi Tenor (Berjangka - Bunga Lebih Tinggi)
               </h2>
@@ -537,6 +560,22 @@ export default function InvestasiPage() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {tenorProducts.map((p, i) => renderProductCard(p, i))}
+                </div>
+              )}
+            </div>
+
+            {/* === SECTION 3: DONATION PRODUCTS === */}
+            <div className="mb-6">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-2 border-b border-gray-100">
+                <span className="text-rose-600">🌱</span> Donasi Hijau (Dukung Proyek Lingkungan)
+              </h2>
+              {donationProducts.length === 0 ? (
+                <div className="bg-gray-50/50 rounded-2xl p-6 text-center border border-dashed border-gray-200">
+                  <p className="text-sm text-gray-400 font-medium">Tidak ada program donasi aktif saat ini.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {donationProducts.map((p, i) => renderProductCard(p, i))}
                 </div>
               )}
             </div>
