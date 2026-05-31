@@ -51,7 +51,7 @@ export default function QrisPage() {
           <div className="w-full max-w-md bg-white rounded-[2rem] shadow-xl overflow-hidden border border-gray-100">
             {/* Header section */}
             <div className="p-6 text-center border-b border-gray-50">
-              <h2 className="text-2xl font-serif font-bold text-gray-900 mb-1">Pindai QRIS</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">Pindai QRIS</h2>
               <p className="text-sm text-gray-500">Arahkan kamera ke kode QR untuk membayar</p>
             </div>
 

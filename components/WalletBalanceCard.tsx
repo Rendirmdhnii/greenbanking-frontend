@@ -44,7 +44,7 @@ export default function WalletBalanceCard({
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-widest text-emerald-200/80 font-bold leading-none">Eco-Wallet</p>
-              <h4 className="font-serif font-black text-sm text-white mt-1">GreenBanking</h4>
+              <h4 className="font-black text-sm text-white mt-1">GreenBanking</h4>
             </div>
           </div>
 

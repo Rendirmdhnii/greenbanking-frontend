@@ -42,7 +42,7 @@ export default function RegisterSuccessPage() {
           </motion.div>
         </div>
 
-        <h1 className="text-3xl font-bold text-[#064e3b] mb-4 font-serif">
+        <h1 className="text-3xl font-bold text-[#064e3b] mb-4">
           Pendaftaran Berhasil!
         </h1>
 

@@ -163,7 +163,7 @@ export default function DashboardPage() {
             setStrukData({
               id: data.order_id || `TOPUP-${Date.now()}`,
               time: timeStr,
-              service: 'Top Up Saldo (Midtrans)',
+              service: 'Top Up Saldo',
               amount: amount,
               title: 'Struk Top Up Saldo'
             });
@@ -228,20 +228,15 @@ export default function DashboardPage() {
 
       <div className="p-6 md:p-8 max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-serif text-[#064e3b] font-bold">
+        <div className="mb-8 flex flex-col gap-1 items-start">
+          <h1 className="text-3xl text-[#064e3b] font-bold">
             Selamat Datang, {userName.split(' ')[0]}!
           </h1>
-          {userEmail !== 'muhammadrendiaf06@gmail.com' && (
-            <>
-              <p className="text-gray-500 text-sm mt-1">{userEmail}</p>
-              {syncStatus === 'success' && (
-                <div className="flex items-center gap-1.5 mt-2 text-emerald-600">
-                  <CheckCircle size={14} />
-                  <span className="text-xs font-medium">Akun Aktif • {tier.toUpperCase()} Tier</span>
-                </div>
-              )}
-            </>
+          {syncStatus === 'success' && (
+            <div className="inline-flex items-center gap-1 mt-1 px-2.5 py-1 rounded-full bg-green-100 text-green-800 text-xs font-semibold">
+              <CheckCircle size={12} className="text-green-700" />
+              <span>Akun Aktif • {tier.toUpperCase()} Tier</span>
+            </div>
           )}
         </div>
 
@@ -271,7 +266,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-emerald-300/80 font-bold leading-none">Dampak Lingkungan</p>
-                  <h4 className="font-serif font-black text-sm text-white mt-1">Eco-Impact</h4>
+                  <h4 className="font-black text-sm text-white mt-1">Eco-Impact</h4>
                 </div>
               </div>
               <span className="text-gray-400 text-xs font-semibold tracking-wide block mb-1">Pengurangan Karbon</span>
@@ -294,7 +289,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-blue-500/80 font-bold leading-none">Loyalti Hijau</p>
-                  <h4 className="font-serif font-black text-sm text-gray-900 mt-1">Eco-Points</h4>
+                  <h4 className="font-black text-sm text-gray-900 mt-1">Eco-Points</h4>
                 </div>
               </div>
               <span className="text-gray-500 text-xs font-semibold tracking-wide block mb-1">Poin Eco - Tier {tier.toUpperCase()}</span>
@@ -318,7 +313,7 @@ export default function DashboardPage() {
 
         {/* Aksi Cepat */}
         <div className="mb-10">
-          <h3 className="text-2xl font-serif font-bold text-[#064e3b] mb-4">Aksi Cepat</h3>
+          <h3 className="text-2xl font-bold text-[#064e3b] mb-4">Aksi Cepat</h3>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
             {/* Top Up — Active State */}
             <button 
@@ -366,7 +361,7 @@ export default function DashboardPage() {
         {/* Riwayat Transaksi Terakhir */}
         <div className="mt-12">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-2xl font-serif font-bold text-[#064e3b]">Riwayat Transaksi Terakhir</h3>
+            <h3 className="text-2xl font-bold text-[#064e3b]">Riwayat Transaksi Terakhir</h3>
             <Link 
               href="/dashboard/riwayat" 
               className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors hover:underline"
@@ -413,7 +408,7 @@ export default function DashboardPage() {
                       )}
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900 text-sm md:text-base leading-tight">{tx.title}</p>
+                      <p className="font-bold text-gray-900 text-sm md:text-base leading-tight">{tx.title?.replace(' (Midtrans)', '')}</p>
                       <p className="text-xs text-gray-400 mt-1">
                         {new Date(tx.created_at).toLocaleString("id-ID", {
                           day: 'numeric',

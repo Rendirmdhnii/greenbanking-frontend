@@ -15,7 +15,7 @@ export default function ProfilePage() {
             className="p-6 md:p-8 max-w-4xl mx-auto w-full"
         >
             <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6 md:p-8">
-                <h1 className="text-2xl font-serif font-bold text-gray-900 mb-6">Profil Pengguna</h1>
+                <h1 className="text-2xl font-bold text-gray-900 mb-6">Profil Pengguna</h1>
 
                 <div className="flex flex-col md:flex-row items-center gap-6 pb-6 border-b border-gray-100">
                     <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700">

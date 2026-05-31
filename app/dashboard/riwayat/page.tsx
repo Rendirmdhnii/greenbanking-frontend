@@ -142,7 +142,7 @@ export default function RiwayatPage() {
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
             <div>
-              <h1 className="text-3xl font-serif font-bold text-[#064e3b]">Riwayat Transaksi</h1>
+              <h1 className="text-3xl font-bold text-[#064e3b]">Riwayat Transaksi</h1>
               <p className="text-gray-500 mt-1">Pantau semua aktivitas keuangan dan dampak Anda bulan ini.</p>
             </div>
             <button onClick={handlePrintStatement} className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors shadow-sm">
@@ -207,7 +207,7 @@ export default function RiwayatPage() {
                   <div className="flex items-center gap-4">
                     {getIcon(trx.type)}
                     <div>
-                      <h3 className="font-bold text-gray-900 group-hover:text-[#115e59] transition-colors">{trx.title}</h3>
+                      <h3 className="font-bold text-gray-900 group-hover:text-[#115e59] transition-colors">{trx.title?.replace(' (Midtrans)', '')}</h3>
                       <div className="flex items-center gap-2 mt-1">
                         <p className="text-xs text-gray-500">{new Date(trx.created_at).toLocaleString("id-ID")}</p>
                         <span className="w-1 h-1 rounded-full bg-gray-300"></span>
@@ -216,7 +216,7 @@ export default function RiwayatPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`font-bold font-serif text-lg ${trx.type === 'in' || trx.type === 'admin_addition' ? 'text-green-600' : 'text-red-500'}`}>
+                    <p className={`font-bold text-lg ${trx.type === 'in' || trx.type === 'admin_addition' ? 'text-green-600' : 'text-red-500'}`}>
                       {trx.type === 'in' || trx.type === 'admin_addition' ? '+' : '-'}{formatIDR(trx.amount)}
                     </p>
                     <p className="text-xs text-[#16a34a] font-bold mt-1 flex items-center justify-end gap-1">
@@ -256,7 +256,7 @@ export default function RiwayatPage() {
                 className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100"
               >
                 <div className="p-6 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
-                  <h3 className="font-serif font-bold text-gray-900 text-xl">Detail Transaksi</h3>
+                  <h3 className="font-bold text-gray-900 text-xl">Detail Transaksi</h3>
                   <button onClick={() => setSelectedTrx(null)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors">
                     <X size={16} />
                   </button>
@@ -264,8 +264,8 @@ export default function RiwayatPage() {
                 <div className="p-6">
                   <div className="text-center mb-6">
                     <div className="flex justify-center">{getIcon(selectedTrx.type)}</div>
-                    <h4 className="font-bold text-gray-900 mt-3">{selectedTrx.title}</h4>
-                    <p className={`font-serif font-bold text-3xl mt-2 ${selectedTrx.type === 'in' || selectedTrx.type === 'admin_addition' ? 'text-green-600' : 'text-red-500'}`}>
+                    <h4 className="font-bold text-gray-900 mt-3">{selectedTrx.title?.replace(' (Midtrans)', '')}</h4>
+                    <p className={`font-bold text-3xl mt-2 ${selectedTrx.type === 'in' || selectedTrx.type === 'admin_addition' ? 'text-green-600' : 'text-red-500'}`}>
                       {selectedTrx.type === 'in' || selectedTrx.type === 'admin_addition' ? '+' : '-'}{formatIDR(selectedTrx.amount)}
                     </p>
                   </div>

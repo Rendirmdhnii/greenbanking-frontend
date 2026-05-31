@@ -244,7 +244,7 @@ export default function PengaturanPage() {
     >
       <div className="flex flex-col md:flex-row items-start justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-[#064e3b]">Pengaturan Akun</h1>
+          <h1 className="text-3xl font-bold text-[#064e3b]">Pengaturan Akun</h1>
           <p className="text-gray-500 mt-1">Kelola preferensi dan profil EcoBank Anda.</p>
         </div>
       </div>

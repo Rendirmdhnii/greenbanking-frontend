@@ -119,7 +119,7 @@ export default function RegisterPage() {
           <div className="w-14 h-14 md:w-16 md:h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-5 md:mb-6 border border-emerald-100 shadow-sm animate-pulse">
             <CheckCircle className="text-[#059669] w-7 h-7 md:w-8 md:h-8" />
           </div>
-          <h2 className="text-xl md:text-2xl font-serif font-black text-emerald-900 tracking-tight mb-2">Registrasi Berhasil!</h2>
+          <h2 className="text-xl md:text-2xl font-black text-emerald-900 tracking-tight mb-2">Registrasi Berhasil!</h2>
           <p className="text-gray-400 text-xs md:text-sm mb-5 md:mb-6 leading-relaxed">
             Selamat! Akun Anda telah terdaftar di GreenBanking Nusantara. Mengalihkan ke dashboard...
           </p>
@@ -145,7 +145,7 @@ export default function RegisterPage() {
               <img src="/logo.svg" alt="GreenBanking Logo" className="w-8 h-8 md:w-9 md:h-9 object-contain" />
             </div>
           </Link>
-          <h2 className="text-xl md:text-2xl font-serif font-black text-emerald-900 tracking-tight mb-1 md:mb-1.5">
+          <h2 className="text-xl md:text-2xl font-black text-emerald-900 tracking-tight mb-1 md:mb-1.5">
             Mulai Langkah Hijau Anda
           </h2>
           <p className="text-[11px] md:text-xs text-gray-400 font-medium">
@@ -321,7 +321,7 @@ export default function RegisterPage() {
             </div>
             
             {/* Modal Title */}
-            <h3 className="text-xl font-serif font-black text-gray-900 tracking-tight mb-2">
+            <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">
               Autentikasi Gagal
             </h3>
             

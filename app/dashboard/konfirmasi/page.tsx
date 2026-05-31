@@ -37,7 +37,7 @@ export default function KonfirmasiPage() {
                 </div>
               </motion.div>
               
-              <h2 className="text-3xl font-serif font-bold text-gray-900 mb-1">Transaksi Berhasil!</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-1">Transaksi Berhasil!</h2>
               <p className="text-gray-500 text-sm mb-8">
                 {new Date().toLocaleString("id-ID", { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
               </p>
@@ -53,7 +53,7 @@ export default function KonfirmasiPage() {
                 </div>
                 <div className="flex justify-between items-center text-sm border-b border-gray-200 pb-4">
                   <span className="text-gray-500">Nominal Transaksi</span>
-                  <span className="font-bold font-serif text-gray-900 text-lg">Rp 2.500.000</span>
+                  <span className="font-bold text-gray-900 text-lg">Rp 2.500.000</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-500">Biaya Admin</span>

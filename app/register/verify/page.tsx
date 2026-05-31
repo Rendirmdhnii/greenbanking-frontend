@@ -23,7 +23,7 @@ export default function VerifyOTPPage() {
             <Lock size={22} strokeWidth={2.5} />
           </div>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mb-3 font-serif">Verifikasi OTP</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-3">Verifikasi OTP</h2>
           <p className="text-[13px] text-gray-500 mb-8 px-2 leading-relaxed">
             Kami telah mengirimkan 6 digit kode ke WhatsApp Anda di <span className="font-semibold text-gray-800">+62812-9872-xxxx</span>.
           </p>

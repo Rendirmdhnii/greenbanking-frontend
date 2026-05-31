@@ -43,7 +43,7 @@ export default function AkunPage() {
           className="p-8 max-w-5xl mx-auto w-full"
         >
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-serif font-bold text-[#064e3b]">Profil Nasabah</h1>
+            <h1 className="text-3xl font-bold text-[#064e3b]">Profil Nasabah</h1>
             {!isOwner && (
               <button 
                 onClick={() => setShowSensitive(!showSensitive)}
@@ -135,7 +135,7 @@ export default function AkunPage() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#115e59] rounded-full blur-2xl -mr-10 -mt-10"></div>
                 <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#a3e635]/20 rounded-full blur-3xl -ml-20 -mb-20"></div>
                 
-                <h3 className="text-xl font-serif font-bold mb-6 relative z-10 flex items-center gap-2">
+                <h3 className="text-xl font-bold mb-6 relative z-10 flex items-center gap-2">
                   <Globe size={24} className="text-emerald-300" /> Total Dampak Lingkungan
                 </h3>
 
@@ -143,7 +143,7 @@ export default function AkunPage() {
                   <div>
                     <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-1">Pohon Ditanam</p>
                     <div className="flex items-end gap-2">
-                      <span className="text-4xl font-bold font-serif">{Math.floor(userEcoPoints / 100)}</span>
+                      <span className="text-4xl font-bold">{Math.floor(userEcoPoints / 100)}</span>
                       <span className="text-emerald-300 pb-1 font-medium">Bibit Mangrove</span>
                     </div>
                   </div>
@@ -154,7 +154,7 @@ export default function AkunPage() {
                     <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-1">Jejak Karbon Dihapus</p>
                     <div className="flex items-end gap-2">
                       {/* FORMATTING ANGKA DINAMIS SESUAI SPESIFIKASI */}
-                      <span className="text-4xl font-bold font-serif">
+                      <span className="text-4xl font-bold">
                         {Number(impactScore).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
                       </span>
                       <span className="text-emerald-300 pb-1 font-medium">kg CO2e</span>
@@ -167,7 +167,7 @@ export default function AkunPage() {
                     <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-1">Poin Eco</p>
                     <div className="flex items-end gap-2">
                       <Target size={32} className="text-[#a3e635]" />
-                      <span className="text-3xl font-bold font-serif">{userEcoPoints}</span>
+                      <span className="text-3xl font-bold">{userEcoPoints}</span>
                       <span className="text-emerald-300 pb-1 font-medium ml-1">Poin</span>
                     </div>
                   </div>

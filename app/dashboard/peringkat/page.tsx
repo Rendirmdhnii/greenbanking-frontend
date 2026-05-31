@@ -104,7 +104,7 @@ export default function PeringkatPage() {
             <Trophy size={24} />
           </div>
           <div>
-            <h1 className="text-3xl font-serif font-bold text-[#064e3b]">Peringkat & Dampak Sosial</h1>
+            <h1 className="text-3xl font-bold text-[#064e3b]">Peringkat & Dampak Sosial</h1>
             <p className="text-sm text-gray-500">Lihat kontribusi nyata Anda untuk kelestarian bumi</p>
           </div>
         </div>
@@ -123,7 +123,7 @@ export default function PeringkatPage() {
                   <Globe size={16} className="text-emerald-300 animate-pulse" />
                   Dampak Kolektif Nasabah EcoBank
                 </p>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-tight drop-shadow-sm">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight drop-shadow-sm">
                   {loading || !globalImpact ? (
                     <span className="text-emerald-200">Memuat...</span>
                   ) : (
@@ -199,7 +199,7 @@ export default function PeringkatPage() {
           
           {/* Leaderboard Header (Clean - No small sparkles/icons) */}
           <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-            <h3 className="font-serif font-bold text-gray-900 text-lg">Leaderboard Eco-Champion</h3>
+            <h3 className="font-bold text-gray-900 text-lg">Leaderboard Eco-Champion</h3>
             <span className="text-[10px] font-bold tracking-widest text-[#115e59] bg-emerald-50 px-2.5 py-1 rounded-full uppercase">Global</span>
           </div>
  

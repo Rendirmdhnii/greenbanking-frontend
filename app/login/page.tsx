@@ -183,7 +183,7 @@ export default function LoginPage() {
               <img src="/logo.svg" alt="GreenBanking Logo" className="w-8 h-8 md:w-9 md:h-9 object-contain" />
             </div>
           </Link>
-          <h2 className="text-xl md:text-2xl font-serif font-black text-emerald-900 tracking-tight mb-1 md:mb-1.5">
+          <h2 className="text-xl md:text-2xl font-black text-emerald-900 tracking-tight mb-1 md:mb-1.5">
             Selamat Datang Kembali
           </h2>
           <p className="text-[11px] md:text-xs text-gray-400 font-medium">
@@ -348,7 +348,7 @@ export default function LoginPage() {
             </div>
             
             {/* Modal Title */}
-            <h3 className="text-xl font-serif font-black text-gray-900 tracking-tight mb-2">
+            <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">
               Autentikasi Gagal
             </h3>
             
