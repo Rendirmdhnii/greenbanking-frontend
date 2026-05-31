@@ -13,6 +13,7 @@ interface Notification {
   message: string;
   type: string; // 'maintenance' | 'update' | 'info'
   read: boolean;
+  is_read?: boolean;
   created_at: string;
 }
 
@@ -94,6 +95,9 @@ export default function Header({ userHook }: { userHook: any }) {
       }
     };
     fetchNotifications();
+    // Poll notifications every 10 seconds for real-time feel
+    const interval = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   // Close notifications on outside click
@@ -107,7 +111,7 @@ export default function Header({ userHook }: { userHook: any }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter(n => !n.read && !n.is_read).length;
 
   const getNotifIcon = (type: string) => {
     switch (type) {
@@ -125,8 +129,42 @@ export default function Header({ userHook }: { userHook: any }) {
     }
   };
 
-  const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  const handleNotifClick = async (notifId: number) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch(`${API_URL}/notifications/${notifId}/read`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+        }
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => n.id === notifId ? { ...n, read: true, is_read: true } : n));
+      }
+    } catch (e) {
+      console.error("Gagal tandai dibaca:", e);
+    }
+  };
+
+  const markAllRead = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch(`${API_URL}/notifications/read-all`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+        }
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => ({ ...n, read: true, is_read: true })));
+      }
+    } catch (e) {
+      console.error("Gagal tandai semua dibaca:", e);
+    }
   };
 
   const timeAgo = (dateStr: string) => {
@@ -191,7 +229,7 @@ export default function Header({ userHook }: { userHook: any }) {
         {/* Notification Bell — Functional */}
         <div className="relative" ref={notifRef}>
           <button 
-            onClick={() => { setShowNotifications(!showNotifications); if (!showNotifications) markAllRead(); }}
+            onClick={() => setShowNotifications(!showNotifications)}
             className="relative text-gray-400 hover:text-gray-600 transition-colors"
           >
             <Bell size={20} />
@@ -201,42 +239,59 @@ export default function Header({ userHook }: { userHook: any }) {
               </span>
             )}
           </button>
-
+ 
           {showNotifications && (
-            <div className="absolute right-0 top-full mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50">
+            <div className="absolute right-0 top-full mt-3 w-85 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50">
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-gray-50/50">
                 <h4 className="font-bold text-gray-900 text-sm">Notifikasi</h4>
-                <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
-                  <X size={16} />
-                </button>
+                <div className="flex items-center gap-3">
+                  {unreadCount > 0 && (
+                    <button 
+                      onClick={markAllRead} 
+                      className="text-xs text-emerald-600 hover:text-emerald-700 font-bold"
+                    >
+                      Tandai Semua Dibaca
+                    </button>
+                  )}
+                  <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
+                    <X size={16} />
+                  </button>
+                </div>
               </div>
               <div className="max-h-72 overflow-y-auto divide-y divide-gray-50">
                 {notifications.length === 0 ? (
                   <div className="px-5 py-8 text-center text-gray-400 text-sm">Tidak ada notifikasi</div>
                 ) : (
-                  notifications.map(n => (
-                    <div key={n.id} className={`px-5 py-4 hover:bg-gray-50 transition-colors ${!n.read ? 'bg-blue-50/30' : ''}`}>
-                      <div className="flex items-start gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border ${getNotifBg(n.type)}`}>
-                          {getNotifIcon(n.type)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-900 text-sm">{n.title}</p>
-                          <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{n.message}</p>
-                          <p className="text-[10px] text-gray-400 mt-1 font-medium">{timeAgo(n.created_at)}</p>
+                  notifications.map(n => {
+                    const isUnread = !n.read && !n.is_read;
+                    return (
+                      <div 
+                        key={n.id} 
+                        onClick={() => handleNotifClick(n.id)}
+                        className={`px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${isUnread ? 'bg-emerald-50/10 hover:bg-emerald-50/20 border-l-2 border-emerald-500' : ''}`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border ${getNotifBg(n.type)}`}>
+                            {getNotifIcon(n.type)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-sm ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>{n.title}</p>
+                            <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{n.message}</p>
+                            <p className="text-[10px] text-gray-400 mt-1 font-medium">{timeAgo(n.created_at)}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
           )}
         </div>
-
+ 
         <Link href="/dashboard/akun" className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center cursor-pointer bg-gradient-to-br from-[#064e3b] to-[#115e59]">
           {avatarUrl ? (
-            <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+            <img src={`${avatarUrl}${avatarUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} alt="Avatar" className="w-full h-full object-cover" />
           ) : (
             <span className="text-white font-bold text-sm tracking-widest">{initials}</span>
           )}

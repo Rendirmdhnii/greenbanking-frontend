@@ -230,7 +230,7 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-serif text-[#064e3b] font-bold">
-            Selamat Datang, {userName.split(' ')[0]}! 👋
+            Selamat Datang, {userName.split(' ')[0]}!
           </h1>
           {userEmail !== 'muhammadrendiaf06@gmail.com' && (
             <>

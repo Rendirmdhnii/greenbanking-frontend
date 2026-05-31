@@ -243,7 +243,7 @@ export default function DonasiPage() {
                     disabled={donateLoading === p.id || progress >= 100 || p.has_invested}
                     className={`text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1 ${progress >= 100 ? 'bg-gray-400 cursor-not-allowed' : p.has_invested ? 'bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-200' : 'bg-rose-500 hover:bg-rose-600 hover:scale-105 disabled:opacity-50'}`}
                   >
-                    {progress >= 100 ? "🔒 Pendanaan Selesai" : p.has_invested ? "Sudah Diikuti" : (
+                    {progress >= 100 ? "Pendanaan Selesai" : p.has_invested ? "Sudah Diikuti" : (
                       <>
                         {donateLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <Heart size={14} />}
                         {donateLoading === p.id ? '...' : 'Donasi Sekarang'}

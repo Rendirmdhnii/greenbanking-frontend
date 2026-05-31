@@ -47,10 +47,7 @@ export default function WalletBalanceCard({
               <h4 className="font-serif font-black text-sm text-white mt-1">GreenBanking</h4>
             </div>
           </div>
-          {/* Decorative Contactless/Chip symbol */}
-          <div className="flex flex-col gap-0.5 items-end opacity-70">
-            <div className="w-6 h-4 bg-yellow-400/80 rounded-md border border-yellow-300/40"></div>
-          </div>
+
         </div>
 
         {/* Middle Section: Balance Display */}

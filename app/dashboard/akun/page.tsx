@@ -67,7 +67,7 @@ export default function AkunPage() {
                     <div className="relative inline-block">
                       <div className="w-32 h-32 bg-white rounded-full p-1.5 shadow-lg flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#064e3b] to-[#115e59]">
                         {avatarUrl ? (
-                          <img src={avatarUrl} alt="Avatar" className="w-full h-full rounded-full object-cover" />
+                          <img src={`${avatarUrl}${avatarUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} alt="Avatar" className="w-full h-full rounded-full object-cover" />
                         ) : (
                           <span className="text-white font-bold text-4xl tracking-widest">{initials}</span>
                         )}

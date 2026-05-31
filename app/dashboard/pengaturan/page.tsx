@@ -296,7 +296,7 @@ export default function PengaturanPage() {
                       <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                         <div className="w-28 h-28 rounded-full border-4 border-gray-50 bg-gray-100 overflow-hidden relative shadow-inner">
                            {previewImage ? (
-                            <img src={previewImage} alt="Profile" className="w-full h-full object-cover" />
+                            <img src={previewImage.startsWith('blob:') ? previewImage : `${previewImage}${previewImage.includes('?') ? '&' : '?'}t=${Date.now()}`} alt="Profile" className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-3xl">
                               {userName?.charAt(0).toUpperCase() || 'U'}

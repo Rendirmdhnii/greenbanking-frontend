@@ -263,7 +263,7 @@ export default function SuperAdminDashboard() {
             <option value="months">Bulan</option>
           </select>
           <p style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem; line-height: 1.4;">
-            💡 Contoh: Ketik 6 lalu pilih 'Bulan' untuk memajukan waktu investasi menjadi 6 bulan yang lalu.
+            Contoh: Ketik 6 lalu pilih 'Bulan' untuk memajukan waktu investasi menjadi 6 bulan yang lalu.
           </p>
         </div>
       `,
@@ -271,7 +271,7 @@ export default function SuperAdminDashboard() {
       showCancelButton: true,
       background: '#ffffff',
       color: '#111827',
-      confirmButtonText: 'Simpan Percepatan 🚀',
+      confirmButtonText: 'Simpan Percepatan',
       cancelButtonText: 'Batal',
       confirmButtonColor: '#059669',
       cancelButtonColor: '#dc2626',
@@ -524,82 +524,90 @@ export default function SuperAdminDashboard() {
   const handleTambahProduk = async () => {
     const { value: formValues } = await Swal.fire({
       title: "Tambah Produk Investasi/Donasi",
-      width: "700px",
+      width: "650px",
       html: `
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-4 text-left p-2">
           <!-- Tipe Utama -->
           <div class="col-span-2">
-            <div class="text-left mb-1.5 text-sm text-gray-700 font-bold">Tipe Utama</div>
-            <div style="display: flex; gap: 1.5rem; margin-bottom: 0.5rem;">
-              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                <input type="radio" name="swal-tipe-utama" value="investment" checked style="accent-color: #059669;" />
-                <span class="text-sm font-bold text-gray-800">Investasi</span>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Tipe Utama</label>
+            <div class="flex gap-6 bg-gray-50 p-3 rounded-xl border border-gray-200">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="radio" name="swal-tipe-utama" value="investment" checked class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300" />
+                <span class="text-sm font-semibold text-gray-700">Investasi</span>
               </label>
-              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                <input type="radio" name="swal-tipe-utama" value="donation" style="accent-color: #059669;" />
-                <span class="text-sm font-bold text-gray-800">Donasi</span>
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="radio" name="swal-tipe-utama" value="donation" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300" />
+                <span class="text-sm font-semibold text-gray-700">Donasi</span>
               </label>
             </div>
           </div>
 
           <div class="col-span-2">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Judul Produk</div>
-            <input id="swal-title" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" placeholder="Contoh: Rehabilitasi Mangrove">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Judul Produk</label>
+            <input id="swal-title" type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0" placeholder="Contoh: Rehabilitasi Mangrove">
           </div>
+          
           <div class="col-span-2">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Upload Gambar Produk</div>
-            <input id="swal-image-file" type="file" accept="image/*" class="swal2-file !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Upload Gambar Produk</label>
+            <input id="swal-image-file" type="file" accept="image/*" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 border-dashed rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-600 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 !mt-0 !mb-0">
           </div>
+
           <div class="col-span-2">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Deskripsi (opsional)</div>
-            <textarea id="swal-desc" class="swal2-textarea !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" style="min-height: 90px;" placeholder="Tuliskan ringkasan proyek..."></textarea>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Deskripsi (opsional)</label>
+            <textarea id="swal-desc" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0" style="min-height: 80px;" placeholder="Tuliskan ringkasan proyek..."></textarea>
           </div>
+
           <div id="swal-category-wrapper">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori</div>
-            <input id="swal-category" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" placeholder="Contoh: Restorasi" value="investment">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Kategori</label>
+            <input id="swal-category" type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0" placeholder="Contoh: Restorasi" value="investment">
           </div>
+
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Minimal Invest/Donasi (Rp)</div>
-            <input id="swal-min" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="10000">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Minimal Invest/Donasi (Rp)</label>
+            <input id="swal-min" type="text" inputmode="numeric" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="10.000">
           </div>
+
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Target Dana (Rp)</div>
-            <input id="swal-target" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Target Dana (Rp)</label>
+            <input id="swal-target" type="text" inputmode="numeric" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="0">
           </div>
 
           <!-- Investment specific container -->
           <div id="swal-investment-container" class="col-span-2 grid grid-cols-2 gap-4 !p-0 !m-0">
             <div>
-              <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori Investasi</div>
-              <select id="swal-tipe-investasi" class="swal2-select !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" style="display: flex;">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Kategori Investasi</label>
+              <select id="swal-tipe-investasi" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold">
                 <option value="liquid">Liquid (Fleksibel)</option>
                 <option value="tenor">Tenor (Dikunci)</option>
               </select>
             </div>
             <div>
-              <div class="text-left mb-1 text-sm text-gray-700 font-bold">Persentase Bunga/ROI (% p.a.)</div>
-              <input id="swal-roi" type="number" step="0.1" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Persentase Bunga/ROI (% p.a.)</label>
+              <input id="swal-roi" type="number" step="0.1" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="0">
             </div>
             <div class="col-span-2">
-              <div class="text-left mb-1 text-sm text-gray-700 font-bold">Lama Tenor (Bulan) <span class="text-xs text-gray-400 font-normal">(Isi 0 jika Liquid)</span></div>
-              <input id="swal-tenor-bulan" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Lama Tenor (Bulan) <span class="text-[10px] text-gray-400 font-normal uppercase tracking-normal">(Isi 0 jika Liquid)</span></label>
+              <input id="swal-tenor-bulan" type="number" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="0">
             </div>
           </div>
 
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Hari Tersisa (opsional)</div>
-            <input id="swal-days" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="0">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Hari Tersisa (opsional)</label>
+            <input id="swal-days" type="number" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="0">
           </div>
         </div>
       `,
       focusConfirm: false,
       showCancelButton: true,
-      confirmButtonText: "Simpan",
+      confirmButtonText: "Simpan Produk",
       cancelButtonText: "Batal",
       background: "#ffffff",
       color: "#111827",
-      confirmButtonColor: "#059669",
-      cancelButtonColor: "#dc2626",
+      customClass: {
+        confirmButton: 'px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-md hover:shadow-lg outline-none border-0 cursor-pointer',
+        cancelButton: 'px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-all ml-3 outline-none border-0 cursor-pointer'
+      },
+      buttonsStyling: false,
       didOpen: () => {
         const radios = document.querySelectorAll('input[name="swal-tipe-utama"]');
         const investContainer = document.getElementById('swal-investment-container');
@@ -626,6 +634,28 @@ export default function SuperAdminDashboard() {
         });
 
         handleTypeChange();
+
+        // Real-time Rupiah formatting
+        const minInput = document.getElementById('swal-min') as HTMLInputElement;
+        const targetInput = document.getElementById('swal-target') as HTMLInputElement;
+
+        const formatRupiahInput = (input: HTMLInputElement) => {
+          let val = input.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+          if (val) {
+            input.value = Number(val).toLocaleString('id-ID');
+          } else {
+            input.value = '';
+          }
+        };
+
+        if (minInput) {
+          formatRupiahInput(minInput);
+          minInput.addEventListener('input', () => formatRupiahInput(minInput));
+        }
+        if (targetInput) {
+          formatRupiahInput(targetInput);
+          targetInput.addEventListener('input', () => formatRupiahInput(targetInput));
+        }
       },
       preConfirm: () => {
         const title = (document.getElementById("swal-title") as HTMLInputElement).value;
@@ -643,8 +673,8 @@ export default function SuperAdminDashboard() {
           category,
           imageFile,
           description: (document.getElementById("swal-desc") as HTMLTextAreaElement).value,
-          target_funding: Number((document.getElementById("swal-target") as HTMLInputElement).value),
-          min_amount: Number((document.getElementById("swal-min") as HTMLInputElement).value),
+          target_funding: Number((document.getElementById("swal-target") as HTMLInputElement).value.replace(/\./g, '')),
+          min_amount: Number((document.getElementById("swal-min") as HTMLInputElement).value.replace(/\./g, '')),
           interest_rate: isDonation ? 0 : Number((document.getElementById("swal-roi") as HTMLInputElement).value),
           days_left: Number((document.getElementById("swal-days") as HTMLInputElement).value),
           tipe_investasi: isDonation ? 'donasi' : (document.getElementById("swal-tipe-investasi") as HTMLSelectElement).value,
@@ -748,47 +778,50 @@ export default function SuperAdminDashboard() {
   const handleEditProduct = async (product: GreenProduct) => {
     const { value: formValues } = await Swal.fire({
       title: `Ubah Produk: ${product.title}`,
-      width: '600px',
+      width: '650px',
       html: `
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-4 text-left p-2">
           <div class="col-span-2">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Judul Produk</div>
-            <input id="swal-title" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.title}">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Judul Produk</label>
+            <input id="swal-title" type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0" value="${product.title}">
           </div>
-          <div class="col-span-2 hidden">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">URL Gambar (Terunci Otomatis)</div>
-            <input id="swal-image" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" disabled value="${product.image || ''}">
-          </div>
+          
           <div class="col-span-2">
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Deskripsi</div>
-            <textarea id="swal-desc" class="swal2-textarea !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" style="min-height: 80px;">${product.description || ''}</textarea>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Deskripsi</label>
+            <textarea id="swal-desc" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0" style="min-height: 80px;">${product.description || ''}</textarea>
           </div>
+
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Target Dana (Rp)</div>
-            <input id="swal-target" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.target_funding || 0}">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Target Dana (Rp)</label>
+            <input id="swal-target" type="text" inputmode="numeric" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="${product.target_funding || 0}">
           </div>
+
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Minimal Invest/Donasi (Rp)</div>
-            <input id="swal-min" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.min_amount || 0}">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Minimal Invest/Donasi (Rp)</label>
+            <input id="swal-min" type="text" inputmode="numeric" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="${product.min_amount || 0}">
           </div>
+
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Kategori Investasi</div>
-            <select id="swal-tipe-investasi" class="swal2-select !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Kategori Investasi</label>
+            <select id="swal-tipe-investasi" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold">
               <option value="liquid" ${product.tipe_investasi === 'liquid' ? 'selected' : ''}>Liquid (Fleksibel)</option>
               <option value="tenor" ${product.tipe_investasi === 'tenor' ? 'selected' : ''}>Tenor (Dikunci)</option>
             </select>
           </div>
+
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Bunga / ROI (%)</div>
-            <input id="swal-roi" type="number" step="0.1" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.interest_rate || 0}">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Bunga / ROI (%)</label>
+            <input id="swal-roi" type="number" step="0.1" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="${product.interest_rate || 0}">
           </div>
+
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Lama Tenor (Bulan) <span class="text-xs text-gray-400 font-normal">(Isi 0 jika Liquid)</span></div>
-            <input id="swal-tenor-bulan" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.tenor_bulan || 0}">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Lama Tenor (Bulan) <span class="text-[10px] text-gray-400 font-normal uppercase tracking-normal">(Isi 0 jika Liquid)</span></label>
+            <input id="swal-tenor-bulan" type="number" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="${product.tenor_bulan || 0}">
           </div>
+
           <div>
-            <div class="text-left mb-1 text-sm text-gray-700 font-bold">Hari Tersisa</div>
-            <input id="swal-days" type="number" class="swal2-input !mt-0 !mb-2 w-full bg-gray-50 border-gray-300 text-gray-900" value="${product.days_left || 0}">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Hari Tersisa</label>
+            <input id="swal-days" type="number" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0 font-semibold" value="${product.days_left || 0}">
           </div>
         </div>
       `,
@@ -798,16 +831,41 @@ export default function SuperAdminDashboard() {
       color: '#111827',
       confirmButtonText: 'Simpan',
       cancelButtonText: 'Batal',
-      confirmButtonColor: '#059669',
-      cancelButtonColor: '#dc2626',
+      customClass: {
+        confirmButton: 'px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-md hover:shadow-lg outline-none border-0 cursor-pointer',
+        cancelButton: 'px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-all ml-3 outline-none border-0 cursor-pointer'
+      },
+      buttonsStyling: false,
+      didOpen: () => {
+        const minInput = document.getElementById('swal-min') as HTMLInputElement;
+        const targetInput = document.getElementById('swal-target') as HTMLInputElement;
+
+        const formatRupiahInput = (input: HTMLInputElement) => {
+          let val = input.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+          if (val) {
+            input.value = Number(val).toLocaleString('id-ID');
+          } else {
+            input.value = '';
+          }
+        };
+
+        if (minInput) {
+          formatRupiahInput(minInput);
+          minInput.addEventListener('input', () => formatRupiahInput(minInput));
+        }
+        if (targetInput) {
+          formatRupiahInput(targetInput);
+          targetInput.addEventListener('input', () => formatRupiahInput(targetInput));
+        }
+      },
       preConfirm: () => {
         const title = (document.getElementById('swal-title') as HTMLInputElement).value;
         return {
           title,
           image: globalProjectImages[title] || product.image || fallbackImage,
           description: (document.getElementById('swal-desc') as HTMLTextAreaElement).value,
-          target_funding: Number((document.getElementById('swal-target') as HTMLInputElement).value),
-          min_amount: Number((document.getElementById('swal-min') as HTMLInputElement).value),
+          target_funding: Number((document.getElementById('swal-target') as HTMLInputElement).value.replace(/\./g, '')),
+          min_amount: Number((document.getElementById('swal-min') as HTMLInputElement).value.replace(/\./g, '')),
           interest_rate: Number((document.getElementById('swal-roi') as HTMLInputElement).value),
           days_left: Number((document.getElementById('swal-days') as HTMLInputElement).value),
           tipe_investasi: (document.getElementById('swal-tipe-investasi') as HTMLSelectElement).value,
@@ -1736,7 +1794,7 @@ export default function SuperAdminDashboard() {
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                         </div>
                         <div>
-                          <h2 className="text-lg font-bold text-gray-900">Pantau & Cairkan Investasi Nasabah</h2>
+                          <h2 className="text-lg font-bold text-gray-900">Manajemen Portofolio Nasabah</h2>
                           <p className="text-xs text-gray-500 font-medium">Bypass kunci tenor dan pantau portofolio nasabah ({filteredInvestments.length} Total)</p>
                         </div>
                       </div>
@@ -1766,7 +1824,7 @@ export default function SuperAdminDashboard() {
                             <th className="px-6 py-4">Nominal</th>
                             <th className="px-6 py-4">Suku Bunga</th>
                             <th className="px-6 py-4">Tipe & Status</th>
-                            <th className="px-6 py-4 text-right">Aksi Demo</th>
+                            <th className="px-6 py-4 text-right">Aksi</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 bg-white">
@@ -1811,7 +1869,7 @@ export default function SuperAdminDashboard() {
                                         : 'bg-gray-100 text-gray-500 border-gray-200'
                                     }`}>
                                       {inv.status === 'active' 
-                                        ? (inv.is_locked ? '🔒 Terkunci' : '🔓 Jatuh Tempo') 
+                                        ? (inv.is_locked ? 'Terkunci' : 'Jatuh Tempo') 
                                         : 'Completed'}
                                     </span>
                                   </div>
@@ -1822,7 +1880,7 @@ export default function SuperAdminDashboard() {
                                       onClick={() => handleAccelerate(inv)}
                                       className="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl transition-all shadow-sm hover:shadow-md flex items-center gap-1.5 ml-auto"
                                     >
-                                      <span>🕒 Edit Waktu</span>
+                                      <span>Edit Waktu</span>
                                     </button>
                                   ) : (
                                     <span className="text-xs text-gray-400 italic">Investasi Selesai</span>

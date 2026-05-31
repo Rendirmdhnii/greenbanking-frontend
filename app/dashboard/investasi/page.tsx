@@ -371,15 +371,15 @@ export default function InvestasiPage() {
           <div className="mb-3">
             {isDonasi ? (
               <span className="inline-flex items-center gap-1.5 bg-rose-100 text-rose-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                🌱 DONASI - Peduli Lingkungan
+                DONASI - Peduli Lingkungan
               </span>
             ) : (!p.tipe_investasi || p.tipe_investasi === 'liquid' || p.tenor_bulan === 0) ? (
               <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                💧 LIQUID - Fleksibel
+                LIQUID - Fleksibel
               </span>
             ) : (
               <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                🔒 TENOR {p.tenor_bulan} BULAN
+                TENOR {p.tenor_bulan} BULAN
               </span>
             )}
           </div>
@@ -418,7 +418,7 @@ export default function InvestasiPage() {
             disabled={progress >= 100 || p.has_invested}
             className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${progress >= 100 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : p.has_invested ? 'bg-gray-300 text-gray-400 cursor-not-allowed border border-gray-200' : isDonasi ? 'bg-rose-700 text-white hover:bg-rose-800' : 'bg-[#064e3b] text-white hover:bg-[#065f46]'}`}
           >
-            {progress >= 100 ? "🔒 Kuota Penuh" : p.has_invested ? "Portofolio Aktif" : (
+            {progress >= 100 ? "Kuota Penuh" : p.has_invested ? "Portofolio Aktif" : (
               <>
                 {isDonasi ? <Heart size={14} /> : <Zap size={14} />} 
                 {isDonasi ? "Donasi Sekarang" : "Investasi Sekarang"}
@@ -567,7 +567,7 @@ export default function InvestasiPage() {
             {/* === SECTION 1: LIQUID PRODUCTS === */}
             <div className="mb-12">
               <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-2 border-b border-gray-100">
-                <span className="text-emerald-600">💧</span> Investasi Liquid (Fleksibel - Tarik Kapan Saja)
+                Investasi Liquid (Fleksibel - Tarik Kapan Saja)
               </h2>
               {liquidProducts.length === 0 ? (
                 <div className="bg-gray-50/50 rounded-2xl p-6 text-center border border-dashed border-gray-200">
@@ -583,7 +583,7 @@ export default function InvestasiPage() {
             {/* === SECTION 2: TENOR PRODUCTS === */}
             <div className="mb-12">
               <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-2 border-b border-gray-100">
-                <span className="text-amber-600">🔒</span> Investasi Tenor (Berjangka - Bunga Lebih Tinggi)
+                Investasi Tenor (Berjangka - Bunga Lebih Tinggi)
               </h2>
               {tenorProducts.length === 0 ? (
                 <div className="bg-gray-50/50 rounded-2xl p-6 text-center border border-dashed border-gray-200">
@@ -599,7 +599,7 @@ export default function InvestasiPage() {
             {/* === SECTION 3: DONATION PRODUCTS === */}
             <div className="mb-6">
               <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-2 border-b border-gray-100">
-                <span className="text-rose-600">🌱</span> Donasi Hijau (Dukung Proyek Lingkungan)
+                Donasi Hijau (Dukung Proyek Lingkungan)
               </h2>
               {donationProducts.length === 0 ? (
                 <div className="bg-gray-50/50 rounded-2xl p-6 text-center border border-dashed border-gray-200">
@@ -708,7 +708,7 @@ export default function InvestasiPage() {
                               disabled
                               className="w-full py-3.5 bg-gray-100 text-gray-400 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-1.5 cursor-not-allowed border border-gray-200/50"
                             >
-                              <span>🔒 Tarik Uang (Terkunci)</span>
+                              <span>Tarik Uang (Terkunci)</span>
                             </button>
                             <p className="text-[10px] text-center text-gray-400 font-bold">
                               Bunga {item.return_rate}% p.a. - Terkunci {item.tenor_bulan} bulan

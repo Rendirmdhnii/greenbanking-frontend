@@ -620,7 +620,7 @@ export default function TagihanPage() {
                         plnInquiry.is_paid ? (
                           <div className="animate-in fade-in slide-in-from-bottom-2">
                             <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-4 text-sm font-bold flex items-center gap-2">
-                              <span>✅ Tagihan untuk nomor ini sudah lunas dibayar.</span>
+                              <span>Tagihan untuk nomor ini sudah lunas dibayar.</span>
                             </div>
                           </div>
                         ) : (
@@ -695,7 +695,7 @@ export default function TagihanPage() {
                         pdamInquiry.is_paid ? (
                           <div className="animate-in fade-in slide-in-from-bottom-2">
                             <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-4 text-sm font-bold flex items-center gap-2">
-                              <span>✅ Tagihan untuk nomor ini sudah lunas dibayar.</span>
+                              <span>Tagihan untuk nomor ini sudah lunas dibayar.</span>
                             </div>
                           </div>
                         ) : (
