@@ -11,7 +11,7 @@ import { formatIDR, SwalGreenBanking } from "@/utils/format";
 import Swal from "sweetalert2";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-const fallbackDonasi = "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&q=80";
+const fallbackDonasi = "/images/default-project.png";
 
 const iconMap: Record<string, React.ReactNode> = {
   mangrove_restore: <TreePine size={20} />,
