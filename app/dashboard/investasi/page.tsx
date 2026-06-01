@@ -339,11 +339,11 @@ export default function InvestasiPage() {
         className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
       >
         {/* --- IMAGE HEADER --- */}
-        <div className="relative h-44 overflow-hidden">
+        <div className="relative overflow-hidden aspect-video">
           <img
             src={currentImg ? (currentImg.includes('?') ? `${currentImg}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${currentImg}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
             alt={p.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700"
             loading="lazy"
             onError={(e) => { e.currentTarget.src = globalProjectImages[p.title] || fallbackImage; }}
           />

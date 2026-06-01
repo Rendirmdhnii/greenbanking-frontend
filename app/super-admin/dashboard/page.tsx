@@ -550,8 +550,11 @@ export default function SuperAdminDashboard() {
           </div>
           
           <div class="col-span-2">
-            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Upload Gambar Produk</label>
-            <input id="swal-image-file" type="file" accept="image/*" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 border-dashed rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-600 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 !mt-0 !mb-0">
+            <div id="swal-image-preview-container" class="hidden mb-3 w-full aspect-video rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+              <img id="swal-image-preview" class="w-full h-full object-cover" />
+            </div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Upload Gambar Produk (Wajib)</label>
+            <input id="swal-image-file" type="file" accept="image/*" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 border-dashed rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-600 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 !mt-0 !mb-0">
           </div>
 
           <div class="col-span-2">
@@ -669,6 +672,22 @@ export default function SuperAdminDashboard() {
           formatRupiahInput(targetInput);
           targetInput.addEventListener('input', () => formatRupiahInput(targetInput));
         }
+
+        // Live image preview
+        const imageFileInput = document.getElementById("swal-image-file") as HTMLInputElement;
+        const previewContainer = document.getElementById("swal-image-preview-container");
+        const previewImg = document.getElementById("swal-image-preview") as HTMLImageElement;
+
+        imageFileInput?.addEventListener("change", () => {
+          const file = imageFileInput.files?.[0];
+          if (file) {
+            const url = URL.createObjectURL(file);
+            if (previewImg) previewImg.src = url;
+            if (previewContainer) previewContainer.classList.remove("hidden");
+          } else {
+            if (previewContainer) previewContainer.classList.add("hidden");
+          }
+        });
       },
       preConfirm: () => {
         const title = (document.getElementById("swal-title") as HTMLInputElement).value;
@@ -680,6 +699,10 @@ export default function SuperAdminDashboard() {
 
         if (!title.trim() || (!isDonation && !category.trim())) {
           Swal.showValidationMessage("Judul dan kategori wajib diisi.");
+          return null;
+        }
+        if (!imageFile) {
+          Swal.showValidationMessage("Gambar produk wajib diunggah.");
           return null;
         }
         return {
@@ -803,6 +826,21 @@ export default function SuperAdminDashboard() {
           </div>
 
           <div class="col-span-2">
+            <div id="swal-image-preview-container" class="mb-3 w-full aspect-video rounded-xl overflow-hidden border border-gray-200 bg-gray-50 flex items-center justify-center">
+              <img id="swal-image-preview" src="${(() => {
+                let img = product.image_url || product.image || '';
+                if (img && img.startsWith('/storage')) {
+                  const host = API_URL.replace(/\/api$/, '');
+                  img = `${host}${img}`;
+                } else if (img && !img.startsWith('http')) {
+                  const host = API_URL.replace(/\/api$/, '');
+                  img = `${host}/storage/${img}`;
+                }
+                if (!img) return product?.title ? (globalProjectImages[product.title] || fallbackImage) : fallbackImage;
+                const buster = product.updated_at ? encodeURIComponent(product.updated_at) : Date.now();
+                return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
+              })()}" class="w-full h-full object-cover" />
+            </div>
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Upload Gambar Produk Baru (opsional)</label>
             <input id="swal-image-file" type="file" accept="image/*" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 border-dashed rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-600 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 !mt-0 !mb-0">
           </div>
@@ -889,6 +927,18 @@ export default function SuperAdminDashboard() {
           formatRupiahInput(targetInput);
           targetInput.addEventListener('input', () => formatRupiahInput(targetInput));
         }
+
+        // Live image preview
+        const imageFileInput = document.getElementById("swal-image-file") as HTMLInputElement;
+        const previewImg = document.getElementById("swal-image-preview") as HTMLImageElement;
+
+        imageFileInput?.addEventListener("change", () => {
+          const file = imageFileInput.files?.[0];
+          if (file) {
+            const url = URL.createObjectURL(file);
+            if (previewImg) previewImg.src = url;
+          }
+        });
       },
       preConfirm: () => {
         const title = (document.getElementById('swal-title') as HTMLInputElement).value;
@@ -1813,7 +1863,7 @@ export default function SuperAdminDashboard() {
                         {stats.products.map((p) => (
                           <div key={p?.id || Math.random()} className="bg-gray-50 rounded-2xl p-5 border border-gray-100 hover:shadow-md transition-all flex flex-col justify-between">
                             <div>
-                              <div className="w-full h-40 bg-gray-200 rounded-xl overflow-hidden border border-gray-200 mb-4">
+                              <div className="w-full bg-gray-200 rounded-xl overflow-hidden border border-gray-200 mb-4 aspect-video">
                                 <img 
                                   src={(() => {
                                     let img = p.image_url || p.image || null;
@@ -1829,7 +1879,7 @@ export default function SuperAdminDashboard() {
                                     return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
                                   })()} 
                                   alt={p?.title || 'Produk'} 
-                                  className="w-full h-full object-cover" 
+                                  className="w-full aspect-video object-cover" 
                                   onError={(e) => { e.currentTarget.src = p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage; }}
                                 />
                               </div>

@@ -195,12 +195,12 @@ export default function DonasiPage() {
                 className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
               >
                 {/* Image */}
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative overflow-hidden aspect-video">
                   <img
                     src={currentImg ? (currentImg.includes('?') ? `${currentImg}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${currentImg}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
                     onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
                     alt={p.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow flex items-center gap-1">
