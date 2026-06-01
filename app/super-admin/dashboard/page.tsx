@@ -29,6 +29,7 @@ interface GreenProduct {
   days_left?: number | null;
   tipe_investasi?: string;
   tenor_bulan?: number;
+  topik_lingkungan?: string;
 }
 
 interface AdminStats {
@@ -552,6 +553,16 @@ export default function SuperAdminDashboard() {
           </div>
 
           <div class="col-span-2">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Topik Lingkungan</label>
+            <select id="swal-topik-lingkungan" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 font-semibold !mt-0 !mb-0">
+              <option value="Energi Surya">Energi Surya</option>
+              <option value="Pengolahan Limbah">Pengolahan Limbah</option>
+              <option value="Reboisasi Mangrove">Reboisasi Mangrove</option>
+              <option value="Bio-Gas">Bio-Gas</option>
+            </select>
+          </div>
+
+          <div class="col-span-2">
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Deskripsi (opsional)</label>
             <textarea id="swal-desc" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0" style="min-height: 80px;" placeholder="Tuliskan ringkasan proyek..."></textarea>
           </div>
@@ -663,6 +674,7 @@ export default function SuperAdminDashboard() {
         const category = isDonation ? 'donation' : ((document.getElementById("swal-category") as HTMLInputElement).value || 'investment');
         const imageFileInput = document.getElementById("swal-image-file") as HTMLInputElement;
         const imageFile = imageFileInput?.files?.[0];
+        const topikLingkungan = (document.getElementById("swal-topik-lingkungan") as HTMLSelectElement).value;
 
         if (!title.trim() || (!isDonation && !category.trim())) {
           Swal.showValidationMessage("Judul dan kategori wajib diisi.");
@@ -672,6 +684,7 @@ export default function SuperAdminDashboard() {
           title,
           category,
           imageFile,
+          topik_lingkungan: topikLingkungan,
           description: (document.getElementById("swal-desc") as HTMLTextAreaElement).value,
           target_funding: Number((document.getElementById("swal-target") as HTMLInputElement).value.replace(/\./g, '')),
           min_amount: Number((document.getElementById("swal-min") as HTMLInputElement).value.replace(/\./g, '')),
@@ -696,11 +709,13 @@ export default function SuperAdminDashboard() {
         formData.append("days_left", String(formValues.days_left));
         formData.append("tipe_investasi", formValues.tipe_investasi);
         formData.append("tenor_bulan", String(formValues.tenor_bulan));
+        formData.append("topik_lingkungan", formValues.topik_lingkungan);
 
         formData.append("type", formValues.category === 'donation' ? 'donasi' : 'investasi');
         formData.append("target_fund", String(formValues.target_funding));
         formData.append("min_transaction", String(formValues.min_amount));
         formData.append("roi_percentage", String(formValues.interest_rate));
+        formData.append("tenor_months", String(formValues.tenor_bulan));
 
         if (formValues.imageFile) {
           formData.append("image", formValues.imageFile);
@@ -784,6 +799,21 @@ export default function SuperAdminDashboard() {
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Judul Produk</label>
             <input id="swal-title" type="text" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 !mt-0 !mb-0" value="${product.title}">
           </div>
+
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Upload Gambar Produk Baru (opsional)</label>
+            <input id="swal-image-file" type="file" accept="image/*" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 border-dashed rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-600 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 !mt-0 !mb-0">
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Topik Lingkungan</label>
+            <select id="swal-topik-lingkungan" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-sm text-gray-900 font-semibold !mt-0 !mb-0">
+              <option value="Energi Surya" ${product.topik_lingkungan === 'Energi Surya' ? 'selected' : ''}>Energi Surya</option>
+              <option value="Pengolahan Limbah" ${product.topik_lingkungan === 'Pengolahan Limbah' ? 'selected' : ''}>Pengolahan Limbah</option>
+              <option value="Reboisasi Mangrove" ${product.topik_lingkungan === 'Reboisasi Mangrove' ? 'selected' : ''}>Reboisasi Mangrove</option>
+              <option value="Bio-Gas" ${product.topik_lingkungan === 'Bio-Gas' ? 'selected' : ''}>Bio-Gas</option>
+            </select>
+          </div>
           
           <div class="col-span-2">
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Deskripsi</label>
@@ -860,9 +890,14 @@ export default function SuperAdminDashboard() {
       },
       preConfirm: () => {
         const title = (document.getElementById('swal-title') as HTMLInputElement).value;
+        const imageFileInput = document.getElementById('swal-image-file') as HTMLInputElement;
+        const imageFile = imageFileInput?.files?.[0];
+        const topikLingkungan = (document.getElementById('swal-topik-lingkungan') as HTMLSelectElement).value;
+
         return {
           title,
-          image: globalProjectImages[title] || product.image || fallbackImage,
+          imageFile,
+          topik_lingkungan: topikLingkungan,
           description: (document.getElementById('swal-desc') as HTMLTextAreaElement).value,
           target_funding: Number((document.getElementById('swal-target') as HTMLInputElement).value.replace(/\./g, '')),
           min_amount: Number((document.getElementById('swal-min') as HTMLInputElement).value.replace(/\./g, '')),
@@ -877,13 +912,34 @@ export default function SuperAdminDashboard() {
     if (formValues) {
       try {
         const token = localStorage.getItem('admin_token');
+        const formData = new FormData();
+        formData.append("title", formValues.title);
+        formData.append("description", formValues.description);
+        formData.append("target_funding", String(formValues.target_funding));
+        formData.append("min_amount", String(formValues.min_amount));
+        formData.append("interest_rate", String(formValues.interest_rate));
+        formData.append("days_left", String(formValues.days_left));
+        formData.append("tipe_investasi", formValues.tipe_investasi);
+        formData.append("tenor_bulan", String(formValues.tenor_bulan));
+        formData.append("topik_lingkungan", formValues.topik_lingkungan);
+
+        formData.append("type", product.category === 'donation' || product.category === 'donasi' ? 'donasi' : 'investasi');
+        formData.append("target_fund", String(formValues.target_funding));
+        formData.append("min_transaction", String(formValues.min_amount));
+        formData.append("roi_percentage", String(formValues.interest_rate));
+        formData.append("tenor_months", String(formValues.tenor_bulan));
+
+        if (formValues.imageFile) {
+          formData.append("image", formValues.imageFile);
+        }
+
         const res = await fetch(`${API_URL}/admin/products/${product.id}`, {
-          method: 'PUT',
+          method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            'Accept': 'application/json'
           },
-          body: JSON.stringify(formValues)
+          body: formData
         });
 
         if (res.ok) {

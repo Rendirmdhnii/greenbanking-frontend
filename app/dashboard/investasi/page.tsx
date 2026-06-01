@@ -47,10 +47,12 @@ export default function InvestasiPage() {
     impact_co2e?: number | null;
     carbon_impact?: number | null;
     tipe_investasi?: string;
+    kategori_investasi?: string;
     tenor_bulan?: number;
     category?: string;
     type?: string;
     tenor_months?: number;
+    topik_lingkungan?: string;
     has_invested?: boolean;
   };
 
@@ -307,11 +309,11 @@ export default function InvestasiPage() {
     }
   };
 
-  const tags = ["Semua", ...Array.from(new Set(products.map(p => p.tag).filter(Boolean)))];
-  const filtered = activeFilter === "Semua" ? products : products.filter(p => p.tag === activeFilter);
-  const liquidProducts = filtered.filter(p => p.type === 'investasi' && (!p.tenor_months || p.tenor_months === 0));
-  const tenorProducts = filtered.filter(p => p.type === 'investasi' && p.tenor_months! > 0);
-  const donationProducts = filtered.filter(p => p.type === 'donasi');
+  const tags = ["Semua", ...Array.from(new Set(products.map(p => p.topik_lingkungan || p.tag).filter(Boolean)))];
+  const filtered = activeFilter === "Semua" ? products : products.filter(p => (p.topik_lingkungan || p.tag) === activeFilter);
+  const liquidProducts = filtered.filter(p => p.kategori_investasi === 'liquid' || p.tipe_investasi === 'liquid' || (p.type === 'investasi' && (!p.tenor_months || p.tenor_months === 0)));
+  const tenorProducts = filtered.filter(p => p.kategori_investasi === 'tenor' || p.tipe_investasi === 'tenor' || (p.type === 'investasi' && p.tenor_months! > 0));
+  const donationProducts = filtered.filter(p => p.kategori_investasi === 'donasi' || p.tipe_investasi === 'donasi' || p.type === 'donasi');
 
   const renderProductCard = (p: GreenProduct, i: number) => {
     const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
@@ -357,9 +359,9 @@ export default function InvestasiPage() {
           )}
 
           {/* Tag kategori */}
-          {p.tag && (
-            <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full ${tagColors[p.tag] || "bg-gray-100 text-gray-600"}`}>
-              {p.tag}
+          {(p.topik_lingkungan || p.tag) && (
+            <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full ${tagColors[p.topik_lingkungan || p.tag] || "bg-gray-100 text-gray-600"}`}>
+              {p.topik_lingkungan || p.tag}
             </div>
           )}
 
