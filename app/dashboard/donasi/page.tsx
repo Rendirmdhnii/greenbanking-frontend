@@ -197,7 +197,7 @@ export default function DonasiPage() {
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={currentImg}
+                    src={currentImg ? (currentImg.includes('?') ? `${currentImg}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${currentImg}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
                     onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
                     alt={p.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

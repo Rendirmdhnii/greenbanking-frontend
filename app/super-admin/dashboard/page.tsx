@@ -31,6 +31,7 @@ interface GreenProduct {
   tipe_investasi?: string;
   tenor_bulan?: number;
   topik_lingkungan?: string;
+  updated_at?: string;
 }
 
 interface AdminStats {
@@ -1464,7 +1465,9 @@ export default function SuperAdminDashboard() {
                                       const host = API_URL.replace(/\/api$/, '');
                                       img = `${host}/storage/${img}`;
                                     }
-                                    return img || (p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage);
+                                    if (!img) return p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage;
+                                    const buster = p.updated_at ? encodeURIComponent(p.updated_at) : Date.now();
+                                    return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
                                   })()} 
                                   alt={p?.title || 'Produk'} 
                                   className="w-full h-full object-cover" 
@@ -1821,7 +1824,9 @@ export default function SuperAdminDashboard() {
                                       const host = API_URL.replace(/\/api$/, '');
                                       img = `${host}/storage/${img}`;
                                     }
-                                    return img || (p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage);
+                                    if (!img) return p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage;
+                                    const buster = p.updated_at ? encodeURIComponent(p.updated_at) : Date.now();
+                                    return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
                                   })()} 
                                   alt={p?.title || 'Produk'} 
                                   className="w-full h-full object-cover" 

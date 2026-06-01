@@ -54,6 +54,7 @@ export default function InvestasiPage() {
     tenor_months?: number;
     topik_lingkungan?: string;
     has_invested?: boolean;
+    updated_at?: string;
   };
 
   type StrukData = {
@@ -340,7 +341,7 @@ export default function InvestasiPage() {
         {/* --- IMAGE HEADER --- */}
         <div className="relative h-44 overflow-hidden">
           <img
-            src={currentImg}
+            src={currentImg ? (currentImg.includes('?') ? `${currentImg}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${currentImg}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
             alt={p.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             loading="lazy"
