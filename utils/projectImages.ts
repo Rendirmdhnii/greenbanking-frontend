@@ -17,3 +17,5 @@ export const globalProjectImages: Record<string, string> = {
   "Rehabilitasi Mangrove Teluk Benoa Bali": "https://images.unsplash.com/photo-1551009175-8a68da93d5f9?auto=format&fit=crop&q=80&w=800", // Mangrove
   "Penyediaan Komposter Biogas Rumah Tangga": "https://images.unsplash.com/photo-1559329007-40ec44d1641a?auto=format&fit=crop&q=80&w=800", // Kompos/Biogas
 };
+
+export const fallbackImage = "/images/default-project.png";
