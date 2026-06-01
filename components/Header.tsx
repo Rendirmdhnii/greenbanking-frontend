@@ -270,10 +270,10 @@ export default function Header({ userHook }: { userHook: any }) {
             </button>
 
             {showNotifications && (
-              <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white border border-gray-100 rounded-[2rem] shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-3 duration-200">
+              <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-100 rounded-2xl shadow-lg z-50 overflow-hidden animate-in fade-in slide-in-from-top-3 duration-200">
                 {/* Notification Header */}
-                <div className="px-5 py-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
-                  <span className="font-bold text-gray-900 text-base">Notifikasi Baru</span>
+                <div className="px-3 py-2.5 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
+                  <span className="font-bold text-gray-900 text-sm">Notifikasi Baru</span>
                   <div className="flex items-center gap-3">
                     {unreadCount > 0 && (
                       <button onClick={markAllRead} className="text-xs font-bold text-[#115e59] hover:underline">
@@ -281,15 +281,15 @@ export default function Header({ userHook }: { userHook: any }) {
                       </button>
                     )}
                     <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
-                      <X size={16} />
+                      <X size={14} />
                     </button>
                   </div>
                 </div>
-
+ 
                 {/* Notification Body */}
                 <div className="max-h-80 overflow-y-auto divide-y divide-gray-50">
                   {notifications.length === 0 ? (
-                    <div className="px-5 py-8 text-center text-gray-400 text-sm">Tidak ada notifikasi</div>
+                    <div className="px-3 py-6 text-center text-gray-400 text-xs">Tidak ada notifikasi</div>
                   ) : (
                     notifications.map(n => {
                       const isUnread = !n.read && !n.is_read;
@@ -297,16 +297,16 @@ export default function Header({ userHook }: { userHook: any }) {
                         <div 
                           key={n.id} 
                           onClick={() => handleNotifClick(n.id)}
-                          className={`px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${isUnread ? 'bg-emerald-50/10 hover:bg-emerald-50/20 border-l-2 border-emerald-500' : ''}`}
+                          className={`px-3 py-2.5 hover:bg-gray-50 transition-colors cursor-pointer ${isUnread ? 'bg-emerald-50/10 hover:bg-emerald-50/20 border-l-2 border-emerald-500' : ''}`}
                         >
-                          <div className="flex items-start gap-3">
-                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border ${getNotifBg(n.type)}`}>
+                          <div className="flex items-start gap-2.5">
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 border ${getNotifBg(n.type)}`}>
                               {getNotifIcon(n.type)}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className={`text-sm ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>{n.title}</p>
-                              <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{n.message}</p>
-                              <p className="text-[10px] text-gray-400 mt-1 font-medium">{timeAgo(n.created_at)}</p>
+                              <p className={`text-xs ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>{n.title}</p>
+                              <p className="text-[11px] text-gray-500 mt-0.5 leading-normal">{n.message}</p>
+                              <p className="text-[9px] text-gray-400 mt-0.5 font-medium">{timeAgo(n.created_at)}</p>
                             </div>
                           </div>
                         </div>
