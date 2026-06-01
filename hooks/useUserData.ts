@@ -146,6 +146,8 @@ export function useUserData() {
   const impactScore  = userData?.user?.impact_score ?? userData?.impact_score ?? 0;
   const accountNumber = userData?.user?.account_number || userData?.account_number || '';
   const totalDonation = userData?.total_donation || 0;
+  const totalMangrove = userData?.user?.total_mangrove ?? userData?.total_mangrove ?? 0;
+  const mangroveProgress = userData?.user?.mangrove_progress ?? userData?.mangrove_progress ?? 0;
 
   const getInitials = (name: string) => {
     const parts = name.split(' ').filter(Boolean);
@@ -179,18 +181,24 @@ export function useUserData() {
   return {
     userData, supabaseUser, isLoading, syncStatus,
     isAdmin, userName, userEmail, userBalance, userEcoPoints, userLifetimeEcoPoints, avatarUrl, initials,
-    tier, impactScore, phoneNumber, address, accountNumber, totalDonation, isOwner,
+    tier, impactScore, phoneNumber, address, accountNumber, totalDonation, isOwner, totalMangrove, mangroveProgress,
     refreshUserData: (newUserData?: any) => {
       if (newUserData) {
         setUserData((prev: any) => {
           if (!prev) return prev;
           
-          // Jika backend mengirimkan objek user penuh, langsung override state
           const updated = { ...prev };
-          if (updated.user && newUserData.user) {
+          
+          // Update root fields
+          Object.keys(newUserData).forEach(key => {
+            if (key !== 'user') {
+              updated[key] = newUserData[key];
+            }
+          });
+          
+          // Update user sub-fields
+          if (newUserData.user) {
             updated.user = { ...updated.user, ...newUserData.user };
-          } else if (newUserData.user) {
-             updated.user = newUserData.user;
           } else {
             updated.user = { ...updated.user, ...newUserData };
           }

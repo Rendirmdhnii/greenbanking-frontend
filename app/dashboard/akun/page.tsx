@@ -11,7 +11,7 @@ import { useState } from "react";
 
 export default function AkunPage() {
   const userHook = useUserContext();
-  const { userName, userEmail, avatarUrl, initials, tier, userEcoPoints, impactScore, phoneNumber, address, accountNumber, isOwner } = userHook;
+  const { userName, userEmail, avatarUrl, initials, tier, userEcoPoints, impactScore, phoneNumber, address, accountNumber, isOwner, totalMangrove } = userHook;
   const [showSensitive, setShowSensitive] = useState(false);
 
   // Mask sensitive data for non-owner users
@@ -143,7 +143,7 @@ export default function AkunPage() {
                   <div>
                     <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-1">Pohon Ditanam</p>
                     <div className="flex items-end gap-2">
-                      <span className="text-4xl font-bold">{Math.floor(userEcoPoints / 100)}</span>
+                      <span className="text-4xl font-bold">{totalMangrove}</span>
                       <span className="text-emerald-300 pb-1 font-medium">Bibit Mangrove</span>
                     </div>
                   </div>

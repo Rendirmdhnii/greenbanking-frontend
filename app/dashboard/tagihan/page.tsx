@@ -34,7 +34,7 @@ function detectOperator(phone: string): string | null {
 }
 
 export default function TagihanPage() {
-  const { userBalance, userEcoPoints, refreshUserData, impactScore: contextImpactScore, userName } = useUserContext();
+  const { userBalance, userEcoPoints, refreshUserData, impactScore: contextImpactScore, userName, userEmail, mangroveProgress: dbMangroveProgress } = useUserContext();
   const [activeTab, setActiveTab] = useState<"pulsa" | "pln" | "pdam">("pulsa");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [strukData, setStrukData] = useState<any>(null);
@@ -49,13 +49,14 @@ export default function TagihanPage() {
     }
   }, [contextImpactScore]);
 
-  // Load mangrove progress from localStorage on mount
+  // Sync mangroveProgress with database/context when loaded or when user changes
   useEffect(() => {
-    const saved = localStorage.getItem("mangrove_progress");
-    if (saved) {
-      setMangroveProgress(parseInt(saved, 10) || 0);
+    if (dbMangroveProgress !== undefined) {
+      setMangroveProgress(dbMangroveProgress);
+    } else {
+      setMangroveProgress(0);
     }
-  }, []);
+  }, [dbMangroveProgress, userEmail]);
 
   // State Pulsa
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -351,27 +352,24 @@ export default function TagihanPage() {
           eco_points: data.eco_points,
           tier: data.tier,
           impact_score: data.impact_score,
+          total_mangrove: data.total_mangrove,
+          mangrove_progress: data.mangrove_progress,
         });
 
-        // Update mangrove progress
-        setMangroveProgress((prev) => {
-          const next = prev + 1;
-          if (next >= 5) {
-            localStorage.setItem("mangrove_progress", "0");
-            setTimeout(() => {
-              Swal.fire({
-                icon: "success",
-                title: "Selamat!",
-                text: "Anda telah menyumbangkan 1 bibit mangrove!",
-                ...SwalGreenBanking.success,
-              });
-            }, 1500);
-            return 0;
-          } else {
-            localStorage.setItem("mangrove_progress", next.toString());
-            return next;
-          }
-        });
+        // Sync local mangrove progress directly from the backend response
+        setMangroveProgress(data.mangrove_progress);
+
+        // Tampilkan notifikasi jika berhasil mengumpulkan 5 kelipatan (progres kembali ke 0)
+        if (data.mangrove_progress === 0) {
+          setTimeout(() => {
+            Swal.fire({
+              icon: "success",
+              title: "Selamat!",
+              text: "Anda telah menyumbangkan 1 bibit mangrove!",
+              ...SwalGreenBanking.success,
+            });
+          }, 1500);
+        }
 
         const timeStr =
           new Date().toLocaleString("id-ID", {
