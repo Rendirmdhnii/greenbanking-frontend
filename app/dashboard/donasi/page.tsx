@@ -179,16 +179,16 @@ export default function DonasiPage() {
             {products.map((p, i) => {
               const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
               // Resolusi gambar: prioritaskan image_url dari API Backend
-              let currentImg = p.image_url || p.image || null;
-              if (currentImg && currentImg.startsWith('/storage')) {
+              let displayImage = (p.image_url && p.image_url !== 'null' && p.image_url !== '') 
+                ? p.image_url 
+                : fallbackDonasi;
+
+              if (displayImage && displayImage.startsWith('/storage')) {
                 const backendHost = API_URL.replace(/\/api$/, '');
-                currentImg = `${backendHost}${currentImg}`;
-              } else if (currentImg && !currentImg.startsWith('http')) {
+                displayImage = `${backendHost}${displayImage}`;
+              } else if (displayImage && !displayImage.startsWith('http') && !displayImage.startsWith('/images/')) {
                 const backendHost = API_URL.replace(/\/api$/, '');
-                currentImg = `${backendHost}/storage/${currentImg}`;
-              }
-              if (!currentImg) {
-                currentImg = fallbackDonasi;
+                displayImage = `${backendHost}/storage/${displayImage}`;
               }
               return (
               <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
@@ -197,7 +197,7 @@ export default function DonasiPage() {
                 {/* Image */}
                 <div className="relative overflow-hidden aspect-video">
                   <img
-                    src={currentImg ? (currentImg.includes('?') ? `${currentImg}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${currentImg}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
+                    src={displayImage ? (displayImage.includes('?') ? `${displayImage}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${displayImage}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
                     onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
                     alt={p.title}
                     className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"

@@ -321,16 +321,16 @@ export default function InvestasiPage() {
     const isExpanded = expandedCard === p.id;
     
     // Resolusi gambar: prioritaskan image_url dari API Backend
-    let currentImg = p.image_url || p.image || null;
-    if (currentImg && currentImg.startsWith('/storage')) {
+    let displayImage = (p.image_url && p.image_url !== 'null' && p.image_url !== '') 
+      ? p.image_url 
+      : (globalProjectImages[p.title] || fallbackImage);
+
+    if (displayImage && displayImage.startsWith('/storage')) {
       const backendHost = API_URL.replace(/\/api$/, '');
-      currentImg = `${backendHost}${currentImg}`;
-    } else if (currentImg && !currentImg.startsWith('http')) {
+      displayImage = `${backendHost}${displayImage}`;
+    } else if (displayImage && !displayImage.startsWith('http') && !displayImage.startsWith('/images/')) {
       const backendHost = API_URL.replace(/\/api$/, '');
-      currentImg = `${backendHost}/storage/${currentImg}`;
-    }
-    if (!currentImg) {
-      currentImg = globalProjectImages[p.title] || fallbackImage;
+      displayImage = `${backendHost}/storage/${displayImage}`;
     }
     const isDonasi = p.type === 'donasi';
 
@@ -341,7 +341,7 @@ export default function InvestasiPage() {
         {/* --- IMAGE HEADER --- */}
         <div className="relative overflow-hidden aspect-video">
           <img
-            src={currentImg ? (currentImg.includes('?') ? `${currentImg}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${currentImg}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
+            src={displayImage ? (displayImage.includes('?') ? `${displayImage}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${displayImage}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
             alt={p.title}
             className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700"
             loading="lazy"

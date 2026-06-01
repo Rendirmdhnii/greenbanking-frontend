@@ -1507,15 +1507,16 @@ export default function SuperAdminDashboard() {
                               <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
                                 <img 
                                   src={(() => {
-                                    let img = p.image_url || p.image || null;
+                                    let img = (p.image_url && p.image_url !== 'null' && p.image_url !== '') 
+                                      ? p.image_url 
+                                      : (globalProjectImages[p.title] || fallbackImage);
                                     if (img && img.startsWith('/storage')) {
                                       const host = API_URL.replace(/\/api$/, '');
                                       img = `${host}${img}`;
-                                    } else if (img && !img.startsWith('http')) {
+                                    } else if (img && !img.startsWith('http') && !img.startsWith('/images/')) {
                                       const host = API_URL.replace(/\/api$/, '');
                                       img = `${host}/storage/${img}`;
                                     }
-                                    if (!img) return p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage;
                                     const buster = p.updated_at ? encodeURIComponent(p.updated_at) : Date.now();
                                     return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
                                   })()} 
@@ -1866,15 +1867,16 @@ export default function SuperAdminDashboard() {
                               <div className="w-full bg-gray-200 rounded-xl overflow-hidden border border-gray-200 mb-4 aspect-video">
                                 <img 
                                   src={(() => {
-                                    let img = p.image_url || p.image || null;
+                                    let img = (p.image_url && p.image_url !== 'null' && p.image_url !== '') 
+                                      ? p.image_url 
+                                      : (globalProjectImages[p.title] || fallbackImage);
                                     if (img && img.startsWith('/storage')) {
                                       const host = API_URL.replace(/\/api$/, '');
                                       img = `${host}${img}`;
-                                    } else if (img && !img.startsWith('http')) {
+                                    } else if (img && !img.startsWith('http') && !img.startsWith('/images/')) {
                                       const host = API_URL.replace(/\/api$/, '');
                                       img = `${host}/storage/${img}`;
                                     }
-                                    if (!img) return p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage;
                                     const buster = p.updated_at ? encodeURIComponent(p.updated_at) : Date.now();
                                     return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
                                   })()} 
