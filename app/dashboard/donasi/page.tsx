@@ -183,6 +183,9 @@ export default function DonasiPage() {
               if (currentImg && currentImg.startsWith('/storage')) {
                 const backendHost = API_URL.replace(/\/api$/, '');
                 currentImg = `${backendHost}${currentImg}`;
+              } else if (currentImg && !currentImg.startsWith('http')) {
+                const backendHost = API_URL.replace(/\/api$/, '');
+                currentImg = `${backendHost}/storage/${currentImg}`;
               }
               if (!currentImg) {
                 currentImg = fallbackDonasi;
