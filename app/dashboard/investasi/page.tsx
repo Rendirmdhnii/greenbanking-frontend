@@ -320,12 +320,13 @@ export default function InvestasiPage() {
     const isExpanded = expandedCard === p.id;
     
     // Resolusi gambar: prioritaskan image_url dari API Backend
-    // Jika path /storage (upload lokal), prepend backend host
-    // Jika kosong, gunakan globalProjectImages berdasarkan judul, lalu fallbackImage
     let currentImg = p.image_url || p.image || null;
     if (currentImg && currentImg.startsWith('/storage')) {
       const backendHost = API_URL.replace(/\/api$/, '');
       currentImg = `${backendHost}${currentImg}`;
+    } else if (currentImg && !currentImg.startsWith('http')) {
+      const backendHost = API_URL.replace(/\/api$/, '');
+      currentImg = `${backendHost}/storage/${currentImg}`;
     }
     if (!currentImg) {
       currentImg = globalProjectImages[p.title] || fallbackImage;

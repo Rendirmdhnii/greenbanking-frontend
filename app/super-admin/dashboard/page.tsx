@@ -22,6 +22,7 @@ interface GreenProduct {
   category: string;
   title: string;
   image: string | null;
+  image_url?: string | null;
   target_funding: number;
   min_amount: number;
   description?: string;
@@ -913,6 +914,7 @@ export default function SuperAdminDashboard() {
       try {
         const token = localStorage.getItem('admin_token');
         const formData = new FormData();
+        formData.append("_method", "PUT");
         formData.append("title", formValues.title);
         formData.append("description", formValues.description);
         formData.append("target_funding", String(formValues.target_funding));
@@ -1452,7 +1454,22 @@ export default function SuperAdminDashboard() {
                           <div key={p?.id || Math.random()} className="p-4 hover:bg-gray-50/50 transition-colors group flex items-center justify-between gap-3">
                             <div className="flex gap-3 min-w-0 items-center">
                               <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
-                                <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
+                                <img 
+                                  src={(() => {
+                                    let img = p.image_url || p.image || null;
+                                    if (img && img.startsWith('/storage')) {
+                                      const host = API_URL.replace(/\/api$/, '');
+                                      img = `${host}${img}`;
+                                    } else if (img && !img.startsWith('http')) {
+                                      const host = API_URL.replace(/\/api$/, '');
+                                      img = `${host}/storage/${img}`;
+                                    }
+                                    return img || (p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage);
+                                  })()} 
+                                  alt={p?.title || 'Produk'} 
+                                  className="w-full h-full object-cover" 
+                                  onError={(e) => { e.currentTarget.src = p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage; }}
+                                />
                               </div>
                               <div className="min-w-0">
                                 <h3 className="font-bold text-gray-900 text-xs leading-tight truncate mb-0.5" title={p?.title || 'Tanpa Judul'}>
@@ -1794,7 +1811,22 @@ export default function SuperAdminDashboard() {
                           <div key={p?.id || Math.random()} className="bg-gray-50 rounded-2xl p-5 border border-gray-100 hover:shadow-md transition-all flex flex-col justify-between">
                             <div>
                               <div className="w-full h-40 bg-gray-200 rounded-xl overflow-hidden border border-gray-200 mb-4">
-                                <img src={p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage} alt={p?.title || 'Produk'} className="w-full h-full object-cover" />
+                                <img 
+                                  src={(() => {
+                                    let img = p.image_url || p.image || null;
+                                    if (img && img.startsWith('/storage')) {
+                                      const host = API_URL.replace(/\/api$/, '');
+                                      img = `${host}${img}`;
+                                    } else if (img && !img.startsWith('http')) {
+                                      const host = API_URL.replace(/\/api$/, '');
+                                      img = `${host}/storage/${img}`;
+                                    }
+                                    return img || (p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage);
+                                  })()} 
+                                  alt={p?.title || 'Produk'} 
+                                  className="w-full h-full object-cover" 
+                                  onError={(e) => { e.currentTarget.src = p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage; }}
+                                />
                               </div>
                               <span className="inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-black uppercase tracking-wider mb-2">
                                 {p?.category || 'Umum'}
