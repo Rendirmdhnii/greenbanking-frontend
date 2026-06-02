@@ -11,12 +11,12 @@ import { formatIDR, SwalGreenBanking } from "@/utils/format";
 import Swal from "sweetalert2";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-const fallbackDonasi = "/images/default-project.png";
+const fallbackDonasi = "/images/default-project.jpg";
 
 const iconMap: Record<string, React.ReactNode> = {
   mangrove_restore: <TreePine size={20} />,
-  clean_water:      <Droplets size={20} />,
-  eco_education:    <GraduationCap size={20} />,
+  clean_water: <Droplets size={20} />,
+  eco_education: <GraduationCap size={20} />,
 };
 
 const quickAmounts = [10000, 25000, 50000, 100000, 250000];
@@ -60,39 +60,39 @@ export default function DonasiPage() {
 
     // Tampilkan SweetAlert2 untuk minta PIN Transaksi
     const { value: pin, isDismissed } = await Swal.fire({
-        title: 'Masukkan PIN Transaksi',
-        input: 'password',
-        inputLabel: 'Masukkan 6-Digit PIN Transaksi GreenBanking Anda',
-        inputPlaceholder: '••••••',
-        inputAttributes: {
-            maxlength: '6',
-            autocapitalize: 'off',
-            autocorrect: 'off'
-        },
-        showCancelButton: true,
-        confirmButtonText: 'Verifikasi',
-        cancelButtonText: 'Batal',
-        customClass: {
-            container: 'backdrop-blur-sm bg-black/40',
-            popup: 'rounded-3xl shadow-xl p-6 font-sans',
-            input: 'text-center text-4xl tracking-[1.5em] pl-[1.6em] font-bold py-3 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-300 focus:border-emerald-600 focus:ring-0 outline-none transition-all text-gray-900 max-w-xs mx-auto focus:outline-none',
-            confirmButton: 'px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all duration-200 shadow-md hover:shadow-lg outline-none border-0 cursor-pointer flex-1',
-            cancelButton: 'px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-all duration-200 outline-none border-0 cursor-pointer flex-1',
-            actions: 'flex gap-3 w-full justify-center mt-4'
-        },
-        buttonsStyling: false,
-        inputValidator: (value) => {
-            if (!value) {
-                return 'PIN tidak boleh kosong!';
-            }
-            if (value.length !== 6) {
-                return 'PIN harus 6 digit!';
-            }
+      title: 'Masukkan PIN Transaksi',
+      input: 'password',
+      inputLabel: 'Masukkan 6-Digit PIN Transaksi GreenBanking Anda',
+      inputPlaceholder: '••••••',
+      inputAttributes: {
+        maxlength: '6',
+        autocapitalize: 'off',
+        autocorrect: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Verifikasi',
+      cancelButtonText: 'Batal',
+      customClass: {
+        container: 'backdrop-blur-sm bg-black/40',
+        popup: 'rounded-3xl shadow-xl p-6 font-sans',
+        input: 'text-center text-4xl tracking-[1.5em] pl-[1.6em] font-bold py-3 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-300 focus:border-emerald-600 focus:ring-0 outline-none transition-all text-gray-900 max-w-xs mx-auto focus:outline-none',
+        confirmButton: 'px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all duration-200 shadow-md hover:shadow-lg outline-none border-0 cursor-pointer flex-1',
+        cancelButton: 'px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-all duration-200 outline-none border-0 cursor-pointer flex-1',
+        actions: 'flex gap-3 w-full justify-center mt-4'
+      },
+      buttonsStyling: false,
+      inputValidator: (value) => {
+        if (!value) {
+          return 'PIN tidak boleh kosong!';
         }
+        if (value.length !== 6) {
+          return 'PIN harus 6 digit!';
+        }
+      }
     });
 
     if (isDismissed || !pin) {
-        return;
+      return;
     }
 
     setDonateLoading(product.id);
@@ -121,7 +121,7 @@ export default function DonasiPage() {
         id: data.transaction_id, title: 'Struk Donasi Lingkungan',
         service: `Donasi: ${product.title}`,
         amount: amt,
-        time: new Date().toLocaleString("id-ID", { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' }) + ' WIB',
+        time: new Date().toLocaleString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB',
       });
       setAmounts(prev => ({ ...prev, [product.id]: '' }));
       refreshUserData();
@@ -179,8 +179,8 @@ export default function DonasiPage() {
             {products.map((p, i) => {
               const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
               // Resolusi gambar: prioritaskan image_url dari API Backend
-              let displayImage = (p.image_url && p.image_url !== 'null' && p.image_url !== '') 
-                ? p.image_url 
+              let displayImage = (p.image_url && p.image_url !== 'null' && p.image_url !== '')
+                ? p.image_url
                 : fallbackDonasi;
 
               if (displayImage && displayImage.startsWith('/storage')) {
@@ -191,81 +191,81 @@ export default function DonasiPage() {
                 displayImage = `${backendHost}/storage/${displayImage}`;
               }
               return (
-              <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
-              >
-                {/* Image */}
-                <div className="relative overflow-hidden aspect-video">
-                  <img
-                    src={displayImage ? (displayImage.includes('?') ? `${displayImage}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${displayImage}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
-                    onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
-                    alt={p.title}
-                    className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow flex items-center gap-1">
-                  <Target size={10} /> {p.target_impact}
-                </div>
-                <div className="absolute bottom-3 left-4 right-4">
-                  <h3 className="text-white font-bold text-lg drop-shadow">{p.title}</h3>
-                </div>
-              </div>
-
-              <div className="p-5">
-                <p className="text-gray-500 text-sm mb-4 leading-relaxed">{p.description}</p>
-
-                <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
-                  <span className="flex items-center gap-1 text-rose-500 font-bold">{iconMap[p.id] || <Heart size={14} />} Impact</span>
-                  <span>Min. {formatIDR(p.min_amount)}</span>
-                </div>
-
-                {/* Quick amount pills */}
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  {quickAmounts.filter(a => a >= p.min_amount).slice(0, 4).map(a => (
-                    <button key={a} onClick={() => setAmounts(prev => ({ ...prev, [p.id]: a.toString() }))}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all border ${
-                        amounts[p.id] === a.toString()
-                          ? 'bg-rose-500 text-white border-rose-500'
-                          : 'bg-white text-gray-600 border-gray-200 hover:border-rose-300'
-                      }`}
-                    >
-                      {a >= 1000000 ? `${a/1000000}jt` : `${a/1000}rb`}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Input + Button */}
-                <div className="flex gap-2">
-                  <div className="flex-1 relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">Rp</span>
-                    <input
-                      type="text" placeholder={p.min_amount.toLocaleString("id-ID")}
-                      value={amounts[p.id] ? parseInt(amounts[p.id], 10).toLocaleString('id-ID') : ''}
-                      onChange={e => {
-                        const rawValue = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
-                        setAmounts(prev => ({ ...prev, [p.id]: rawValue }));
-                      }}
-                      className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-400"
+                <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                  className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
+                >
+                  {/* Image */}
+                  <div className="relative overflow-hidden aspect-video">
+                    <img
+                      src={displayImage ? (displayImage.includes('?') ? `${displayImage}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${displayImage}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
+                      onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
+                      alt={p.title}
+                      className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow flex items-center gap-1">
+                      <Target size={10} /> {p.target_impact}
+                    </div>
+                    <div className="absolute bottom-3 left-4 right-4">
+                      <h3 className="text-white font-bold text-lg drop-shadow">{p.title}</h3>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleDonate(p)}
-                    disabled={donateLoading === p.id || progress >= 100 || p.has_invested}
-                    className={`text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1 ${progress >= 100 ? 'bg-gray-400 cursor-not-allowed' : p.has_invested ? 'bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-200' : 'bg-rose-500 hover:bg-rose-600 hover:scale-105 disabled:opacity-50'}`}
-                  >
-                    {progress >= 100 ? "Pendanaan Selesai" : p.has_invested ? "Sudah Diikuti" : (
-                      <>
-                        {donateLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <Heart size={14} />}
-                        {donateLoading === p.id ? '...' : 'Donasi Sekarang'}
-                      </>
-                    )}
-                  </button>
-            </div>
-            </div>
-          </motion.div>
-        )})}
-      </div>
-    )}
+
+                  <div className="p-5">
+                    <p className="text-gray-500 text-sm mb-4 leading-relaxed">{p.description}</p>
+
+                    <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
+                      <span className="flex items-center gap-1 text-rose-500 font-bold">{iconMap[p.id] || <Heart size={14} />} Impact</span>
+                      <span>Min. {formatIDR(p.min_amount)}</span>
+                    </div>
+
+                    {/* Quick amount pills */}
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {quickAmounts.filter(a => a >= p.min_amount).slice(0, 4).map(a => (
+                        <button key={a} onClick={() => setAmounts(prev => ({ ...prev, [p.id]: a.toString() }))}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all border ${amounts[p.id] === a.toString()
+                              ? 'bg-rose-500 text-white border-rose-500'
+                              : 'bg-white text-gray-600 border-gray-200 hover:border-rose-300'
+                            }`}
+                        >
+                          {a >= 1000000 ? `${a / 1000000}jt` : `${a / 1000}rb`}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Input + Button */}
+                    <div className="flex gap-2">
+                      <div className="flex-1 relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">Rp</span>
+                        <input
+                          type="text" placeholder={p.min_amount.toLocaleString("id-ID")}
+                          value={amounts[p.id] ? parseInt(amounts[p.id], 10).toLocaleString('id-ID') : ''}
+                          onChange={e => {
+                            const rawValue = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+                            setAmounts(prev => ({ ...prev, [p.id]: rawValue }));
+                          }}
+                          className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-400"
+                        />
+                      </div>
+                      <button
+                        onClick={() => handleDonate(p)}
+                        disabled={donateLoading === p.id || progress >= 100 || p.has_invested}
+                        className={`text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1 ${progress >= 100 ? 'bg-gray-400 cursor-not-allowed' : p.has_invested ? 'bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-200' : 'bg-rose-500 hover:bg-rose-600 hover:scale-105 disabled:opacity-50'}`}
+                      >
+                        {progress >= 100 ? "Pendanaan Selesai" : p.has_invested ? "Sudah Diikuti" : (
+                          <>
+                            {donateLoading === p.id ? <Loader2 size={14} className="animate-spin" /> : <Heart size={14} />}
+                            {donateLoading === p.id ? '...' : 'Donasi Sekarang'}
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
+        )}
       </motion.div>
 
       <StrukModal isOpen={!!strukData} onClose={() => setStrukData(null)} data={strukData} />

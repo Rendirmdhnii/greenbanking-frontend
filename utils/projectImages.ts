@@ -18,4 +18,4 @@ export const globalProjectImages: Record<string, string> = {
   "Penyediaan Komposter Biogas Rumah Tangga": "https://images.unsplash.com/photo-1559329007-40ec44d1641a?auto=format&fit=crop&q=80&w=800", // Kompos/Biogas
 };
 
-export const fallbackImage = "/images/default-project.png";
+export const fallbackImage = "/images/default-project.jpg";
