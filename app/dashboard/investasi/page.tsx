@@ -341,11 +341,11 @@ export default function InvestasiPage() {
         {/* --- IMAGE HEADER --- */}
         <div className="relative overflow-hidden aspect-video">
           <img
-            src={displayImage ? (displayImage.includes('?') ? `${displayImage}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${displayImage}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
+            src={`/images/katalog/${p.title}.jpg`}
             alt={p.title}
             className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700"
             loading="lazy"
-            onError={(e) => { e.currentTarget.src = globalProjectImages[p.title] || fallbackImage; }}
+            onError={(e) => { e.currentTarget.src = "/images/katalog/default-project.jpg"; }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 

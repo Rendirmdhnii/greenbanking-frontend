@@ -197,8 +197,8 @@ export default function DonasiPage() {
                   {/* Image */}
                   <div className="relative overflow-hidden aspect-video">
                     <img
-                      src={displayImage ? (displayImage.includes('?') ? `${displayImage}&t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}` : `${displayImage}?t=${p.updated_at ? encodeURIComponent(p.updated_at) : Date.now()}`) : undefined}
-                      onError={(e) => { e.currentTarget.src = fallbackDonasi; }}
+                      src={`/images/katalog/${p.title}.jpg`}
+                      onError={(e) => { e.currentTarget.src = "/images/katalog/default-project.jpg"; }}
                       alt={p.title}
                       className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
                     />

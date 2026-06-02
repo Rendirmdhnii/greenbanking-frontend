@@ -1506,23 +1506,10 @@ export default function SuperAdminDashboard() {
                             <div className="flex gap-3 min-w-0 items-center">
                               <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
                                 <img 
-                                  src={(() => {
-                                    let img = (p.image_url && p.image_url !== 'null' && p.image_url !== '') 
-                                      ? p.image_url 
-                                      : (globalProjectImages[p.title] || fallbackImage);
-                                    if (img && img.startsWith('/storage')) {
-                                      const host = API_URL.replace(/\/api$/, '');
-                                      img = `${host}${img}`;
-                                    } else if (img && !img.startsWith('http') && !img.startsWith('/images/')) {
-                                      const host = API_URL.replace(/\/api$/, '');
-                                      img = `${host}/storage/${img}`;
-                                    }
-                                    const buster = p.updated_at ? encodeURIComponent(p.updated_at) : Date.now();
-                                    return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
-                                  })()} 
-                                  alt={p?.title || 'Produk'} 
+                                  src={`/images/katalog/${p.title}.jpg`}
+                                  alt={p.title} 
                                   className="w-full h-full object-cover" 
-                                  onError={(e) => { e.currentTarget.src = p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage; }}
+                                  onError={(e) => { e.currentTarget.src = "/images/katalog/default-project.jpg"; }}
                                 />
                               </div>
                               <div className="min-w-0">
@@ -1866,23 +1853,10 @@ export default function SuperAdminDashboard() {
                             <div>
                               <div className="w-full bg-gray-200 rounded-xl overflow-hidden border border-gray-200 mb-4 aspect-video">
                                 <img 
-                                  src={(() => {
-                                    let img = (p.image_url && p.image_url !== 'null' && p.image_url !== '') 
-                                      ? p.image_url 
-                                      : (globalProjectImages[p.title] || fallbackImage);
-                                    if (img && img.startsWith('/storage')) {
-                                      const host = API_URL.replace(/\/api$/, '');
-                                      img = `${host}${img}`;
-                                    } else if (img && !img.startsWith('http') && !img.startsWith('/images/')) {
-                                      const host = API_URL.replace(/\/api$/, '');
-                                      img = `${host}/storage/${img}`;
-                                    }
-                                    const buster = p.updated_at ? encodeURIComponent(p.updated_at) : Date.now();
-                                    return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
-                                  })()} 
-                                  alt={p?.title || 'Produk'} 
+                                  src={`/images/katalog/${p.title}.jpg`}
+                                  alt={p.title} 
                                   className="w-full aspect-video object-cover" 
-                                  onError={(e) => { e.currentTarget.src = p?.title ? (globalProjectImages[p.title] || fallbackImage) : fallbackImage; }}
+                                  onError={(e) => { e.currentTarget.src = "/images/katalog/default-project.jpg"; }}
                                 />
                               </div>
                               <span className="inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-black uppercase tracking-wider mb-2">
