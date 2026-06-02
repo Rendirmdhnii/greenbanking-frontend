@@ -11,7 +11,7 @@ import { formatIDR, SwalGreenBanking } from "@/utils/format";
 import Swal from "sweetalert2";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-const fallbackDonasi = "/images/default-project.jpg";
+const fallbackDonasi = "/images/katalog/default-project.jpg";
 
 const iconMap: Record<string, React.ReactNode> = {
   mangrove_restore: <TreePine size={20} />,
@@ -224,8 +224,8 @@ export default function DonasiPage() {
                       {quickAmounts.filter(a => a >= p.min_amount).slice(0, 4).map(a => (
                         <button key={a} onClick={() => setAmounts(prev => ({ ...prev, [p.id]: a.toString() }))}
                           className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all border ${amounts[p.id] === a.toString()
-                              ? 'bg-rose-500 text-white border-rose-500'
-                              : 'bg-white text-gray-600 border-gray-200 hover:border-rose-300'
+                            ? 'bg-rose-500 text-white border-rose-500'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-rose-300'
                             }`}
                         >
                           {a >= 1000000 ? `${a / 1000000}jt` : `${a / 1000}rb`}
