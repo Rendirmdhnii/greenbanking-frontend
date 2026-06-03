@@ -360,11 +360,11 @@ export default function DashboardPage() {
 
         {/* Riwayat Transaksi Terakhir */}
         <div className="mt-12">
-          <div className="flex items-center justify-between mb-5">
-            <h3 className="text-2xl font-bold text-[#064e3b]">Riwayat Transaksi Terakhir</h3>
+          <div className="flex items-center justify-between gap-4 mb-5">
+            <h3 className="text-lg sm:text-2xl font-bold text-[#064e3b] truncate">Riwayat Transaksi Terakhir</h3>
             <Link 
               href="/dashboard/riwayat" 
-              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors hover:underline"
+              className="text-xs sm:text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors hover:underline whitespace-nowrap flex-shrink-0"
             >
               Lihat Semua
             </Link>
@@ -392,24 +392,26 @@ export default function DashboardPage() {
               recentTrx.map((tx, i) => (
                 <div 
                   key={i} 
-                  className="flex items-center justify-between p-5 hover:bg-gray-50/50 transition-colors duration-200"
+                  className="flex items-start justify-between p-4 sm:p-5 hover:bg-gray-50/50 transition-colors duration-200 gap-4"
                 >
                   {/* Left: Arrow icon & Middle: Title & Date */}
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                     <div className="flex-shrink-0">
                       {tx.type === 'in' || tx.type === 'admin_addition' ? (
-                        <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-100/50">
-                          <ArrowDownLeft size={22} />
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-100/50">
+                          <ArrowDownLeft size={20} className="sm:w-[22px] sm:h-[22px]" />
                         </div>
                       ) : (
-                        <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center border border-rose-100/50">
-                          <ArrowUpRight size={22} />
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center border border-rose-100/50">
+                          <ArrowUpRight size={20} className="sm:w-[22px] sm:h-[22px]" />
                         </div>
                       )}
                     </div>
-                    <div>
-                      <p className="font-bold text-gray-900 text-sm md:text-base leading-tight">{tx.title?.replace(' (Midtrans)', '')}</p>
-                      <p className="text-xs text-gray-400 mt-1">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-gray-900 text-sm sm:text-base leading-snug truncate" title={tx.title?.replace(' (Midtrans)', '')}>
+                        {tx.title?.replace(' (Midtrans)', '')}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5 sm:mt-1">
                         {new Date(tx.created_at).toLocaleString("id-ID", {
                           day: 'numeric',
                           month: 'long',
@@ -422,14 +424,14 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Right: Status & Amount */}
-                  <div className="flex items-center gap-4 md:gap-6">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-                      {tx.status || 'BERHASIL'}
-                    </span>
-                    <span className={`font-bold text-base md:text-lg tabular-nums ${
+                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                    <span className={`font-bold text-sm sm:text-base tabular-nums ${
                       (tx.type === 'in' || tx.type === 'admin_addition') ? 'text-gray-900' : 'text-red-500'
                     }`}>
                       {(tx.type === 'in' || tx.type === 'admin_addition') ? '+' : '-'}{formatIDR(tx.amount)}
+                    </span>
+                    <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                      {tx.status || 'BERHASIL'}
                     </span>
                   </div>
                 </div>

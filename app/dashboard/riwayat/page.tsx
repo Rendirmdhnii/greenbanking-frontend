@@ -151,12 +151,12 @@ export default function RiwayatPage() {
           </div>
 
           <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden" ref={tableRef}>
-            <div className="flex flex-wrap gap-4 p-6 border-b border-gray-100 bg-gray-50/50">
+            <div className="flex overflow-x-auto md:flex-wrap gap-2 md:gap-4 p-4 md:p-6 border-b border-gray-100 bg-gray-50/50 whitespace-nowrap scrollbar-hide">
               {tabs.map(t => (
                 <button 
                   key={t.id}
                   onClick={() => setFilterType(t.id)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-bold transition-colors ${filterType === t.id ? 'bg-[#115e59] text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                  className={`px-4 py-1.5 rounded-full text-xs md:text-sm font-bold transition-colors flex-shrink-0 ${filterType === t.id ? 'bg-[#115e59] text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                 >
                   {t.label}
                 </button>
@@ -203,24 +203,28 @@ export default function RiwayatPage() {
                       <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{group.label}</span>
                     </div>
                     {group.items.map((trx: any, idx: number) => (
-                <div key={idx} onClick={() => setSelectedTrx(trx)} className="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors cursor-pointer group">
-                  <div className="flex items-center gap-4">
-                    {getIcon(trx.type)}
-                    <div>
-                      <h3 className="font-bold text-gray-900 group-hover:text-[#115e59] transition-colors">{trx.title?.replace(' (Midtrans)', '')}</h3>
-                      <div className="flex items-center gap-2 mt-1">
+                <div key={idx} onClick={() => setSelectedTrx(trx)} className="p-4 sm:p-6 flex items-start justify-between hover:bg-gray-50/50 transition-colors cursor-pointer group gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                    <div className="flex-shrink-0">
+                      {getIcon(trx.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-gray-900 group-hover:text-[#115e59] transition-colors text-sm sm:text-base leading-snug truncate" title={trx.title?.replace(' (Midtrans)', '')}>
+                        {trx.title?.replace(' (Midtrans)', '')}
+                      </h3>
+                      <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 mt-0.5 sm:mt-1">
                         <p className="text-xs text-gray-500">{new Date(trx.created_at).toLocaleString("id-ID")}</p>
-                        <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                        <p className="text-xs text-gray-400 font-mono">{trx.transaction_id}</p>
+                        <span className="hidden xs:inline w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                        <p className="text-[10px] sm:text-xs text-gray-400 font-mono truncate">{trx.transaction_id}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className={`font-bold text-lg ${trx.type === 'in' || trx.type === 'admin_addition' ? 'text-green-600' : 'text-red-500'}`}>
+                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                    <p className={`font-bold text-sm sm:text-base tabular-nums ${trx.type === 'in' || trx.type === 'admin_addition' ? 'text-green-600' : 'text-red-500'}`}>
                       {trx.type === 'in' || trx.type === 'admin_addition' ? '+' : '-'}{formatIDR(trx.amount)}
                     </p>
-                    <p className="text-xs text-[#16a34a] font-bold mt-1 flex items-center justify-end gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span> {trx.status}
+                    <p className="text-[9px] sm:text-[10px] text-[#16a34a] font-bold flex items-center justify-end gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100/50">
+                      <span className="w-1 h-1 rounded-full bg-[#16a34a]"></span> {trx.status}
                     </p>
                   </div>
                 </div>
