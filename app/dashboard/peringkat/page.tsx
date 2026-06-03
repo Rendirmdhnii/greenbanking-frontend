@@ -133,8 +133,8 @@ export default function PeringkatPage() {
               </div>
  
               {/* Mini SVG Line Chart */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 overflow-hidden rounded-b-[2rem] pointer-events-none">
-                <svg className="w-full h-full opacity-35" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <div className="absolute bottom-0 left-0 right-0 h-20 overflow-hidden rounded-b-[2rem] pointer-events-none">
+                <svg className="w-full h-full opacity-35" viewBox="0 -6 100 26" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="chart-glow" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#34d399" stopOpacity="0.6" />
