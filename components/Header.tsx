@@ -204,14 +204,14 @@ export default function Header({ userHook }: { userHook: any }) {
 
   return (
     <>
-      <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between pl-8 pr-12 sticky top-0 z-30">
+      <header className="h-16 md:h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 md:pl-8 md:pr-12 sticky top-0 z-30">
         {/* Left Side: Search Bar */}
-        <div className="relative w-96" ref={searchRef}>
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+        <div className="relative w-32 xs:w-40 sm:w-48 md:w-96 flex-shrink-0" ref={searchRef}>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input 
             type="text" 
             placeholder="Cari transaksi atau fitur..." 
-            className="w-full bg-gray-50 border-none rounded-full py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#115e59]/20 outline-none" 
+            className="w-full bg-gray-50 border-none rounded-full py-2 pl-9 pr-3 text-xs focus:ring-2 focus:ring-[#115e59]/20 outline-none" 
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -239,16 +239,16 @@ export default function Header({ userHook }: { userHook: any }) {
         </div>
 
         {/* Right Side: Notification Icon & Profile Avatar */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2 xs:gap-3 md:gap-6">
           {isAdmin && (
-            <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-50 to-yellow-50 px-3 py-1.5 rounded-full border border-amber-200">
-              <ShieldCheck size={14} className="text-amber-600" />
-              <span className="text-xs font-bold text-amber-700">Super Admin</span>
+            <div className="flex items-center gap-1 bg-gradient-to-r from-amber-50 to-yellow-50 px-2 py-1 rounded-full border border-amber-200 flex-shrink-0">
+              <ShieldCheck size={12} className="text-amber-600" />
+              <span className="text-[10px] sm:text-xs font-bold text-amber-700">Super Admin</span>
             </div>
           )}
-          <Link href="/dashboard/peringkat" className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 hover:bg-emerald-100 transition-colors cursor-pointer">
-            <Leaf size={16} className="text-[#115e59]" />
-            <span className="text-sm font-bold text-[#064e3b]">
+          <Link href="/dashboard/peringkat" className="flex items-center gap-1 sm:gap-2 bg-emerald-50 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-emerald-100 hover:bg-emerald-100 transition-colors cursor-pointer flex-shrink-0">
+            <Leaf size={14} className="text-[#115e59] flex-shrink-0" />
+            <span className="text-[10px] sm:text-sm font-bold text-[#064e3b] whitespace-nowrap">
               Skor Dampak: {currentUserScore !== null 
                 ? new Intl.NumberFormat('id-ID').format(Math.floor(currentUserScore)) 
                 : new Intl.NumberFormat('id-ID').format(Math.floor(impactScore || 0))}
@@ -256,14 +256,14 @@ export default function Header({ userHook }: { userHook: any }) {
           </Link>
 
           {/* Notification Lonceng Dropdown */}
-          <div className="relative" ref={notifRef}>
+          <div className="relative flex-shrink-0" ref={notifRef}>
             <button 
               onClick={() => setShowNotifications(!showNotifications)}
-              className="p-2.5 text-gray-500 hover:bg-gray-100 rounded-xl transition-all cursor-pointer relative hover:scale-105 border border-gray-100 bg-white"
+              className="p-2 text-gray-500 hover:bg-gray-100 rounded-xl transition-all cursor-pointer relative hover:scale-105 border border-gray-100 bg-white"
             >
-              <Bell size={20} />
+              <Bell size={18} />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white animate-pulse">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white animate-pulse">
                   {unreadCount}
                 </span>
               )}
@@ -295,7 +295,7 @@ export default function Header({ userHook }: { userHook: any }) {
                       const isUnread = !n.read && !n.is_read;
                       return (
                         <div 
-                          key={n.id} 
+                           key={n.id} 
                           onClick={() => handleNotifClick(n.id)}
                           className={`px-3 py-2.5 hover:bg-gray-50 transition-colors cursor-pointer ${isUnread ? 'bg-emerald-50/10 hover:bg-emerald-50/20 border-l-2 border-emerald-500' : ''}`}
                         >
@@ -318,11 +318,11 @@ export default function Header({ userHook }: { userHook: any }) {
             )}
           </div>
 
-          <Link href="/dashboard/akun" className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center cursor-pointer bg-gradient-to-br from-[#064e3b] to-[#115e59]">
+          <Link href="/dashboard/akun" className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center cursor-pointer bg-gradient-to-br from-[#064e3b] to-[#115e59] flex-shrink-0">
             {avatarUrl ? (
               <img src={`${avatarUrl}${avatarUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
-              <span className="text-white font-bold text-sm tracking-widest">{initials}</span>
+              <span className="text-white font-bold text-xs sm:text-sm tracking-widest">{initials}</span>
             )}
           </Link>
         </div>

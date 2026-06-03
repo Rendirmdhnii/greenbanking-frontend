@@ -29,7 +29,7 @@ export default function WalletBalanceCard({
   };
 
   return (
-    <div className="relative overflow-hidden h-full w-full bg-gradient-to-br from-[#064e3b] via-[#115e59] to-[#0f766e] text-white rounded-[24px] p-6 shadow-xl shadow-emerald-950/20 border border-white/10 group transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]">
+    <div className="relative overflow-hidden h-full w-full bg-gradient-to-br from-[#064e3b] via-[#115e59] to-[#0f766e] text-white rounded-[24px] pt-9 pb-6 px-6 shadow-xl shadow-emerald-950/20 border border-white/10 group transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]">
       {/* Premium Glassmorphic Decorative Circles */}
       <div className="absolute top-0 right-0 w-44 h-44 bg-white/10 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-white/15 transition-all duration-500 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-36 h-36 bg-emerald-400/10 rounded-full blur-2xl -ml-8 -mb-8 pointer-events-none"></div>
@@ -51,7 +51,7 @@ export default function WalletBalanceCard({
         </div>
 
         {/* Middle Section: Balance Display */}
-        <div className="my-5">
+        <div className="mt-6 mb-5">
           <span className="text-emerald-200 text-xs font-semibold tracking-wide">Saldo Utama</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-sans tracking-tight text-white mt-1 drop-shadow-md">
             {formatIDR(balance)}
@@ -59,12 +59,12 @@ export default function WalletBalanceCard({
         </div>
 
         {/* Bottom Section: Account number & Actions */}
-        <div className="flex items-end justify-between pt-2 border-t border-white/10 mt-2">
-          <div>
-            <span className="text-[10px] text-emerald-200/70 font-semibold uppercase tracking-wider block">ID Nasabah / No. Rekening</span>
+        <div className="pt-3 border-t border-white/10 mt-3 flex flex-col gap-1">
+          <span className="text-[10px] text-emerald-200/70 font-semibold uppercase tracking-wider block">ID Nasabah / No. Rekening</span>
+          <div className="flex items-center justify-between">
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1.5 mt-0.5 text-emerald-100 font-mono text-sm hover:text-white transition-colors group/btn"
+              className="flex items-center gap-1.5 text-emerald-100 font-mono text-sm hover:text-white transition-colors group/btn"
               title="Copy Rekening"
             >
               <span>{accountNumber || "—"}</span>
@@ -74,32 +74,32 @@ export default function WalletBalanceCard({
                 <Copy size={12} className="opacity-60 group-hover/btn:opacity-100 transition-opacity" />
               )}
             </button>
-            <span className="text-[10px] text-emerald-300/80 font-medium block mt-1.5 truncate max-w-[150px] sm:max-w-[200px]">
-              {userName}
-            </span>
-          </div>
 
-          {/* Quick Action Buttons */}
-          <div className="flex items-center gap-2">
-            {onTransferClick && (
-              <button
-                onClick={onTransferClick}
-                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/10 text-white transition-all hover:scale-105"
-                title="Transfer"
-              >
-                <ArrowUpRight size={16} />
-              </button>
-            )}
-            {onTopUpClick && (
-              <button
-                onClick={onTopUpClick}
-                className="flex items-center gap-1.5 bg-white text-[#064e3b] font-bold px-4 py-2 rounded-xl text-xs shadow-md hover:bg-emerald-50 hover:shadow-lg transition-all hover:scale-105"
-              >
-                <Plus size={14} />
-                <span>Top Up</span>
-              </button>
-            )}
+            {/* Quick Action Buttons */}
+            <div className="flex items-center gap-2">
+              {onTransferClick && (
+                <button
+                  onClick={onTransferClick}
+                  className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/10 text-white transition-all hover:scale-105"
+                  title="Transfer"
+                >
+                  <ArrowUpRight size={16} />
+                </button>
+              )}
+              {onTopUpClick && (
+                <button
+                  onClick={onTopUpClick}
+                  className="flex items-center gap-1.5 bg-white text-[#064e3b] font-bold px-4 py-2 rounded-xl text-xs shadow-md hover:bg-emerald-50 hover:shadow-lg transition-all hover:scale-105"
+                >
+                  <Plus size={14} />
+                  <span>Top Up</span>
+                </button>
+              )}
+            </div>
           </div>
+          <span className="text-[10px] text-emerald-300/80 font-medium block mt-0.5 truncate max-w-[150px] sm:max-w-[200px]">
+            {userName}
+          </span>
         </div>
       </div>
     </div>

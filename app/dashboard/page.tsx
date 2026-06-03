@@ -226,9 +226,9 @@ export default function DashboardPage() {
         onError={() => console.error('Gagal memuat Midtrans Snap.js')}
       />
 
-      <div className="p-6 md:p-8 max-w-7xl mx-auto w-full">
+      <div className="pt-2 px-6 pb-28 md:p-8 max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-8 flex flex-col gap-1 items-start">
+        <div className="mb-6 md:mb-8 flex flex-col gap-1 items-start">
           <h1 className="text-3xl text-[#064e3b] font-bold">
             Selamat Datang, {userName.split(' ')[0]}!
           </h1>
@@ -243,7 +243,7 @@ export default function DashboardPage() {
         {/* ═══════════════════════════════════════════════
              TOP UP SECTION — Besar, Jelas, dan Fungsional
            ═══════════════════════════════════════════════ */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 md:mb-8 items-stretch">
           
           {/* Card Saldo — Glassmorphism */}
           <div className="flex flex-col h-full w-full">
@@ -257,7 +257,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Card Karbon */}
-          <div className="bg-[#111827] text-white p-6 rounded-[24px] shadow-lg relative overflow-hidden h-full flex flex-col justify-between border border-gray-800 min-h-[220px]">
+          <div className="bg-[#111827] text-white p-5 md:p-6 rounded-[24px] shadow-lg relative overflow-hidden h-full flex flex-col justify-between border border-gray-800 min-h-[190px] md:min-h-[220px]">
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#115e59]/20 rounded-full blur-3xl"></div>
             <div>
               <div className="flex items-center gap-3 mb-4">
@@ -281,7 +281,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Card Eco Points */}
-          <div className="bg-white border border-gray-100 p-6 rounded-[24px] shadow-sm h-full flex flex-col justify-between min-h-[220px]">
+          <div className="bg-white border border-gray-100 p-5 md:p-6 rounded-[24px] shadow-sm h-full flex flex-col justify-between min-h-[190px] md:min-h-[220px]">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center border border-blue-100">
