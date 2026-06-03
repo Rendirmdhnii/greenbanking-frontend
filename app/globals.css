@@ -5,3 +5,10 @@ body {
   color: #171717;
   font-family: var(--font-plus-jakarta-sans), sans-serif;
 }
+
+/* SweetAlert2 Input centering overrides */
+.swal2-popup .swal2-input {
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}

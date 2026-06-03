@@ -168,7 +168,7 @@ export default function InvestasiPage() {
         popup: 'rounded-3xl shadow-xl p-6 sm:p-8 font-sans',
         title: 'text-center text-xl sm:text-2xl font-bold text-gray-950 mb-3',
         inputLabel: 'text-center text-xs sm:text-sm text-gray-500 font-medium px-4 block leading-relaxed mb-4',
-        input: 'text-center text-3xl sm:text-4xl tracking-[1.2em] sm:tracking-[1.5em] pl-[1.3em] sm:pl-[1.6em] font-bold py-2.5 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-300 focus:border-emerald-600 focus:ring-0 outline-none transition-all text-gray-900 max-w-[220px] sm:max-w-xs mx-auto focus:outline-none mb-4',
+        input: 'text-center text-3xl sm:text-4xl tracking-[1.2em] sm:tracking-[1.5em] pl-[1.2em] sm:pl-[1.5em] font-bold py-2.5 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-300 focus:border-emerald-600 focus:ring-0 outline-none transition-all text-gray-900 max-w-[220px] sm:max-w-xs !mx-auto !block focus:outline-none !mb-4',
         confirmButton: 'px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all duration-200 shadow-md hover:shadow-lg outline-none border-0 cursor-pointer flex-1',
         cancelButton: 'px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-sm rounded-xl transition-all duration-200 outline-none border-0 cursor-pointer flex-1',
         actions: 'flex gap-3 w-full justify-center mt-5'
