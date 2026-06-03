@@ -1148,7 +1148,7 @@ export default function SuperAdminDashboard() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Top Header */}
-        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-200 px-8 flex items-center justify-between sticky top-0 z-50">
+        <header className="py-5 min-h-[5.5rem] bg-white/80 backdrop-blur-md border-b border-gray-200 px-8 flex items-center justify-between sticky top-0 z-50">
           <div>
             <h2 className="text-xl font-bold text-gray-900 tracking-tight">Ikhtisar Platform</h2>
             <p className="text-sm text-gray-500 font-medium">Pusat kendali operasional dan transaksi</p>

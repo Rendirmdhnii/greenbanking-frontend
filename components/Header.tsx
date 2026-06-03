@@ -204,7 +204,7 @@ export default function Header({ userHook }: { userHook: any }) {
 
   return (
     <>
-      <header className="h-16 md:h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 md:pl-8 md:pr-12 sticky top-0 z-30">
+      <header className="py-4 md:py-5 min-h-[4.5rem] md:min-h-[5.5rem] bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 md:pl-8 md:pr-12 sticky top-0 z-30">
         {/* Left Side: Search Bar */}
         <div className="relative w-32 xs:w-40 sm:w-48 md:w-96 flex-shrink-0" ref={searchRef}>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
