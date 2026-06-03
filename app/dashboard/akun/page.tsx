@@ -58,14 +58,13 @@ export default function AkunPage() {
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden mb-8">
-                <div className="h-32 bg-gradient-to-r from-[#064e3b] to-[#115e59] relative">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                <div className="h-32 bg-[#064e3b] relative">
                 </div>
                 
                 <div className="px-8 pb-8 relative">
                   <div className="relative -mt-16 mb-4 flex justify-between items-end">
                     <div className="relative inline-block">
-                      <div className="w-32 h-32 bg-white rounded-full p-1.5 shadow-lg flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#064e3b] to-[#115e59]">
+                      <div className="w-32 h-32 bg-white rounded-full p-1.5 shadow-lg flex items-center justify-center overflow-hidden bg-[#064e3b]">
                         {avatarUrl ? (
                           <img src={`${avatarUrl}${avatarUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} alt="Avatar" className="w-full h-full rounded-full object-cover" />
                         ) : (
