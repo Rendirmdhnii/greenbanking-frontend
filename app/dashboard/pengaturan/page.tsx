@@ -341,6 +341,7 @@ export default function PengaturanPage() {
                       <label className="block text-sm font-bold text-gray-700 mb-2">Nomor HP/WhatsApp</label>
                       <input 
                         type="tel" 
+                        maxLength={13}
                         value={editPhone}
                         onChange={(e) => setEditPhone(e.target.value)}
                         placeholder="Contoh: 08123456789"
