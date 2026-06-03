@@ -8,7 +8,6 @@ body {
 
 /* SweetAlert2 Input centering overrides */
 .swal2-popup .swal2-input {
-  display: block !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
