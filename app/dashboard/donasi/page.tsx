@@ -9,6 +9,7 @@ import StrukModal from "@/components/StrukModal";
 import { useUserContext } from "@/hooks/useUserData";
 import { formatIDR, SwalGreenBanking } from "@/utils/format";
 import Swal from "sweetalert2";
+import { resolveImageUrl } from "@/utils/projectImages";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 const fallbackDonasi = "/images/katalog/default-project.jpg";
@@ -180,18 +181,6 @@ export default function DonasiPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {products.map((p, i) => {
               const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
-              // Resolusi gambar: prioritaskan image_url dari API Backend
-              let displayImage = (p.image_url && p.image_url !== 'null' && p.image_url !== '')
-                ? p.image_url
-                : fallbackDonasi;
-
-              if (displayImage && displayImage.startsWith('/storage')) {
-                const backendHost = API_URL.replace(/\/api$/, '');
-                displayImage = `${backendHost}${displayImage}`;
-              } else if (displayImage && !displayImage.startsWith('http') && !displayImage.startsWith('/images/')) {
-                const backendHost = API_URL.replace(/\/api$/, '');
-                displayImage = `${backendHost}/storage/${displayImage}`;
-              }
               return (
                 <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
                   className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
@@ -199,7 +188,7 @@ export default function DonasiPage() {
                   {/* Image */}
                   <div className="relative overflow-hidden aspect-video">
                     <img
-                      src={`/images/katalog/${p.title}.jpg`}
+                      src={resolveImageUrl(p)}
                       onError={(e) => { e.currentTarget.src = "/images/katalog/default-project.jpg"; }}
                       alt={p.title}
                       className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"

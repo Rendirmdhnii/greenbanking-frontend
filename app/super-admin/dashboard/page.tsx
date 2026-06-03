@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
+import { globalProjectImages, fallbackImage, resolveImageUrl } from "@/utils/projectImages";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
@@ -828,15 +828,7 @@ export default function SuperAdminDashboard() {
           <div class="col-span-2">
             <div id="swal-image-preview-container" class="mb-3 w-full aspect-video rounded-xl overflow-hidden border border-gray-200 bg-gray-50 flex items-center justify-center">
               <img id="swal-image-preview" src="${(() => {
-                let img = product.image_url || product.image || '';
-                if (img && img.startsWith('/storage')) {
-                  const host = API_URL.replace(/\/api$/, '');
-                  img = `${host}${img}`;
-                } else if (img && !img.startsWith('http')) {
-                  const host = API_URL.replace(/\/api$/, '');
-                  img = `${host}/storage/${img}`;
-                }
-                if (!img) return product?.title ? (globalProjectImages[product.title] || fallbackImage) : fallbackImage;
+                const img = resolveImageUrl(product);
                 const buster = product.updated_at ? encodeURIComponent(product.updated_at) : Date.now();
                 return img.includes('?') ? `${img}&t=${buster}` : `${img}?t=${buster}`;
               })()}" class="w-full h-full object-cover" />
@@ -1506,8 +1498,8 @@ export default function SuperAdminDashboard() {
                             <div className="flex gap-3 min-w-0 items-center">
                               <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
                                 <img 
-                                  src={`/images/katalog/${p.title}.jpg`}
-                                  alt={p.title} 
+                                  src={resolveImageUrl(p)}
+                                  alt={p?.title || 'Gambar Produk'} 
                                   className="w-full h-full object-cover" 
                                   onError={(e) => { e.currentTarget.src = "/images/katalog/default-project.jpg"; }}
                                 />
@@ -1853,8 +1845,8 @@ export default function SuperAdminDashboard() {
                             <div>
                               <div className="w-full bg-gray-200 rounded-xl overflow-hidden border border-gray-200 mb-4 aspect-video">
                                 <img 
-                                  src={`/images/katalog/${p.title}.jpg`}
-                                  alt={p.title} 
+                                  src={resolveImageUrl(p)}
+                                  alt={p?.title || 'Gambar Produk'} 
                                   className="w-full aspect-video object-cover" 
                                   onError={(e) => { e.currentTarget.src = "/images/katalog/default-project.jpg"; }}
                                 />

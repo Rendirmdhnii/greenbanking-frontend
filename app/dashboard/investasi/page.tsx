@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
 // --- LOGIKA GAMBAR ANTI-GAGAL (DIPERBARUI & DISTERILKAN) ---
-import { globalProjectImages, fallbackImage } from "@/utils/projectImages";
+import { globalProjectImages, fallbackImage, resolveImageUrl } from "@/utils/projectImages";
 
 const tagColors: Record<string, string> = {
   "Energi Surya": "bg-amber-100 text-amber-700",
@@ -321,19 +321,6 @@ export default function InvestasiPage() {
   const renderProductCard = (p: GreenProduct, i: number) => {
     const progress = p.target_funding > 0 ? (p.current_funding / p.target_funding) * 100 : 0;
     const isExpanded = expandedCard === p.id;
-    
-    // Resolusi gambar: prioritaskan image_url dari API Backend
-    let displayImage = (p.image_url && p.image_url !== 'null' && p.image_url !== '') 
-      ? p.image_url 
-      : (globalProjectImages[p.title] || fallbackImage);
-
-    if (displayImage && displayImage.startsWith('/storage')) {
-      const backendHost = API_URL.replace(/\/api$/, '');
-      displayImage = `${backendHost}${displayImage}`;
-    } else if (displayImage && !displayImage.startsWith('http') && !displayImage.startsWith('/images/')) {
-      const backendHost = API_URL.replace(/\/api$/, '');
-      displayImage = `${backendHost}/storage/${displayImage}`;
-    }
     const isDonasi = p.type === 'donasi';
 
     return (
@@ -343,7 +330,7 @@ export default function InvestasiPage() {
         {/* --- IMAGE HEADER --- */}
         <div className="relative overflow-hidden aspect-video">
           <img
-            src={`/images/katalog/${p.title}.jpg`}
+            src={resolveImageUrl(p)}
             alt={p.title}
             className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700"
             loading="lazy"

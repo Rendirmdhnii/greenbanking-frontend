@@ -19,3 +19,35 @@ export const globalProjectImages: Record<string, string> = {
 };
 
 export const fallbackImage = "/images/katalog/default-project.jpg";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+
+export const resolveImageUrl = (product: { title?: string; image_url?: string | null; image?: string | null } | null | undefined): string => {
+  if (!product) {
+    return fallbackImage;
+  }
+
+  const rawUrl = product.image_url || product.image;
+
+  // 1. Gambar dari database (Upload Admin)
+  if (rawUrl && rawUrl !== 'null' && rawUrl !== '') {
+    let img = rawUrl;
+    // Tambahkan base URL backend jika image_url hanya me-return path relatif
+    if (img.startsWith('/storage')) {
+      const backendHost = API_URL.replace(/\/api$/, '');
+      img = `${backendHost}${img}`;
+    } else if (!img.startsWith('http') && !img.startsWith('/images/')) {
+      const backendHost = API_URL.replace(/\/api$/, '');
+      img = `${backendHost}/storage/${img}`;
+    }
+    return img;
+  }
+
+  // 2. Gambar statis lokal untuk produk lama
+  if (product.title && globalProjectImages[product.title]) {
+    return globalProjectImages[product.title];
+  }
+
+  // 3. Fallback aman
+  return fallbackImage;
+};
