@@ -13,11 +13,11 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 flex items-center justify-center transition-transform group-hover:scale-105">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-transform group-hover:scale-105 flex-shrink-0">
               <img src="/logo.svg" alt="GreenBanking Logo" className="w-full h-full object-contain drop-shadow-md" />
             </div>
-            <span className="font-extrabold text-2xl tracking-tight text-emerald-900">
+            <span className="font-extrabold text-lg sm:text-2xl tracking-tight text-emerald-900 whitespace-nowrap">
               Green<span className="text-emerald-600">Banking</span>
             </span>
           </Link>
@@ -28,11 +28,11 @@ export function Navbar() {
             <Link href="#tentang" className="text-gray-600 hover:text-[#115e59] transition-colors font-medium">Tentang</Link>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <Link href="/login" className="text-[#115e59] hover:text-[#064e3b] font-semibold transition-colors">
+          <div className="flex items-center space-x-3 sm:space-x-4 flex-shrink-0">
+            <Link href="/login" className="text-[#115e59] hover:text-[#064e3b] font-semibold transition-colors text-sm sm:text-base">
               Masuk
             </Link>
-            <Link href="/login" className="bg-[#064e3b] hover:bg-[#115e59] text-white px-6 py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-lg">
+            <Link href="/login" className="bg-[#064e3b] hover:bg-[#115e59] text-white px-4 py-2 sm:px-6 sm:py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-lg text-sm sm:text-base">
               Daftar
             </Link>
           </div>

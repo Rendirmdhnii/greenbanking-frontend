@@ -26,7 +26,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight"
+            className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white mb-8 md:mb-6 px-2 sm:px-4 tracking-tight leading-tight"
           >
             Lebih dari Sekadar Bank. <br/> Ini Green Banking.
           </motion.h1>
@@ -34,7 +34,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl text-emerald-50 mb-10 max-w-2xl mx-auto font-light"
+            className="text-lg sm:text-xl md:text-2xl text-emerald-50 mb-12 md:mb-10 px-4 sm:px-6 max-w-2xl mx-auto font-light leading-relaxed"
           >
             Kembangkan aset finansial Anda sekaligus kurangi jejak karbon. EcoBank Nusantara menghadirkan layanan perbankan digital modern yang peduli pada bumi.
           </motion.p>
