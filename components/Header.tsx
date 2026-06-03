@@ -336,7 +336,7 @@ export default function Header({ userHook }: { userHook: any }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-24 right-6 z-[100] max-w-sm w-full bg-white border border-gray-100 rounded-2xl shadow-2xl p-4 flex gap-3 items-start font-sans"
+            className="fixed top-24 left-1/2 -translate-x-1/2 md:left-auto md:right-6 md:translate-x-0 z-[100] w-[90%] max-w-sm bg-white border border-gray-100 rounded-2xl shadow-2xl p-4 flex gap-3 items-start font-sans"
           >
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border ${getNotifBg(activeToast.type)}`}>
               {getNotifIcon(activeToast.type)}

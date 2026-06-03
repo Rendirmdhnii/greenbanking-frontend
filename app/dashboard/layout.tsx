@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { useUserData, UserContext } from "@/hooks/useUserData";
-import { Loader2, Home, TrendingUp, Receipt, Leaf, User } from "lucide-react";
+import { Loader2, Home, TrendingUp, Receipt, Leaf, User, Settings } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const userHook = useUserData();
@@ -19,6 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Tagihan", icon: Receipt, href: "/dashboard/tagihan" },
     { name: "Dampak", icon: Leaf, href: "/dashboard/peringkat" },
     { name: "Akun", icon: User, href: "/dashboard/akun" },
+    { name: "Pengaturan", icon: Settings, href: "/dashboard/pengaturan" },
   ];
 
   // ─── Auth Guard: redirect ke /login jika tidak ada sesi ───
