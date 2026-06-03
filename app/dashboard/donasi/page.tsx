@@ -9,7 +9,7 @@ import StrukModal from "@/components/StrukModal";
 import { useUserContext } from "@/hooks/useUserData";
 import { formatIDR, SwalGreenBanking } from "@/utils/format";
 import Swal from "sweetalert2";
-import { resolveImageUrl } from "@/utils/projectImages";
+import { globalProjectImages } from "@/utils/projectImages";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 const fallbackDonasi = "/images/katalog/default-project.jpg";
@@ -188,7 +188,7 @@ export default function DonasiPage() {
                   {/* Image */}
                   <div className="relative overflow-hidden aspect-video">
                     <img
-                      src={resolveImageUrl(p)}
+                      src={globalProjectImages[p.title] || "/images/katalog/default-project.jpg"}
                       onError={(e) => { e.currentTarget.src = "/images/katalog/default-project.jpg"; }}
                       alt={p.title}
                       className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
