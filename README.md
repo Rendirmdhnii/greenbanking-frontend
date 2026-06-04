@@ -1,4 +1,4 @@
-# 🍃 EcoBank Nusantara - Frontend Client
+# EcoBank Nusantara - Frontend Client
 
 Repository ini memuat kode sumber (*source code*) sisi **Frontend Client** untuk aplikasi *Green Banking* bernama **EcoBank Nusantara**. Proyek ini dirancang menggunakan arsitektur *Decoupled System* yang terpisah sepenuhnya dari server backend, berfokus pada penyediaan antarmuka pengguna (*user interface*) yang responsif, dinamis, serta aman.
 
@@ -17,7 +17,7 @@ Sistem antarmuka ini mengintegrasikan ekosistem teknologi modern berskala produk
 
 ---
 
-## 👥 Struktur Organisasi Kelompok & Distribusi Peran
+## Struktur Organisasi Kelompok & Distribusi Peran
 
 Untuk transparansi dan objektivitas penilaian akademis, berikut adalah rincian kontribusi teknis serta pembagian tanggung jawab masing-masing anggota kelompok pada repositori frontend:
 
@@ -30,7 +30,7 @@ Untuk transparansi dan objektivitas penilaian akademis, berikut adalah rincian k
 
 ---
 
-## 🚀 Panduan Instalasi dan Pengoperasian Lokal
+##  Panduan Instalasi dan Pengoperasian Lokal
 
 Pastikan komputer Anda telah terinstal Node.js (versi minimal 18.x), kemudian eksekusi perintah berikut pada terminal:
 
